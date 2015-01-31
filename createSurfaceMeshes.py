@@ -20,4 +20,19 @@ class importTopology(bpy.types.Operator):
         #need to read files in
         #create spheres for CPs, meshes for surfaces and cylinders for bonds
 
-bpy.utils.register_class(importTopology)
+#put the GUI in the Tool shelf
+
+class importTopologyPanel(bpy.types.Panel):
+        bl_space_type = "VIEW_3D"
+        bl_region_type = "TOOLS"
+        bl_context = "objectMode"
+        #the above three lines make the panel appear in the toolshelf of the 3D view in object mode
+        bl_category = "Create"
+        bl_label = "Add Tetrahedron"
+        
+        def draw(self, context)
+            TheCol = self.layout.column(align=True)
+            TheCol.operator("QCT.importTopology",text="Import Topology")
+           
+bpy.utils.register_class(importTopology) # add the defined Operator to the built-in collection
+bpy.utils.register_class(importTopologyPanel)
