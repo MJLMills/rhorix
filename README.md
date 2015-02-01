@@ -6,4 +6,4 @@ The code was written with reference to Chapter 4 of the WikiBook '[Blender 3D: N
 <p>
 Full documentation will be provided in 'Manual.pdf'.
 <p>
-**Note** This program does not work yet!
+**Note**: This program does not work yet!
