@@ -44,3 +44,18 @@ def unregister():
     
 if __name__ == "main":
         register()
+
+bl_info = \
+    {
+        "name" : "Import QC Topology",
+        "author" : "Matthew M L Mills <mjohnmills@gmail.com>",
+        "version" : (1, 0, 0),
+        "blender" : (2, 6, 9),
+        "location" : "View 3D > Edit Mode > Tool Shelf",
+        "description" :
+            "Import a QCT .top File",
+        "warning" : "",
+        "wiki_url" : "",
+        "tracker_url" : "",
+        "category" : "Add Mesh",
+    }
