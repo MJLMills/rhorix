@@ -30,9 +30,9 @@ class importTopologyPanel(bpy.types.Panel):
         bl_category = "Create"
         bl_label = "Add Tetrahedron"
         
-        def draw(self, context)
-            TheCol = self.layout.column(align=True)
-            TheCol.operator("QCT.importTopology",text="Import Topology")
+        def draw(self, context):
+                TheCol = self.layout.column(align=True)
+                TheCol.operator("QCT.importTopology",text="Import Topology")
            
 def register():
         bpy.utils.register_class(importTopology) # add the defined Operator to the built-in collection
