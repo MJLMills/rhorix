@@ -5,7 +5,7 @@ class importTopology(bpy.types.Operator):
         bl_idname = "QCT.importTopology"
         bl_label = "Read QCT Surfaces"
 
-    def invoke(self, context, event):
+        def invoke(self, context, event):
         
 #        addMesh = bpy.data.meshes.new("ATOM_H1")
 #        addMesh.from_pydata() #put the data from the file into the mesh
@@ -15,7 +15,7 @@ class importTopology(bpy.types.Operator):
 #        addMesh.update() #tell blender the mesh has changed
 #        addObj = bpy.data.objects.new("ATOM_H1", addMesh) #create a blender datablock for the object
 #        context.scene.objects.link(addObj) #and link it to the blender scene
-        return {"FINISHED"}
+                return {"FINISHED"}
     
         #need to read files in
         #create spheres for CPs, meshes for surfaces and cylinders for bonds
