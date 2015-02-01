@@ -34,5 +34,13 @@ class importTopologyPanel(bpy.types.Panel):
             TheCol = self.layout.column(align=True)
             TheCol.operator("QCT.importTopology",text="Import Topology")
            
-bpy.utils.register_class(importTopology) # add the defined Operator to the built-in collection
-bpy.utils.register_class(importTopologyPanel)
+def register():
+        bpy.utils.register_class(importTopology) # add the defined Operator to the built-in collection
+        bpy.utils.register_class(importTopologyPanel)
+
+def unregister():
+        bpy.utils.register_class(importTopology) # add the defined Operator to the built-in collection
+        bpy.utils.register_class(importTopologyPanel)
+    
+if __name__ == "main":
+        register()
