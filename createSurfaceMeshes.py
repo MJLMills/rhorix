@@ -49,7 +49,7 @@ bl_info = \
     {
         "name" : "Import QC Topology",
         "author" : "Matthew M L Mills <mjohnmills@gmail.com>",
-        "version" : (1, 0, 0),
+        "version" : (0, 0, 0),
         "blender" : (2, 6, 9),
         "location" : "View 3D > Edit Mode > Tool Shelf",
         "description" :
