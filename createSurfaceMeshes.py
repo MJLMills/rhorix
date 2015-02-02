@@ -1,8 +1,8 @@
 import bpy
 import mathutils
 
-class importTopology(bpy.types.Operator):
-    bl_idname = "QCT.importTopology"
+class ImportTopology(bpy.types.Operator):
+    bl_idname = "qct.import_topology"
     bl_label = "Read QCT Surfaces"
 
     def invoke(self, context, event):
