@@ -6,6 +6,7 @@ class ImportTopology(bpy.types.Operator):
     bl_label = "Read QCT Surfaces"
 
     def invoke(self, context, event):
+        print("QCT4Blender invoked")
         return {"FINISHED"}
 #        addMesh = bpy.data.meshes.new("ATOM_H1")
 #        addMesh.from_pydata() #put the data from the file into the mesh
@@ -21,28 +22,33 @@ class ImportTopology(bpy.types.Operator):
 
 #put the GUI in the Tool shelf
 
-class importTopologyPanel(bpy.types.Panel):
+class ImportTopologyPanel(bpy.types.Panel):
     bl_space_type = "VIEW_3D"
     bl_region_type = "TOOLS"
     bl_context = "objectMode"
     #the above three lines make the panel appear in the toolshelf of the 3D view in object mode
     bl_category = "Create"
-    bl_label = "Add Tetrahedron"
+    bl_label = "Read QC Topology"
         
     def draw(self, context):
         TheCol = self.layout.column(align=True)
         TheCol.operator("QCT.importTopology",text="Import Topology")
            
 def register():
-    bpy.utils.register_class(importTopology) # add the defined Operator to the built-in collection
-    bpy.utils.register_class(importTopologyPanel)
+    print("Registering Classes")
+    bpy.utils.register_class(ImportTopology) # add the defined Operator to the built-in collection
+    bpy.utils.register_class(ImportTopologyPanel)
 
 def unregister():
-    bpy.utils.register_class(importTopology) # add the defined Operator to the built-in collection
-    bpy.utils.register_class(importTopologyPanel)
+    print("Deregistering Classes")
+    bpy.utils.register_class(ImportTopology) # add the defined Operator to the built-in collection
+    bpy.utils.register_class(ImportTopologyPanel)
     
 if __name__ == "main":
     register()
+
+#call register
+register()
 
 bl_info = \
     {
@@ -50,7 +56,7 @@ bl_info = \
         "author" : "Matthew M L Mills <mjohnmills@gmail.com>",
         "version" : (0, 0, 0),
         "blender" : (2, 69, 0),
-        "location" : "View 3D > Edit Mode > Tool Shelf",
+        "location" : "View 3D > Object Mode > Tool Shelf",
         "description" :
             "Import a QCT .top File",
         "warning" : "",
