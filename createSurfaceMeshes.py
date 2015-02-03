@@ -2,12 +2,12 @@ import bpy
 import mathutils
 
 class ImportTopology(bpy.types.Operator):
-    bl_idname = "qct.import_topology"
-    bl_label = "Read QCT Surfaces"
+    bl_idname = "qct.import_topology" #operator name
+    bl_label = "Import Topology"
 
     def invoke(self, context, event):
         print("QCT4Blender invoked")
-        return {"FINISHED"}
+        return {"FINISHED"} #indicates successful completion
 #        addMesh = bpy.data.meshes.new("ATOM_H1")
 #        addMesh.from_pydata() #put the data from the file into the mesh
         #each vertex is a mathutils.Vector object. arg 1 to addMesh is an array of vectors, 1 for each vertex
@@ -27,12 +27,12 @@ class ImportTopologyPanel(bpy.types.Panel):
     bl_region_type = "TOOLS"
     bl_context = "objectMode"
     #the above three lines make the panel appear in the toolshelf of the 3D view in object mode
-    bl_category = "Create"
+    bl_category = "Create" #determine toolbar tab to place panel in
     bl_label = "Read QC Topology"
         
     def draw(self, context):
         TheCol = self.layout.column(align=True)
-        TheCol.operator("QCT.importTopology",text="Import Topology")
+        TheCol.operator("qct.import_topology",text="Import Topology")
            
 def register():
     print("Registering Classes")
