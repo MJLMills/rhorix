@@ -7,11 +7,12 @@ class QCTBlender(bpy.types.Operator):
  filepath = bpy.props.StringProperty(subtype="FILE_PATH")
  
  def execute(self, context):
-  print("Script Executed")
+  print("QCT4Blender Executed")
+  print("Opening File: " + self.filepath)
   return{'FINISHED'}
   
  def invoke(self, context, event):
-  print("Script Invoked")
+  print("QCT4Blender Invoked")
   context.window_manager.fileselect_add(self)
   return {'RUNNING_MODAL'}
   
