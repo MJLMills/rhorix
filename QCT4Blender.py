@@ -30,3 +30,17 @@ if __name__ == "main":
 #For Debugging as text script
 register()
 
+bl_info = \
+{
+"name" : "Import QC Topology",
+"author" : "Matthew M L Mills <mjohnmills@gmail.com>",
+"version" : (0, 0, 0),
+"blender" : (2, 69, 0),
+"location" : "View 3D > Object Mode > Tool Shelf",
+"description" :
+"Import a QCT .top File",
+"warning" : "",
+"wiki_url" : "",
+"tracker_url" : "",
+"category" : "Add Mesh",
+}
