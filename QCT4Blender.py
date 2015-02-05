@@ -1,33 +1,18 @@
 import bpy
-import struct
+
+class QCTBlender(bpy.types.Operator):
+ bl_idname = "qct.import_topology"
+ bl_label = "Import Topology"
  
-class CustomDrawOperator(bpy.types.Operator):
-    bl_idname = "object.custom_draw"
-    bl_label = "Import"
+ filepath = bpy.props.StringProperty(subtype="FILE_PATH")
  
-    filepath = bpy.props.StringProperty(subtype="FILE_PATH")
- 
-    my_float = bpy.props.FloatProperty(name="Float")
-    my_bool = bpy.props.BoolProperty(name="Toggle Option")
-    my_string = bpy.props.StringProperty(name="String Value")
- 
-    def execute(self, context):
-        print()
-        return {'FINISHED'}
- 
-    def invoke(self, context, event):
-        context.window_manager.fileselect_add(self)
-        return {'RUNNING_MODAL'}
- 
-    def draw(self, context):
-        layout = self.layout
-        col = layout.column()
-        col.label(text="Custom Interface!")
- 
-        row = col.row()
-        row.prop(self, "my_float")
-        row.prop(self, "my_bool")
- 
-        col.prop(self, "my_string")
- 
-bpy.utils.register_class(CustomDrawOperator)
+ def execute(self, context):
+  print("Script Executed")
+  return{'FINISHED'}
+  
+ def invoke(self, context, event):
+  print("Script Invoked")
+  context.window_manager.fileselect_add(self)
+  return {'RUNNING_MODAL'}
+  
+bpy.utils.register_class(QCTBlender)
