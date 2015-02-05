@@ -16,4 +16,17 @@ class QCTBlender(bpy.types.Operator):
   context.window_manager.fileselect_add(self)
   return {'RUNNING_MODAL'}
   
-bpy.utils.register_class(QCTBlender)
+def register():
+ print("Registering Classes")
+ bpy.utils.register_class(QCTBlender) # add the defined Operator to the built-in collection
+ 
+def unregister():
+ print("Deregistering Classes")
+ bpy.utils.register_class(QCTBlender) # add the defined Operator to the built-in collection
+
+if __name__ == "main":
+ register()
+
+#For Debugging as text script
+register()
+
