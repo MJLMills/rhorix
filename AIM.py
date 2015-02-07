@@ -1,39 +1,36 @@
 import xml.etree.ElementTree as ET
 
+cpList = [] #collection of all CPs
+
 class CriticalPoint():
 
     def __init__(self, rank, signature, position): #this is called on instantiation of the class
-    #need to add rank, signature, position and have them accessible
+        self.rank = rank
+        self.signature = signature
+        self.position = position
 
-class AtomicInteractionLine():
-
-    def __init__(self)
-    #add vector of points on the line
-
-class InteratomicSurface
-
-    def __init__(self)
-    #add vector of points on the surface and connectivity, associated NACP
-
-class headClass():
-
-    def readTopology(self,filename):
+def readTopology(filepath):
     #given an open topology file create all the corresponding python objects
-    topologyTree = ET.parse(filename)
-    topologyRoot = topologyTree.getRoot()
-    if (topologyRoot.tag /= 'topology') #fail attempt
+    topologyTree = ET.parse(filepath)
+    topologyRoot = topologyTree.getroot()
+    if topologyRoot.tag != 'topology':
 
-    for topologicalObject in topologyRoot:
-        if (topologicalObject.tag = 'CP'):
-            #add a CP to the scene with the appropriate data
-            rank = topologicalObject.find(rank)
-            signature = topologicalObject.find(signature)
-            x = topologicalObject.find(x)
-            y = topologicalObject.find(y)
-            z = topologicalObject.find(z)
-            #convert x,y,z to a position vector
+        for topologicalObject in topologyRoot:
 
-    def createScene():
-    #turn the in-memory topology objects into 3D blender objects and make them appear on screen
+            if topologicalObject.tag == 'CP':
+                #add a CP to the scene with the appropriate data
+                rank = topologicalObject.find(rank).text
+                signature = topologicalObject.find(signature).text
+                x = topologicalObject.find(x).text
+                y = topologicalObject.find(y).text
+                z = topologicalObject.find(z).text
+                #convert x,y,z to a position vector
+                positionVector = []
+                positionVector.append(x)
+                positionVector.append(y)
+                positionVector.append(z)
+                cpList.append(CriticalPoint(rank,signature,positionVector))
 
-#define further operators that select based on given properties (i.e. all BCPs, all oxygen surfaces, etc.)
+class main():
+
+    readTopology('example.top')
