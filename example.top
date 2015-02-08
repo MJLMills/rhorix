@@ -6,4 +6,11 @@
     <y>0.0</y>
     <z>0.0</z>    
   </CP>
+  <CP>
+    <rank>3</rank>
+    <signature>-1</signature>
+    <x>1.0</x>
+    <y>2.0</y>
+    <z>-3.5</z>
+  </CP>
 </topology>

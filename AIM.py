@@ -12,6 +12,7 @@ class CriticalPoint():
     def printOut(self):
         print('RANK:      ' + self.rank)
         print('SIGNATURE: ' + self.signature)
+        print('POSITION:  ' + self.position[0] + self.position[1] + self.position[2])
 
 def readTopology(filepath):
     #given an open topology file create all the corresponding python objects
