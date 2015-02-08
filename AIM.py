@@ -9,10 +9,10 @@ class CriticalPoint():
         self.signature = signature
         self.position = position
 
-    def printOut(self):
+    def printOut(self): # just for debugging
         print('RANK:      ' + self.rank)
         print('SIGNATURE: ' + self.signature)
-        print('POSITION:  ' + self.position[0] + self.position[1] + self.position[2])
+        print('POSITION:  ' + self.position[0] + ' ' + self.position[1] + ' ' + self.position[2])
 
 def readTopology(filepath):
     #given an open topology file create all the corresponding python objects
@@ -31,15 +31,15 @@ def readTopology(filepath):
             x = topologicalObject.find('x').text
             y = topologicalObject.find('y').text
             z = topologicalObject.find('z').text
-            #convert x,y,z to a position vector
+            #convert x,y,z to a position vector - has to be a less verbose way?
             positionVector = []
             positionVector.append(x)
             positionVector.append(y)
             positionVector.append(z)
             cp = CriticalPoint(rank,signature,positionVector)
-            cp.printOut()
+            cp.printOut() # for debugging - no need to keep the cp reference if not calling this
             cpList.append(cp)
 
 class main():
 
-    readTopology('example.top')
+    readTopology('conversionScripts/h2o.top')
