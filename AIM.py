@@ -40,6 +40,8 @@ def readTopology(filepath):
             cp.printOut() # for debugging - no need to keep the cp reference if not calling this
             cpList.append(cp)
 
+def createBlencerObjects():
+
 class main():
 
     readTopology('conversionScripts/h2o.top')
