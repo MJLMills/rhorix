@@ -18,7 +18,7 @@ for ($line=0; $line<@vizContents; $line++) {
     }
 
     print "FOUND CP: rank=$rank; signature=$signature\n";
-    &printCP;
+    printCP();
 
   } elsif ($vizContents[$line] =~ m/(\d+)\s+sample points along path from BCP/) {
 
@@ -35,14 +35,14 @@ for ($line=0; $line<@vizContents; $line++) {
       }
     }
     #at this point, @ailPoints contains the points on the AIL and the object can be written to the .top file
-
+    printAIL(\@ailPoints_x,\@ailPoints_y,\@ailPoints_z);
   } elsif ($vizContents[$line] =~ m/(\d+)\s+sample points along IAS/) {
     
     $nPoints = $1;
     my @iasPoints_x; my @iasPoints_y; my @iasPoints_z;
     print "FOUND IAS\: $nPoints POINTS\n";
     for($iasLine=$line+1;$iasLine<$line+$nPoints;$iasLine++) {
-      if ($vizContents[$iasLine] =~ m/\s+(-?\d+\.\d+)E([-+]\d+)\s+(-?\d+\.\d+)E([-+]\d+)\s+(-?\d+\.\d+)E([-+]\d+)\s+(-?\d+\.\d+)E([-+]\d+)\s+//) {
+      if ($vizContents[$iasLine] =~ m/\s+(-?\d+\.\d+)E([-+]\d+)\s+(-?\d+\.\d+)E([-+]\d+)\s+(-?\d+\.\d+)E([-+]\d+)\s+(-?\d+\.\d+)E([-+]\d+)\s+/) {
         $x = $1 * (10 ** $2); push(@iasPoints_x, $x);
         $y = $3 * (10 ** $4); push(@iasPoints_y, $y);
         $z = $5 * (10 ** $6); push(@iasPoints_z, $z);
@@ -51,6 +51,7 @@ for ($line=0; $line<@vizContents; $line++) {
       }
     }
     #at this point, @iasPoints contains the points on the IAS and the object can be written to the .top file
+    printIAS(\@iasPoints_x, \@iasPoints_y, \@iasPoints_z);
   }
 
 }
@@ -60,9 +61,17 @@ close TOP;
 
 sub printIAS() {
 
-  print TOP "  \<IAS\>\n";
-  for ($point=0;$point<@iasPoints_x;$point++) {
+  #sub must receive three lists as references (i.e. \@array1, \@array2, \@array3)
+  my ($xPoints, $yPoints, $zPoints) = @_;
+  $nPoints = scalar(@$xPoints);
 
+  print TOP "  \<IAS\>\n";
+  for ($point=0;$point<$nPoints;$point++) {
+    print TOP "    \<vector\>\n";
+    print TOP "      \<x\>@$xPoints[$point]\<\/x\>\n";
+    print TOP "      \<y\>@$yPoints[$point]\<\/y\>\n";
+    print TOP "      \<z\>@$zPoints[$point]\<\/z\>\n";
+    print TOP "    \<\/vector\>\n";
   }
   print TOP "  \<\/IAS\>\n";
 
@@ -70,9 +79,17 @@ sub printIAS() {
 
 sub printAIL() {
 
-  print TOP "  \<AIL\>\n";
-  for ($point=0;$point<@ailPoints_x;$point++) {
+  #sub must receive three lists as references (i.e. \@array1, \@array2, \@array3)
+  my ($xPoints, $yPoints, $zPoints) = @_;
+  $nPoints = scalar(@$xPoints);
 
+  print TOP "  \<AIL\>\n";
+  for ($point=0;$point<$nPoints;$point++) {
+    print TOP "    \<vector\>\n";
+    print TOP "      \<x\>@$xPoints[$point]\<\/x\>\n";
+    print TOP "      \<y\>@$yPoints[$point]\<\/y\>\n";
+    print TOP "      \<z\>@$zPoints[$point]\<\/z\>\n";
+    print TOP "    \<\/vector\>\n";
   }
   print TOP "  \<\/AIL\>\n";
 
