@@ -1,7 +1,9 @@
 import xml.etree.ElementTree as ET
 import bpy
 
-cpList = [] #list of crticalPoint objects
+cpList = [] #list of CrticalPoint objects
+ailList = [] #list of AtomicInteractionLine objects
+surfaceList = [] #list of Surface objects
 
 #*#*#*#*#*#*#*#*#*#*# CLASS DEFINITION
 
@@ -17,6 +19,17 @@ class CriticalPoint():
         print('SIGNATURE: ' + self.signature)
         print('POSITION:  ' + self.position[0] + ' ' + self.position[1] + ' ' + self.position[2])
 
+#*#*#*#*#*#*#*#*#*#*# CLASS DEFINITION
+
+class AtomicInteractionLine():
+
+    def __init__(self):
+
+#*#*#*#*#*#*#*#*#*#*# CLASS DEFINITION
+
+class Surface():
+
+    def __init__(self):
 
 #*#*#*#*#*#*#*#*#*#*# CLASS DEFINITION
 
@@ -42,6 +55,7 @@ class QCTBlender(bpy.types.Operator):
 
      def createBlenderObjects():
          for cp in cpList:
+             #the sphere should be created with the location of the cp object
              position = (0,0,0)
              cpSphere = bpy.ops.mesh.primitive_uv_sphere_add(location=position)
 
