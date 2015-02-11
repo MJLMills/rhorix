@@ -1,7 +1,9 @@
 import xml.etree.ElementTree as ET
 import bpy
 
-cpList = [] #collection of CPs
+cpList = [] #list of crticalPoint objects
+
+#*#*#*#*#*#*#*#*#*#*# CLASS DEFINITION
 
 class CriticalPoint():
 
@@ -14,7 +16,10 @@ class CriticalPoint():
         print('RANK:      ' + self.rank)
         print('SIGNATURE: ' + self.signature)
         print('POSITION:  ' + self.position[0] + ' ' + self.position[1] + ' ' + self.position[2])
-#*#*#*
+
+
+#*#*#*#*#*#*#*#*#*#*# CLASS DEFINITION
+
 class QCTBlender(bpy.types.Operator):
 
      bl_idname = "qct.import_topology"
@@ -78,13 +83,15 @@ class QCTBlender(bpy.types.Operator):
                 cp.printOut() # for debugging - no need to keep the cp reference if not calling this
                 cpList.append(cp)
 
+#*#*#*#*#*#*#*#*#*#* SCRIPT FUNCTION DEFINITIONS
+
 def register():
     print("Registering Classes")
-    bpy.utils.register_class(QCTBlender) # add the defined Operator to the built-in collection
+    bpy.utils.register_class(QCTBlender)
  
 def unregister():
     print("Deregistering Classes")
-    bpy.utils.register_class(QCTBlender) # add the defined Operator to the built-in collection
+    bpy.utils.unregister_class(QCTBlender)
 
 if __name__ == "main":
  register()
