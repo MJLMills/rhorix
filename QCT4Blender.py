@@ -142,6 +142,14 @@ def createBlenderObjects():
         newObj = bpy.data.objects.new('IAS',newMesh)
         bpy.context.scene.objects.link(newObj)
 
+    for ail in ailList:
+        newMesh = bpy.data.meshes.new('AIL')
+        newMesh.from_pydata(ail.points,[],[])
+        newMesh.update()
+        newObj = bpy.data.objects.new('AIL',newMesh)
+        bpy.context.scene.objects.link(newObj)
+
+
 def createAtomMaterial(name):
     #name is the element of the atom
     mat = bpy.data.materials.new(name)
