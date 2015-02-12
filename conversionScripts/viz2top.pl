@@ -1,8 +1,18 @@
 #!/usr/bin/perl -w
-# M J L Mills - Convert AIMAll .viz to QCT4Blender .top
+# M J L Mills - Convert AIMAll .sumviz to QCT4Blender .top
 # https://github.com/MJLMills/QCT4Blender
 
-&readFile;
+@vizFiles = `ls *.*viz`; chomp(@vizFiles);
+$nFiles = @vizFiles;
+print "$nFiles VIZ FILES IN FOLDER\n";
+
+for ($file=0;$file<@vizFiles;$file++) {
+
+open(VIZ,"<","$vizFiles[$file]") || die "SPECIFIED FILE $vizFiles[$file] COULD NOT BE OPENED\n";
+@vizContents = <VIZ>;
+close VIZ;
+chomp(@vizContents);
+
 open(TOP,">","h2o\.top");
 print TOP "\<topology\>\n";
 
@@ -17,14 +27,14 @@ for ($line=0; $line<@vizContents; $line++) {
       $rank = $1; $signature = $2;
     }
 
-    print "FOUND CP: rank=$rank; signature=$signature\n";
+#    print "FOUND CP: rank=$rank; signature=$signature\n";
     printCP();
 
   } elsif ($vizContents[$line] =~ m/(\d+)\s+sample points along/) {
 
     $nPoints = $1;
     my @ailPoints_x; my @ailPoints_y; my @ailPoints_z;
-    print "FOUND LINE\: $nPoints POINTS\n";
+#    print "FOUND LINE\: $nPoints POINTS\n";
     for ($ailLine=$line+1;$ailLine<$line+$nPoints+1;$ailLine++) {
       if ($vizContents[$ailLine] =~ m/\s+(-?\d+\.\d+)E([-+]\d+)\s+(-?\d+\.\d+)E([-+]\d+)\s+(-?\d+\.\d+)E([-+]\d+)\s+(-?\d+\.\d+)E([-+]\d+)\s+/) {
         $x = $1 * (10 ** $2); push(@ailPoints_x, $x);
@@ -35,10 +45,34 @@ for ($line=0; $line<@vizContents; $line++) {
       }
     }
     printLine(\@ailPoints_x,\@ailPoints_y,\@ailPoints_z);
-  } 
+
+  } elsif ($vizContents[$line] =~ m/\<IAS\s+Path\>/) {
+    
+    if ($vizContents[$line+1] =~ m/\s+\d+\s+(\d+)/) {
+      $nPoints = $1;
+#      print "Found IAS Path with $nPoints points\n";
+
+      my @ailPoints_x; my @ailPoints_y; my @ailPoints_z;
+      for ($iasLine=$line+2;$iasLine<$line+$nPoints+1;$iasLine++) {
+        if ($vizContents[$iasLine] =~ m/\s+(-?\d+\.\d+)E([-+]\d+)\s+(-?\d+\.\d+)E([-+]\d+)\s+(-?\d+\.\d+)E([-+]\d+)\s+(-?\d+\.\d+)E([-+]\d+)/) {
+          $x = $1 * (10 ** $2); push(@ailPoints_x, $x);
+          $y = $3 * (10 ** $4); push(@ailPoints_y, $y);
+          $z = $5 * (10 ** $6); push(@ailPoints_z, $z);
+        } else {
+          die "Malformed IAS Path point\:\t$vizContents[$iasLine]\n";
+        }
+      }
+      printLine(\@ailPoints_x,\@ailPoints_y,\@ailPoints_z);
+
+    } else {
+      die "Malformed line in .iasviz file\n";
+    }
+
+  }
 
 }
 
+} # end over files
 print TOP "\<\/topology\>\n";
 close TOP;
 
@@ -74,7 +108,7 @@ sub printCP {
 
 sub readFile() {
 
-  open(VIZ,"<","h2o\.sumviz") || die "SPECIFIED FILE NOT PRESENT\n";
+  open(VIZ,"<","h2.iasviz") || die "SPECIFIED FILE NOT PRESENT\n";
   @vizContents = <VIZ>;
   close VIZ;
   chomp(@vizContents);
