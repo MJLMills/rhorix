@@ -24,15 +24,17 @@ class CriticalPoint():
 
 class AtomicInteractionLine():
 
-    def __init__(self):
-        print()
+    def __init__(self, points):
+        #points is a list of Vector objects - one for each vertex
+        self.points = points
 
 #*#*#*#*#*#*#*#*#*#*# CLASS DEFINITION
 
 class Surface():
 
-    def __init__(self):
-        print()
+    def __init__(self, points):
+        #points is a list of vector objects - one for each vertex
+        self.points = points
 
 #*#*#*#*#*#*#*#*#*#*# CLASS DEFINITION
 
@@ -101,10 +103,44 @@ def readTopology(filepath):
             cp.printOut() # for debugging - no need to keep the cp reference if not calling this
             cpList.append(cp)
 
+        elif topologicalObject.tag == 'AIL':
+
+            #create a list of Vectors from the file data
+            vectorList = []
+            for point in topologicalObject.findall('vector'):
+                x = point.find('x').text
+                y = point.find('y').text
+                z = point.find('z').text
+                pointVector = mathutils.Vector((float(x),float(y),float(z)))
+                vectorList.append(pointVector)
+
+            ail = AtomicInteractionLine(vectorList)
+            ailList.append(ail)
+
+        elif topologicalObject.tag == 'IAS':
+
+            vectorList = []
+            for point in topologicalObject.findall('vector'):
+                x = point.find('x').text
+                y = point.find('y').text
+                z = point.find('z').text
+                pointVector = mathutils.Vector((float(x),float(y),float(z)))
+                vectorList.append(pointVector)
+ 
+            ias = Surface(vectorList)
+            surfaceList.append(ias)
+
 def createBlenderObjects():
     for cp in cpList:
         #the sphere should be created with the location of the cp object
         cpSphere = bpy.ops.mesh.primitive_uv_sphere_add(location=cp.position)
+
+    for surface in surfaceList:
+        newMesh = bpy.data.meshes.new('IAS')
+        newMesh.from_pydata(surface.points,[],[])
+        newMesh.update()
+        newObj = bpy.data.objects.new('IAS',newMesh)
+        bpy.context.scene.objects.link(newObj)
 
 def createAtomMaterial(name):
     #name is the element of the atom
