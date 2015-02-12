@@ -59,7 +59,7 @@ for ($line=0; $line<@vizContents; $line++) {
 print TOP "\<\/topology\>\n";
 close TOP;
 
-sub printIAS() {
+sub printIAS {
 
   #sub must receive three lists as references (i.e. \@array1, \@array2, \@array3)
   my ($xPoints, $yPoints, $zPoints) = @_;
@@ -67,17 +67,17 @@ sub printIAS() {
 
   print TOP "  \<IAS\>\n";
   for ($point=0;$point<$nPoints;$point++) {
-    print TOP "    \<vector\>\n";
-    print TOP "      \<x\>@$xPoints[$point]\<\/x\>\n";
-    print TOP "      \<y\>@$yPoints[$point]\<\/y\>\n";
-    print TOP "      \<z\>@$zPoints[$point]\<\/z\>\n";
-    print TOP "    \<\/vector\>\n";
+    print TOP "    \<vector\>";
+    printf TOP " \<x\>%8.5f\<\/x\>", @$xPoints[$point];
+    printf TOP " \<y\>%8.5f\<\/y\>", @$yPoints[$point];
+    printf TOP " \<z\>%8.5f\<\/z\>", @$zPoints[$point];
+    print TOP " \<\/vector\>\n";
   }
   print TOP "  \<\/IAS\>\n";
 
 }
 
-sub printAIL() {
+sub printAIL {
 
   #sub must receive three lists as references (i.e. \@array1, \@array2, \@array3)
   my ($xPoints, $yPoints, $zPoints) = @_;
@@ -85,24 +85,24 @@ sub printAIL() {
 
   print TOP "  \<AIL\>\n";
   for ($point=0;$point<$nPoints;$point++) {
-    print TOP "    \<vector\>\n";
-    print TOP "      \<x\>@$xPoints[$point]\<\/x\>\n";
-    print TOP "      \<y\>@$yPoints[$point]\<\/y\>\n";
-    print TOP "      \<z\>@$zPoints[$point]\<\/z\>\n";
-    print TOP "    \<\/vector\>\n";
+    print TOP "    \<vector\>";
+    printf TOP " \<x\>%8.5f\<\/x\>", @$xPoints[$point];
+    printf TOP " \<y\>%8.5f\<\/y\>", @$yPoints[$point];
+    printf TOP " \<z\>%8.5f\<\/z\>", @$zPoints[$point];
+    print TOP " \<\/vector\>\n";
   }
   print TOP "  \<\/AIL\>\n";
 
 }
 
-sub printCP() {
+sub printCP {
 
   print TOP "  \<CP\>\n";
   print TOP "    \<rank\>$rank\<\/rank\>\n";
   print TOP "    \<signature\>$signature\<\/signature\>\n";
-  print TOP "    \<x\>$x\<\/x\>\n";
-  print TOP "    \<y\>$y\<\/y\>\n";
-  print TOP "    \<z\>$z\<\/z\>\n";
+  printf TOP "    \<x\>%8.5f\<\/x\>", $x;
+  printf TOP "\<y\>%8.5f\<\/y\>", $y;
+  printf TOP "\<z\>%8.5f\<\/z\>\n", $z;
   print TOP "  \<\/CP\>\n";
 
 }
