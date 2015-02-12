@@ -103,7 +103,7 @@ def readTopology(filepath):
             cp.printOut() # for debugging - no need to keep the cp reference if not calling this
             sphereList.append(cp)
 
-        elif topologicalObject.tag == 'AIL':
+        elif topologicalObject.tag == 'LINE':
 
             #create a list of Vectors from the file data
             vectorList = []
@@ -117,30 +117,30 @@ def readTopology(filepath):
             ail = line(vectorList)
             lineList.append(ail)
 
-        elif topologicalObject.tag == 'IAS':
+#        elif topologicalObject.tag == 'IAS':
 
-            vectorList = []
-            for point in topologicalObject.findall('vector'):
-                x = point.find('x').text
-                y = point.find('y').text
-                z = point.find('z').text
-                pointVector = mathutils.Vector((float(x),float(y),float(z)))
-                vectorList.append(pointVector)
+#            vectorList = []
+#            for point in topologicalObject.findall('vector'):
+#                x = point.find('x').text
+#                y = point.find('y').text
+#                z = point.find('z').text
+#                pointVector = mathutils.Vector((float(x),float(y),float(z)))
+#                vectorList.append(pointVector)
  
-            ias = Surface(vectorList)
-            surfaceList.append(ias)
+#            ias = Surface(vectorList)
+#            surfaceList.append(ias)
 
 def createBlenderObjects():
     for cp in sphereList:
         #the sphere should be created with the location of the cp object
         cpSphere = bpy.ops.mesh.primitive_uv_sphere_add(location=cp.position)
 
-    for surface in surfaceList:
-        newMesh = bpy.data.meshes.new('IAS')
-        newMesh.from_pydata(surface.points,[],[])
-        newMesh.update()
-        newObj = bpy.data.objects.new('IAS',newMesh)
-        bpy.context.scene.objects.link(newObj)
+#    for surface in surfaceList:
+#        newMesh = bpy.data.meshes.new('IAS')
+#        newMesh.from_pydata(surface.points,[],[])
+#        newMesh.update()
+#        newObj = bpy.data.objects.new('IAS',newMesh)
+#        bpy.context.scene.objects.link(newObj)
 
     for line in lineList:
         newMesh = bpy.data.meshes.new('LINE')
