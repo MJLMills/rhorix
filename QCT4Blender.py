@@ -2,8 +2,8 @@ import xml.etree.ElementTree as ET
 import bpy
 import mathutils
 
-cpList = [] #list of CrticalPoint objects
-ailList = [] #list of AtomicInteractionLine objects
+sphereList = [] #list of CrticalPoint objects
+lineList = [] #list of AtomicInteractionLine objects
 surfaceList = [] #list of Surface objects
 
 #*#*#*#*#*#*#*#*#*#*# CLASS DEFINITION
@@ -22,7 +22,7 @@ class CriticalPoint():
 
 #*#*#*#*#*#*#*#*#*#*# CLASS DEFINITION
 
-class AtomicInteractionLine():
+class line():
 
     def __init__(self, points):
         #points is a list of Vector objects - one for each vertex
@@ -101,7 +101,7 @@ def readTopology(filepath):
             positionVector = mathutils.Vector((float(x),float(y),float(z)))
             cp = CriticalPoint(rank,signature,positionVector)
             cp.printOut() # for debugging - no need to keep the cp reference if not calling this
-            cpList.append(cp)
+            sphereList.append(cp)
 
         elif topologicalObject.tag == 'AIL':
 
@@ -114,8 +114,8 @@ def readTopology(filepath):
                 pointVector = mathutils.Vector((float(x),float(y),float(z)))
                 vectorList.append(pointVector)
 
-            ail = AtomicInteractionLine(vectorList)
-            ailList.append(ail)
+            ail = line(vectorList)
+            lineList.append(ail)
 
         elif topologicalObject.tag == 'IAS':
 
@@ -131,7 +131,7 @@ def readTopology(filepath):
             surfaceList.append(ias)
 
 def createBlenderObjects():
-    for cp in cpList:
+    for cp in sphereList:
         #the sphere should be created with the location of the cp object
         cpSphere = bpy.ops.mesh.primitive_uv_sphere_add(location=cp.position)
 
@@ -142,11 +142,11 @@ def createBlenderObjects():
         newObj = bpy.data.objects.new('IAS',newMesh)
         bpy.context.scene.objects.link(newObj)
 
-    for ail in ailList:
-        newMesh = bpy.data.meshes.new('AIL')
-        newMesh.from_pydata(ail.points,[],[])
+    for line in lineList:
+        newMesh = bpy.data.meshes.new('LINE')
+        newMesh.from_pydata(line.points,[],[])
         newMesh.update()
-        newObj = bpy.data.objects.new('AIL',newMesh)
+        newObj = bpy.data.objects.new('LINE',newMesh)
         bpy.context.scene.objects.link(newObj)
 
 
