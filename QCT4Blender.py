@@ -58,18 +58,6 @@ class QCTBlender(bpy.types.Operator):
         return {'RUNNING_MODAL'}
 
 
-    def createAtomMaterial(name):
-        #name is the element of the atom
-        mat = bpy.data.materials.new(name)
-        mat.diffuse_color = (1,0,0) #look up the color from the element
-        mat.diffuse_shader = 'LAMBERT'
-        mat.diffuse_intensity = 1.0
-        mat.specular_color = (1,1,1)
-        mat.specular_shader = 'COOKTORR'
-        mat.specular_intensity = 0.5
-        mat.alpha = 1
-        mat.ambient = 1
-
 #*#*#*#*#*#*#*#*#*#* SCRIPT FUNCTION DEFINITIONS
 
 def register():
