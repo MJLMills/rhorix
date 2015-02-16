@@ -52,41 +52,55 @@ for ($line=0;$line<@mifContents;$line++) {
     #write the surface out - mifs are not in a consistent format so all possibilities are needed
     my @ailCoords_x; my @ailCoords_y; my @ailCoords_z;
     for ($surfLine=$line+2;$surfLine<@mifContents;$surfLine++) {
-      if ($mifContents[$surfLine] =~ m/(-?\d+\.\d+)\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)/) {
-        # 0 0 0
-        push(@ailCoords_x,$1); push(@ailCoords_y,$2); push(@ailCoords_z,$3);
-      } elsif ($mifContents[$surfLine] =~ m/(-?\d+\.\d+)E([+-]\d+)\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)/) {
-        $x = $1 * 10 ** $2; $y = $3; $z = $4;
-        # 1 0 0
-        push(@ailCoords_x,$x); push(@ailCoords_y,$y); push(@ailCoords_z,$z);
-      } elsif ($mifContents[$surfLine] =~ m/(-?\d+\.\d+)\s+(-?\d+\.\d+)E([+-]\d+)\s+(-?\d+\.\d+)/) {
-        $x = $1; $y = $2 * 10 ** $3; $z = $4;
-        # 0 1 0
-        push(@ailCoords_x,$x); push(@ailCoords_y,$y); push(@ailCoords_z,$z);
-      } elsif ($mifContents[$surfLine] =~ m/(-?\d+\.\d+)\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)E([+-]\d+)/) {
-        $x = $1; $y = $2; $z = $3 * 10 ** $4;
-        # 0 0 1
-        push(@ailCoords_x,$x); push(@ailCoords_y,$y); push(@ailCoords_z,$z);
-      } elsif ($mifContents[$surfLine] =~ m/(-?\d+\.\d+)E([+-]\d+)\s+(-?\d+\.\d+)E([+-]\d+)\s+(-?\d+\.\d+)/) {
-        $x = $1 * 10 ** $2; $y = $3 * 10 ** $4; $z = $5;
-        # 1 1 0
-        push(@ailCoords_x,$x); push(@ailCoords_y,$y); push(@ailCoords_z,$z);
-      } elsif ($mifContents[$surfLine] =~ m/(-?\d+\.\d+)\s+(-?\d+\.\d+)E([+-]\d+)\s+(-?\d+\.\d+)E([+-]\d+)/) {
-        $x = $1; $y = $2 * 10 ** $3; $z = $4 * 10 ** $5;
-        # 0 1 1
-        push(@ailCoords_x,$x); push(@ailCoords_y,$y); push(@ailCoords_z,$z);
-      } elsif ($mifContents[$surfLine] =~ m/(-?\d+\.\d+)E([+-]\d+)\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)E([+-]\d+)/) {
-        $x = $1 * 10 ** $2; $y = $3; $z = $4 * 10 ** $5; 
-        # 1 0 1
-        push(@ailCoords_x,$x); push(@ailCoords_y,$y); push(@ailCoords_z,$z);
-      } elsif ($mifContents[$surfLine] =~ m/(-?\d+\.\d+)E([+-]\d+)\s+(-?\d+\.\d+)E([+-]\d+)\s+(-?\d+\.\d+)E([+-]\d+)/) {
-        $x = $1 * 10 ** $2; $y = $3 * 10 ** $4; $z = $5 * 10 ** $6; 
+      if ($mifContents[$surfLine] =~ m/(-?\d+\.\d+)E([+-]\d+)\s+(-?\d+\.\d+)E([+-]\d+)\s+(-?\d+\.\d+)E([+-]\d+)/) {
         # 1 1 1
+        $x = $1 * (10 ** $2); $y = $3 * (10 ** $4); $z = $5 * (10 ** $6); 
         push(@ailCoords_x,$x); push(@ailCoords_y,$y); push(@ailCoords_z,$z);
+
+      } elsif ($mifContents[$surfLine] =~ m/(-?\d+\.\d+)\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)E([+-]\d+)/) {
+        # 0 0 1
+        $x = $1; $y = $2; $z = $3 * (10 ** $4);
+        push(@ailCoords_x,$x); push(@ailCoords_y,$y); push(@ailCoords_z,$z);
+
+      } elsif ($mifContents[$surfLine] =~ m/(-?\d+\.\d+)\s+(-?\d+\.\d+)E([+-]\d+)\s+(-?\d+\.\d+)E([+-]\d+)/) {
+        # 0 1 1
+        $x = $1; $y = $2 * (10 ** $3); $z = $4 * (10 ** $5);
+        push(@ailCoords_x,$x); push(@ailCoords_y,$y); push(@ailCoords_z,$z);
+
+      } elsif ($mifContents[$surfLine] =~ m/(-?\d+\.\d+)E([+-]\d+)\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)E([+-]\d+)/) {
+        # 1 0 1
+        $x = $1 * (10 ** $2); $y = $3; $z = $4 * (10 ** $5); 
+        push(@ailCoords_x,$x); push(@ailCoords_y,$y); push(@ailCoords_z,$z);
+
+      } elsif ($mifContents[$surfLine] =~ m/(-?\d+\.\d+)E([+-]\d+)\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)/) {
+        # 1 0 0
+        $x = $1 * (10 ** $2); $y = $3; $z = $4;
+        push(@ailCoords_x,$x); push(@ailCoords_y,$y); push(@ailCoords_z,$z);
+
+      } elsif ($mifContents[$surfLine] =~ m/(-?\d+\.\d+)E([+-]\d+)\s+(-?\d+\.\d+)E([+-]\d+)\s+(-?\d+\.\d+)/) {
+        # 1 1 0
+        $x = $1 * (10 ** $2); $y = $3 * (10 ** $4); $z = $5;
+        push(@ailCoords_x,$x); push(@ailCoords_y,$y); push(@ailCoords_z,$z);
+
+      } elsif ($mifContents[$surfLine] =~ m/(-?\d+\.\d+)\s+(-?\d+\.\d+)E([+-]\d+)\s+(-?\d+\.\d+)/) {
+        # 0 1 0
+        $x = $1; $y = $2 * (10 ** $3); $z = $4;
+        push(@ailCoords_x,$x); push(@ailCoords_y,$y); push(@ailCoords_z,$z);
+
+      } elsif ($mifContents[$surfLine] =~ m/(-?\d+\.\d+)\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)/) {
+        # 0 0 0
+        $x = $1; $y = $2; $z = $3;
+        push(@ailCoords_x,$x); push(@ailCoords_y,$y); push(@ailCoords_z,$z);
+
       } else {
         $line = $surfLine - 1;
         last;
       }
+    }
+    for ($point=0;$point<@ailCoords_x;$point++) {
+      $ailCoords_x[$point] *= 10; 
+      $ailCoords_y[$point] *= 10;
+      @ailCoords_z[$point] *= 10;
     }
     printSurf(\@ailCoords_x, \@ailCoords_y, \@ailCoords_z);
   }
