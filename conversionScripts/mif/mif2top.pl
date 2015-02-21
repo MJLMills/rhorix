@@ -8,10 +8,13 @@ print TOP "\<topology\>\n";
 
 for ($line=0;$line<@mifContents;$line++) {
   
-  if ($mifContents[$line] =~ m/AIL\s+/) {
+  if ($mifContents[$line] =~ m/AIL\s+\d+\s+(\w+)\s+(\d+)\s+(\w+)\s+(\d+)/) {
+
+    $atomA = "$1$2"; 
+    $atomB = "$3$4";
     #take care of duplicate lines in mif
     if ($mifContents[$line+1] =~ m/\w+\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)/) {
-
+   
       my @ailCoords_x; my @ailCoords_y; my @ailCoords_z;
       for ($ailLine=$line+1;$ailLine<@mifContents;$ailLine++) {
         if ($mifContents[$ailLine] =~ m/\w+\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)/) {
@@ -48,8 +51,11 @@ for ($line=0;$line<@mifContents;$line++) {
         last;
       }
     }
-  } elsif ($mifContents[$line] =~ m/atom\s+\w+\_\d+/) {
+  } elsif ($mifContents[$line] =~ m/atom\s+(\w+)\_(\d+)/) {
+
+    $atom = "$1$2";
     #write the surface out - mifs are not in a consistent format so all possibilities are needed
+    #ORDER IS SUPER IMPORTANT!!!
     my @ailCoords_x; my @ailCoords_y; my @ailCoords_z;
     for ($surfLine=$line+2;$surfLine<@mifContents;$surfLine++) {
       if ($mifContents[$surfLine] =~ m/(-?\d+\.\d+)E([+-]\d+)\s+(-?\d+\.\d+)E([+-]\d+)\s+(-?\d+\.\d+)E([+-]\d+)/) {
@@ -117,6 +123,9 @@ sub printLine {
 #  print "writing $nPoints points\n";
 
   print TOP "  \<LINE\>\n";
+  print TOP "    \<A\>$atomA\<\/A\>\n";
+  print TOP "    \<B\>$atomB\<\/B\>\n";
+
   for ($point=0;$point<$nPoints;$point++) {
     print TOP "    \<vector\>";
     printf TOP " \<x\>%8.5f\<\/x\>", @$xPoints[$point];
@@ -136,6 +145,7 @@ sub printSurf {
 #  print "writing $nPoints points\n";
 
   print TOP "  \<SURFACE\>\n";
+  print TOP "    \<A\>$atom\<\/A\>\n";
   for ($point=0;$point<$nPoints;$point++) {
     print TOP "    \<vector\>";
     printf TOP " \<x\>%8.5f\<\/x\>", @$xPoints[$point];
@@ -150,6 +160,7 @@ sub printSurf {
 sub printCP {
 
   print TOP "  \<CP\>\n";
+  print TOP "    \<type\>$cpType\<\/type\>\n";
   print TOP "    \<rank\>$rank\<\/rank\>\n";
   print TOP "    \<signature\>$signature\<\/signature\>\n";
   printf TOP "    \<x\>%8.5f\<\/x\>", $x;
