@@ -10,21 +10,19 @@ surfaceList = [] #list of Surface objects
 
 class CriticalPoint():
 
-    def __init__(self, rank, signature, position): #this is called on instantiation of the class
+    def __init__(self, type, rank, signature, position): #this is called on instantiation of the class
+        self.type = type
         self.rank = rank
         self.signature = signature
         self.position = position
-
-    def printOut(self): # just for debugging
-        print('RANK:      ' + self.rank)
-        print('SIGNATURE: ' + self.signature)
-        print('POSITION:  ' + str(self.position.x) + ' ' + str(self.position.y) + ' ' + str(self.position.z))
 
 #*#*#*#*#*#*#*#*#*#*# CLASS DEFINITION
 
 class Line():
 
-    def __init__(self, points):
+    def __init__(self, A, B, points):
+        self.A = A
+        self.B = B
         #points is a list of Vector objects - one for each vertex
         self.points = points
 
@@ -32,7 +30,8 @@ class Line():
 
 class Surface():
 
-    def __init__(self, points):
+    def __init__(self, A, points):
+        self.A = A
         #points is a list of vector objects - one for each vertex
         self.points = points
 
@@ -79,6 +78,7 @@ def readTopology(filepath):
 
         if topologicalObject.tag == 'CP':
             #add a CP to the scene with the appropriate data
+            type = topologicalObject.find(type).text
             rank = topologicalObject.find('rank').text
             signature = topologicalObject.find('signature').text
             x = topologicalObject.find('x').text
@@ -86,7 +86,7 @@ def readTopology(filepath):
             z = topologicalObject.find('z').text
             #convert x,y,z to a position vector - has to be a less verbose way?
             positionVector = mathutils.Vector((float(x),float(y),float(z)))
-            cp = CriticalPoint(rank,signature,positionVector)
+            cp = CriticalPoint(type,rank,signature,positionVector)
             sphereList.append(cp)
 
         elif topologicalObject.tag == 'LINE' or topologicalObject.tag == 'SURFACE':
@@ -101,10 +101,13 @@ def readTopology(filepath):
                 vectorList.append(pointVector)
 
             if topologicalObject.tag == 'LINE':
-                line = Line(vectorList)
+                A = topologicalObject.find('A').text
+                B = topologicalObject.find('B').text
+                line = Line(A,B,vectorList)
                 lineList.append(line)
             elif topologicalObject.tag == 'SURFACE':
-                surface = Surface(vectorList)
+                A = topologicalObject.find('A').text
+                surface = Surface(A,vectorList)
                 surfaceList.append(surface)
 
 def createBlenderObjects():
