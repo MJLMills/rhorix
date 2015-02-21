@@ -2,8 +2,8 @@ import xml.etree.ElementTree as ET
 import bpy
 import mathutils
 
-sphereList = [] #list of CrticalPoint objects
-lineList = [] #list of AtomicInteractionLine objects
+sphereList = []  #list of CriticalPoint objects
+lineList = []    #list of Line objects
 surfaceList = [] #list of Surface objects
 
 #*#*#*#*#*#*#*#*#*#*# CLASS DEFINITION
@@ -22,7 +22,7 @@ class CriticalPoint():
 
 #*#*#*#*#*#*#*#*#*#*# CLASS DEFINITION
 
-class line():
+class Line():
 
     def __init__(self, points):
         #points is a list of Vector objects - one for each vertex
@@ -46,29 +46,28 @@ class QCTBlender(bpy.types.Operator):
     filepath = bpy.props.StringProperty(subtype="FILE_PATH")
  
     def execute(self, context):
-        print("QCT4Blender Executed")
-        print("Opening File: " + self.filepath)
+        print("QCT4B: Opening File " + self.filepath)
         readTopology(self.filepath)
         createBlenderObjects()
         return{'FINISHED'}
   
     def invoke(self, context, event):
-        print("QCT4Blender Invoked")
         context.window_manager.fileselect_add(self)
         return {'RUNNING_MODAL'}
-
 
 #*#*#*#*#*#*#*#*#*#* SCRIPT FUNCTION DEFINITIONS
 
 def register():
-    print("Registering Classes")
+    print("QCT4B: Registering Operator Class")
+    print("QCT4B: Use Operator \'Import Topology\'")
     bpy.utils.register_class(QCTBlender)
  
 def unregister():
-    print("Deregistering Classes")
+    print("QCT4B: Deregistering Operator Class")
     bpy.utils.unregister_class(QCTBlender)
 
 def readTopology(filepath):
+
     #given an open topology file create all the corresponding python objects
     topologyTree = ET.parse(filepath)
     topologyRoot = topologyTree.getroot()
@@ -88,10 +87,9 @@ def readTopology(filepath):
             #convert x,y,z to a position vector - has to be a less verbose way?
             positionVector = mathutils.Vector((float(x),float(y),float(z)))
             cp = CriticalPoint(rank,signature,positionVector)
-            cp.printOut() # for debugging - no need to keep the cp reference if not calling this
             sphereList.append(cp)
 
-        elif topologicalObject.tag == 'LINE':
+        elif topologicalObject.tag == 'LINE' or topologicalObject.tag == 'SURFACE':
 
             #create a list of Vectors from the file data
             vectorList = []
@@ -102,28 +100,21 @@ def readTopology(filepath):
                 pointVector = mathutils.Vector((float(x),float(y),float(z)))
                 vectorList.append(pointVector)
 
-            ail = line(vectorList)
-            lineList.append(ail)
-
-        elif topologicalObject.tag == 'SURFACE':
-
-            vectorList = []
-            for point in topologicalObject.findall('vector'):
-                x = point.find('x').text
-                y = point.find('y').text
-                z = point.find('z').text
-                pointVector = mathutils.Vector((float(x),float(y),float(z)))
-                vectorList.append(pointVector)
- 
-            ias = Surface(vectorList)
-            surfaceList.append(ias)
+            if topologicalObject.tag == 'LINE':
+                line = Line(vectorList)
+                lineList.append(line)
+            elif topologicalObject.tag == 'SURFACE':
+                surface = Surface(vectorList)
+                surfaceList.append(surface)
 
 def createBlenderObjects():
+
     for cp in sphereList:
-        #the sphere should be created with the location of the cp object
+
         cpSphere = bpy.ops.mesh.primitive_uv_sphere_add(location=cp.position)
 
     for surface in surfaceList:
+
         newMesh = bpy.data.meshes.new('SURFACE')
         newMesh.from_pydata(surface.points,[],[])
         newMesh.update()
@@ -131,6 +122,7 @@ def createBlenderObjects():
         bpy.context.scene.objects.link(newObj)
 
     for line in lineList:
+
         newMesh = bpy.data.meshes.new('LINE')
         newMesh.from_pydata(line.points,[],[])
         newMesh.update()
@@ -159,15 +151,14 @@ register()
 #Info for installed Add-On
 bl_info = \
 {
-"name" : "Import QC Topology",
-"author" : "Matthew J L Mills <mjohnmills@gmail.com>",
-"version" : (0, 0, 0),
-"blender" : (2, 69, 0),
-"location" : "View 3D > Object Mode > Tool Shelf",
-"description" :
-"Import a QCT .top File",
-"warning" : "",
-"wiki_url" : "",
+"name"        : "QCT4Blender",
+"author"      : "Matthew J L Mills <mjohnmills@gmail.com>",
+"version"     : (0, 0, 0),
+"blender"     : (2, 69, 0),
+"location"    : "View 3D > Object Mode > Tool Shelf",
+"description" : "Import a QCT .top File",
+"warning"     : "",
+"wiki_url"    : "",
 "tracker_url" : "",
-"category" : "Add Mesh",
+"category"    : "Add Mesh",
 }
