@@ -78,7 +78,7 @@ def readTopology(filepath):
 
         if topologicalObject.tag == 'CP':
             #add a CP to the scene with the appropriate data
-            type = topologicalObject.find(type).text
+            type = topologicalObject.find('type').text
             rank = topologicalObject.find('rank').text
             signature = topologicalObject.find('signature').text
             x = topologicalObject.find('x').text
