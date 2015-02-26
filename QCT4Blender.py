@@ -5,7 +5,6 @@ import mathutils
 sphereList = []    # list of CriticalPoint objects
 lineList = []      # list of Line objects
 surfaceList = []   # list of Surface objects
-elementColors = {} # dict associating element names to RGB colors
 
 #*#*#*#*#*#*#*#*#*#*# CLASS DEFINITION
 
@@ -135,9 +134,9 @@ def createBlenderObjects():
         newObj = bpy.data.objects.new('LINE',newMesh)
         bpy.context.scene.objects.link(newObj)
 
-def createAtomMaterial(color):
+def createAtomMaterial(color,element):
 
-    mat = bpy.data.materials.new('nuclearColor')
+    mat = bpy.data.materials.new(element + '-CritPointColor')
     mat.diffuse_color = color
     mat.diffuse_shader = 'LAMBERT'
     mat.diffuse_intensity = 1.0
@@ -154,7 +153,7 @@ def createMaterials():
 
     elementColors = defineColors()
     #create the necessary set of element colors for this topology
-    createdList = []
+    createdList = [] #list of the nuclear types created so far
     for cp in sphereList:
         #check the material for this sphere hasn't been made already
         duplicate = False
@@ -163,9 +162,10 @@ def createMaterials():
                 duplicate = True
                 break
 
+        #and if it has NOT then make it
         if duplicate == False:
             #create a new material
-            createAtomMaterial(elementColors[cp.type])
+            createAtomMaterial(elementColors[cp.type],cp.type)
             createdList.append(cp.type)
 
 if __name__ == "main":
