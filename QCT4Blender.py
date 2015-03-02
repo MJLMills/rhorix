@@ -134,6 +134,7 @@ def readTopology(filepath):
 
 def createBlenderObjects():
 
+    #create a UV sphere for each CP
     for cp in sphereList:
 
         cpSphere = bpy.ops.mesh.primitive_uv_sphere_add(location=cp.position)
@@ -142,19 +143,22 @@ def createBlenderObjects():
         else:
             print('NO MATERIAL IN LIBRARY FOR CP OF TYPE ' + cp.type)
 
+    #create a mesh for each surface
     for surface in surfaceList:
 
         newMesh = bpy.data.meshes.new('SURFACE')
         newMesh.from_pydata(surface.points,[],[])
         newMesh.update()
         newObj = bpy.data.objects.new('SURFACE',newMesh)
-        if surface.A + '-CritPointColor' in bpy.data.materials:
-            newObj.materials.append()
+        element = ''.join(i for i in surface.A if not i.isdigit())
+        if element + '-CritPointColor' in bpy.data.materials:
+            newObj.data.materials.append(bpy.data.materials[element + '-CritPointColor'])
         else:
-            print('NO MATERIAL IN LIBRARY FOR SURFACE ATOM OF TYPE ' + cp.type)
+            print('NO MATERIAL IN LIBRARY FOR SURFACE ATOM OF TYPE ' + element)
 
         bpy.context.scene.objects.link(newObj)
 
+    #create a polygon curve for each AIL
     for line in lineList:
 
         weight = 1 #all points on curve have same weight
