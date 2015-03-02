@@ -41,7 +41,8 @@ class QCTBlender(bpy.types.Operator):
 
     bl_idname = "qct.import_topology"
     bl_label = "Import Topology"
- 
+    filter_glob = bpy.props.StringProperty(default="*.top", options={'HIDDEN'}) 
+    
     filepath = bpy.props.StringProperty(subtype="FILE_PATH")
  
     def execute(self, context):
