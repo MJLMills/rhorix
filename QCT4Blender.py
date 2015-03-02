@@ -2,6 +2,10 @@ import xml.etree.ElementTree as ET
 import bpy
 import mathutils
 
+#These objects must be read from the .top file, and then
+#converted to blender data objects so that they persist on 
+#saving the blender file.
+
 sphereList = []    # list of CriticalPoint objects
 lineList = []      # list of Line objects
 surfaceList = []   # list of Surface objects
@@ -23,7 +27,7 @@ class Line():
     def __init__(self, A, B, points):
         self.A = A
         self.B = B
-        #points is a list of Vector objects - one for each vertex
+        #points is a list of Vector objects - one for each point on the line
         self.points = points
 
 #*#*#*#*#*#*#*#*#*#*# CLASS DEFINITION
@@ -32,7 +36,7 @@ class Surface():
 
     def __init__(self, A, points):
         self.A = A
-        #points is a list of vector objects - one for each vertex
+        #points is a list of vector objects - one for each point on the surface
         self.points = points
 
 #*#*#*#*#*#*#*#*#*#*# CLASS DEFINITION
@@ -47,9 +51,14 @@ class QCTBlender(bpy.types.Operator):
  
     def execute(self, context):
         print("QCT4B: Opening File " + self.filepath)
+        #First create the object representation of the QCT in the .top file
         readTopology(self.filepath)
+        #Create all necessary default materials
         createMaterials()
+        #Create the blender data rep of the QCT and assign materials
+        #Anything created here is persistent, anything not converted to blender data is lost
         createBlenderObjects()
+        #Setup the environment in which the QCT resides
         setupWorld()
         return{'FINISHED'}
   
@@ -76,15 +85,17 @@ def unregister():
 def readTopology(filepath):
 
     #given an open topology file create all the corresponding python objects
+    #this has to be more careful in case of malformed files - dtd maybe?
     topologyTree = ET.parse(filepath)
     topologyRoot = topologyTree.getroot()
     if topologyRoot.tag != 'topology':
-        print('Not a Topology File')
+        print('readTopology\: Not a Valid Topology File')
         exit(1)
 
     for topologicalObject in topologyRoot:
 
         if topologicalObject.tag == 'CP':
+
             #add a CP to the scene with the appropriate data
             type = topologicalObject.find('type').text
             rank = topologicalObject.find('rank').text
@@ -109,11 +120,14 @@ def readTopology(filepath):
                 vectorList.append(pointVector)
 
             if topologicalObject.tag == 'LINE':
+
                 A = topologicalObject.find('A').text
                 B = topologicalObject.find('B').text
                 line = Line(A,B,vectorList)
                 lineList.append(line)
+
             elif topologicalObject.tag == 'SURFACE':
+
                 A = topologicalObject.find('A').text
                 surface = Surface(A,vectorList)
                 surfaceList.append(surface)
@@ -153,6 +167,7 @@ def createAtomMaterial(color,element):
     mat.ambient = 1
 
 def setupWorld():
+    #This is where anything about the scene can be set, render options, lighting, camera and such
     print("TODO: SETUP WORLD")
 
 def createMaterials():
