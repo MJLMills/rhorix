@@ -138,10 +138,11 @@ def createBlenderObjects():
     for cp in sphereList:
 
         cpSphere = bpy.ops.mesh.primitive_uv_sphere_add(location=cp.position)
-        if cp.type + '-CritPointColor' in bpy.data.materials:
-            bpy.context.object.data.materials.append(bpy.data.materials[cp.type + '-CritPointColor'])
+        materialName = cp.type + '-CritPointColor'
+        if materialName in bpy.data.materials:
+            bpy.context.object.data.materials.append(bpy.data.materials[materialName])
         else:
-            print('NO MATERIAL IN LIBRARY FOR CP OF TYPE ' + cp.type)
+            print('NO MATERIAL IN LIBRARY WITH NAME ' + materialName)
 
     #create a mesh for each surface
     for surface in surfaceList:
@@ -151,10 +152,11 @@ def createBlenderObjects():
         newMesh.update()
         newObj = bpy.data.objects.new('SURFACE',newMesh)
         element = ''.join(i for i in surface.A if not i.isdigit())
-        if element + '-CritPointColor' in bpy.data.materials:
-            newObj.data.materials.append(bpy.data.materials[element + '-CritPointColor'])
+        materialName = element + '-Surface_Material'
+        if materialName in bpy.data.materials:
+            newObj.data.materials.append(bpy.data.materials[materialName])
         else:
-            print('NO MATERIAL IN LIBRARY FOR SURFACE ATOM OF TYPE ' + element)
+            print('NO MATERIAL IN LIBRARY WITH NAME ' + materialName)
 
         bpy.context.scene.objects.link(newObj)
 
@@ -190,6 +192,19 @@ def createAtomMaterial(color,element):
     mat.alpha = 1
     mat.ambient = 1
 
+#Create a default material for the surfaces around a given element - different to critpoints for flexibility
+def createSurfaceMaterial(color,element):
+
+    mat = bpy.data.materials.new(element + '-Surface_Material')
+    mat.diffuse_color = color
+    mat.diffuse_shader = 'LAMBERT'
+    mat.diffuse_intensity = 1.0
+    mat.specular_color = (1,1,1)
+    mat.specular_shader = 'COOKTORR'
+    mat.specular_intensity = 0.5
+    mat.alpha = 1
+    mat.ambient = 1
+
 def setupWorld():
     #This is where anything about the scene can be set, render options, lighting, camera and such
     print("TODO: SETUP WORLD")
@@ -212,6 +227,7 @@ def createMaterials():
         if duplicate == False:
             #create a new material
             createAtomMaterial(elementColors[cp.type],cp.type)
+            createSurfaceMaterial(elementColors[cp.type],cp.type)
             createdList.append(cp.type)
 
 if __name__ == "main":
