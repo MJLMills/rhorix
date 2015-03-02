@@ -58,14 +58,19 @@ class QCTBlender(bpy.types.Operator):
 
 #*#*#*#*#*#*#*#*#*#* SCRIPT FUNCTION DEFINITIONS
 
+def menu_function(self, context):
+    self.layout.operator(QCTBlender.bl_idname, text="Quantum Chemical Topology (.top)")
+
 def register():
     print("QCT4B: Registering Operator Class")
-    print("QCT4B: Use Operator \'Import Topology\'")
+    print("QCT4B: Use Operator \'Import Topology\' or File -> Import -> \.top TO INVOKE")
     bpy.utils.register_class(QCTBlender)
+    bpy.types.INFO_MT_file_import.append(menu_function)
  
 def unregister():
     print("QCT4B: Deregistering Operator Class")
     bpy.utils.unregister_class(QCTBlender)
+    bpy.utils.INFO_MT_file_import.remove(menu_function)
 
 def readTopology(filepath):
 
