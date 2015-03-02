@@ -170,6 +170,7 @@ def createBlenderObjects():
 
         objectData = bpy.data.objects.new('ObjCurve',curveData)
         objectData.location = (0,0,0)
+        objectData.data.materials.append(bpy.data.materials['AIL_Material'])
         bpy.context.scene.objects.link(objectData)
 
         polyLine = curveData.splines.new('POLY')
@@ -205,6 +206,19 @@ def createSurfaceMaterial(color,element):
     mat.alpha = 1
     mat.ambient = 1
 
+#Create a default material for rendering AILs
+def createAILMaterial():
+
+    mat = bpy.data.materials.new('AIL_Material')
+    mat.diffuse_color = (0.0, 0.0, 0.0)
+    mat.diffuse_shader = 'LAMBERT'
+    mat.diffuse_intensity = 1.0
+    mat.specular_color = (1,1,1)
+    mat.specular_shader = 'COOKTORR'
+    mat.specular_intensity = 0.5
+    mat.alpha = 1
+    mat.ambient = 1
+
 def setupWorld():
     #This is where anything about the scene can be set, render options, lighting, camera and such
     print("TODO: SETUP WORLD")
@@ -229,6 +243,8 @@ def createMaterials():
             createAtomMaterial(elementColors[cp.type],cp.type)
             createSurfaceMaterial(elementColors[cp.type],cp.type)
             createdList.append(cp.type)
+
+    createAILMaterial()
 
 if __name__ == "main":
  register()
