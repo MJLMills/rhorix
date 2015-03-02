@@ -132,11 +132,22 @@ def readTopology(filepath):
                 surface = Surface(A,vectorList)
                 surfaceList.append(surface)
 
+def setMaterial(ob, mat):
+    me = ob.data
+    me.materials.append(mat)
+
 def createBlenderObjects():
 
     for cp in sphereList:
 
+        for material in bpy.data.materials:
+            if material.name == cp.type + '-CritPointColor':
+                mat = material
+                break
+
         cpSphere = bpy.ops.mesh.primitive_uv_sphere_add(location=cp.position)
+        # material needs to be a reference to the correct material, bpy.context.object is the last added sphere
+        setMaterial(bpy.context.object,mat)
 
     for surface in surfaceList:
 
@@ -154,6 +165,8 @@ def createBlenderObjects():
         newObj = bpy.data.objects.new('LINE',newMesh)
         bpy.context.scene.objects.link(newObj)
 
+#This function creates a material for the given critical point called element-CritPointColor
+#This defines the default material for a CP other than its diffuse color
 def createAtomMaterial(color,element):
 
     mat = bpy.data.materials.new(element + '-CritPointColor')
@@ -170,6 +183,7 @@ def setupWorld():
     #This is where anything about the scene can be set, render options, lighting, camera and such
     print("TODO: SETUP WORLD")
 
+#This function creates a single material for each CP in the scene
 def createMaterials():
 
     elementColors = defineColors()
