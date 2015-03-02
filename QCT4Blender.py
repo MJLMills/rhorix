@@ -148,15 +148,29 @@ def createBlenderObjects():
         newMesh.from_pydata(surface.points,[],[])
         newMesh.update()
         newObj = bpy.data.objects.new('SURFACE',newMesh)
+        if surface.A + '-CritPointColor' in bpy.data.materials:
+            newObj.materials.append()
+        else:
+            print('NO MATERIAL IN LIBRARY FOR SURFACE ATOM OF TYPE ' + cp.type)
+
         bpy.context.scene.objects.link(newObj)
 
     for line in lineList:
 
-        newMesh = bpy.data.meshes.new('LINE')
-        newMesh.from_pydata(line.points,[],[])
-        newMesh.update()
-        newObj = bpy.data.objects.new('LINE',newMesh)
-        bpy.context.scene.objects.link(newObj)
+        weight = 1 #all points on curve have same weight
+        cList = line.points
+        curveData = bpy.data.curves.new(name=line.A + '-' + line.B, type='CURVE')
+        curveData.dimensions = '3D'
+
+        objectData = bpy.data.objects.new('ObjCurve',curveData)
+        objectData.location = (0,0,0)
+        bpy.context.scene.objects.link(objectData)
+
+        polyLine = curveData.splines.new('POLY')
+        polyLine.points.add(len(cList)-1)
+        for num in range(len(cList)):
+            x,y,z = cList[num]
+            polyLine.points[num].co = (x,y,z,weight)
 
 #This function creates a material for the given critical point called element-CritPointColor
 #This defines the default material for a CP other than its diffuse color
