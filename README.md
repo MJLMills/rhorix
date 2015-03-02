@@ -12,6 +12,6 @@ There are two options for using the script.
 <p>
 The non-permanent option is to store the script in a text block within your Blender document. This has to be added to each document you make so is less desirable unless you intend to make changes to the script, as it allows for quick editing and reloading of the program. To do this, bring up a Text Editor in a convenient window and click the 'New' button in the window header. Paste the script into the resulting Editor. Press Alt+P to execute the script. After you make changes to the script, pressing Alt+P again will re-execute the script and apply your changes. the location of any Python error messages is OS and execution-environment dependent. Check documentation if you cannot find them.
 <p>
-Irrespective of the method, the script will add an operator to the built-in list that can be accessed by pressing the spacebar with the 3D view active. All defined functionality is available from the resulting pop-up. No keyboard shortcuts are defined.
+Irrespective of the method, the script will add an operator named 'Import Topology' to the built-in list that can be accessed by pressing the spacebar with the 3D view active. Additionally, the operator is added as a menu item under File -> Import -> Quantum Chemical Topology (.top). No keyboard shortcuts are defined.
 
 **Note**: This program does not work yet! See issues for details!
