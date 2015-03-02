@@ -132,22 +132,15 @@ def readTopology(filepath):
                 surface = Surface(A,vectorList)
                 surfaceList.append(surface)
 
-def setMaterial(ob, mat):
-    me = ob.data
-    me.materials.append(mat)
-
 def createBlenderObjects():
 
     for cp in sphereList:
 
-        for material in bpy.data.materials:
-            if material.name == cp.type + '-CritPointColor':
-                mat = material
-                break
-
         cpSphere = bpy.ops.mesh.primitive_uv_sphere_add(location=cp.position)
-        # material needs to be a reference to the correct material, bpy.context.object is the last added sphere
-        setMaterial(bpy.context.object,mat)
+        if cp.type + '-CritPointColor' in bpy.data.materials:
+            bpy.context.object.data.materials.append(bpy.data.materials[cp.type + '-CritPointColor'])
+        else:
+            print('NO MATERIAL IN LIBRARY FOR CP OF TYPE ' + cp.type)
 
     for surface in surfaceList:
 
