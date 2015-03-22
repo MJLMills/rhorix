@@ -122,29 +122,12 @@ for ($line=0;$line<@mifContents;$line++) {
     }
 #    checkDuplicates(\@ailCoords_x);
     printSurf(\@ailCoords_x, \@ailCoords_y, \@ailCoords_z, \@edgeA, \@edgeB);
+    last;
   }
 }
 
 print TOP "\<\/topology\>\n";
 close TOP;
-
-#this is a tool for debugging - not really needed
-sub checkDuplicates {
-
-  my ($array) = @_; $nPoints = @$array;
-  print "CHECKING DUPLICATES FOR $array POINTS\n";
-  for ($i=0;$i<@$array;$i++) {
-
-    $store = @$array[$i];
-
-    for ($j=0;$j<@$array;$j++) {
-      if (@$array[$j] == $store && $i != $j) {
-        print "DUPLICATE FOUND\n";
-      }
-    }
-  }
-
-}
 
 sub reformatSurface {
 
