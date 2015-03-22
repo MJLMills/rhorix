@@ -34,10 +34,11 @@ class Line():
 
 class Surface():
 
-    def __init__(self, A, points):
+    def __init__(self, A, points, edges):
         self.A = A
         #points is a list of vector objects - one for each point on the surface
         self.points = points
+        self.edges = edges
 
 #*#*#*#*#*#*#*#*#*#*# CLASS DEFINITION
 
@@ -129,7 +130,15 @@ def readTopology(filepath):
             elif topologicalObject.tag == 'SURFACE':
 
                 A = topologicalObject.find('A').text
-                surface = Surface(A,vectorList)
+
+                edgeList = []
+                for edge in topologicalObject.findall('edge'):
+                    A = edge.find('A').text
+                    B = edge.find('B').text
+                    newEdge = [int(A),int(B)]
+                    edgeList.append(newEdge)
+
+                surface = Surface(A,vectorList,edgeList)
                 surfaceList.append(surface)
 
 def createBlenderObjects():
@@ -148,7 +157,7 @@ def createBlenderObjects():
     for surface in surfaceList:
 
         newMesh = bpy.data.meshes.new('SURFACE')
-        newMesh.from_pydata(surface.points,[],[])
+        newMesh.from_pydata(surface.points,surface.edges,[])
         newMesh.update()
         newObj = bpy.data.objects.new('SURFACE',newMesh)
         element = ''.join(i for i in surface.A if not i.isdigit())
