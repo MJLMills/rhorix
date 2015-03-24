@@ -9,6 +9,8 @@ chomp(@mifContents);
 open(TOP,">","new\.top");
 print TOP "\<topology\>\n";
 
+$c = 0;
+
 for ($line=0;$line<@mifContents;$line++) {
   
   if ($mifContents[$line] =~ m/AIL\s+\d+\s+(\w+)\s+(\d+)\s+(\w+)\s+(\d+)/) {
@@ -56,85 +58,87 @@ for ($line=0;$line<@mifContents;$line++) {
     }
   } elsif ($mifContents[$line] =~ m/atom\s+(\w+)\_(\d+)/ || $mifContents[$line] =~ m/surf\s+(\w+)\_(\d+)/) {
 
-    print "READING SURFACE $mifContents[$line]\n";
     $atom = "$1$2";
+    if ($mifContents[$line+1] =~ m/(\w+)\s+(\d+)/) {
+      print "READING SURFACE OF ATOM $atom ASSOCIATED WITH $1 $2\: ";
+    } else {
+      die "ERROR READING ASOOCIATED CP FOR SURFACE\n";
+    }
     $pointID = 0;
-    #write the surface out - mifs are not in a consistent format so all possibilities are needed
+    #read the surface in - mifs are not in a consistent format so all possibilities are needed
     #ORDER IS SUPER IMPORTANT!!!
     my @edgeA; my @edgeB;
     my @ailCoords_x; my @ailCoords_y; my @ailCoords_z;
 
     for ($surfLine=$line+2;$surfLine<@mifContents;$surfLine++) {
+
+#      my @vertexCoords = parseVertexLine($mifContents[$surfLine]);
+#      if (@vertexCoords) {
+#        print "READ COORD PROPERLY\n";
+      #  push(@edgeA,$pointID); $pointID++; push(@edgeB,$pointID);
+      #  push(@ailCoords_x,$x); push(@ailCoords_y,$y); push(@ailCoords_z,$z);
+#      } else {
+#        print "READ UNDEF PROPERLY\n";
+#      }
+
       if ($mifContents[$surfLine] =~ m/(-?\d+\.\d+)E([+-]\d+)\s+(-?\d+\.\d+)E([+-]\d+)\s+(-?\d+\.\d+)E([+-]\d+)/) {
         # 1 1 1
         $x = $1 * (10 ** $2); $y = $3 * (10 ** $4); $z = $5 * (10 ** $6);
-#        if ($x != $ailCoords_x[@ailCoords_x-1] && $y != $ailCoords_y[@ailCoords_y-1] && $z != $ailCoords_z[@ailCoords_z-1]) {
-          push(@edgeA,$pointID); $pointID++; push(@edgeB,$pointID);
-          push(@ailCoords_x,$x); push(@ailCoords_y,$y); push(@ailCoords_z,$z);
-#        }
+        push(@edgeA,$pointID); $pointID++; push(@edgeB,$pointID);
+        push(@ailCoords_x,$x); push(@ailCoords_y,$y); push(@ailCoords_z,$z);
 
       } elsif ($mifContents[$surfLine] =~ m/(-?\d+\.\d+)\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)E([+-]\d+)/) {
         # 0 0 1
         $x = $1; $y = $2; $z = $3 * (10 ** $4);
-#        if ($x != $ailCoords_x[@ailCoords_x-1] && $y != $ailCoords_y[@ailCoords_y-1] && $z != $ailCoords_z[@ailCoords_z-1]) {
-          push(@edgeA,$pointID); $pointID++; push(@edgeB,$pointID);
-          push(@ailCoords_x,$x); push(@ailCoords_y,$y); push(@ailCoords_z,$z);
-#        }
+        push(@edgeA,$pointID); $pointID++; push(@edgeB,$pointID);
+        push(@ailCoords_x,$x); push(@ailCoords_y,$y); push(@ailCoords_z,$z);
 
       } elsif ($mifContents[$surfLine] =~ m/(-?\d+\.\d+)\s+(-?\d+\.\d+)E([+-]\d+)\s+(-?\d+\.\d+)E([+-]\d+)/) {
         # 0 1 1
         $x = $1; $y = $2 * (10 ** $3); $z = $4 * (10 ** $5);
-#        if ($x != $ailCoords_x[@ailCoords_x-1] && $y != $ailCoords_y[@ailCoords_y-1] && $z != $ailCoords_z[@ailCoords_z-1]) {
-          push(@edgeA,$pointID); $pointID++; push(@edgeB,$pointID);
-          push(@ailCoords_x,$x); push(@ailCoords_y,$y); push(@ailCoords_z,$z);
-#        }
+        push(@edgeA,$pointID); $pointID++; push(@edgeB,$pointID);
+        push(@ailCoords_x,$x); push(@ailCoords_y,$y); push(@ailCoords_z,$z);
 
       } elsif ($mifContents[$surfLine] =~ m/(-?\d+\.\d+)E([+-]\d+)\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)E([+-]\d+)/) {
         # 1 0 1
         $x = $1 * (10 ** $2); $y = $3; $z = $4 * (10 ** $5); 
-#        if ($x != $ailCoords_x[@ailCoords_x-1] && $y != $ailCoords_y[@ailCoords_y-1] && $z != $ailCoords_z[@ailCoords_z-1]) {
-          push(@edgeA,$pointID); $pointID++; push(@edgeB,$pointID);
-          push(@ailCoords_x,$x); push(@ailCoords_y,$y); push(@ailCoords_z,$z);
-#        }
+        push(@edgeA,$pointID); $pointID++; push(@edgeB,$pointID);
+        push(@ailCoords_x,$x); push(@ailCoords_y,$y); push(@ailCoords_z,$z);
 
       } elsif ($mifContents[$surfLine] =~ m/(-?\d+\.\d+)E([+-]\d+)\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)/) {
         # 1 0 0
         $x = $1 * (10 ** $2); $y = $3; $z = $4;
-#        if ($x != $ailCoords_x[@ailCoords_x-1] && $y != $ailCoords_y[@ailCoords_y-1] && $z != $ailCoords_z[@ailCoords_z-1]) {
-          push(@edgeA,$pointID); $pointID++; push(@edgeB,$pointID);
-          push(@ailCoords_x,$x); push(@ailCoords_y,$y); push(@ailCoords_z,$z);
-#        }
+        push(@edgeA,$pointID); $pointID++; push(@edgeB,$pointID);
+        push(@ailCoords_x,$x); push(@ailCoords_y,$y); push(@ailCoords_z,$z);
 
       } elsif ($mifContents[$surfLine] =~ m/(-?\d+\.\d+)E([+-]\d+)\s+(-?\d+\.\d+)E([+-]\d+)\s+(-?\d+\.\d+)/) {
         # 1 1 0
         $x = $1 * (10 ** $2); $y = $3 * (10 ** $4); $z = $5;
- #       if ($x != $ailCoords_x[@ailCoords_x-1] && $y != $ailCoords_y[@ailCoords_y-1] && $z != $ailCoords_z[@ailCoords_z-1]) {
-          push(@edgeA,$pointID); $pointID++; push(@edgeB,$pointID);
-          push(@ailCoords_x,$x); push(@ailCoords_y,$y); push(@ailCoords_z,$z);
-#        }
+        push(@edgeA,$pointID); $pointID++; push(@edgeB,$pointID);
+        push(@ailCoords_x,$x); push(@ailCoords_y,$y); push(@ailCoords_z,$z);
 
       } elsif ($mifContents[$surfLine] =~ m/(-?\d+\.\d+)\s+(-?\d+\.\d+)E([+-]\d+)\s+(-?\d+\.\d+)/) {
         # 0 1 0
         $x = $1; $y = $2 * (10 ** $3); $z = $4;
-#        if ($x != $ailCoords_x[@ailCoords_x-1] && $y != $ailCoords_y[@ailCoords_y-1] && $z != $ailCoords_z[@ailCoords_z-1]) {
-          push(@edgeA,$pointID); $pointID++; push(@edgeB,$pointID);
-          push(@ailCoords_x,$x); push(@ailCoords_y,$y); push(@ailCoords_z,$z);
-#        }
+        push(@edgeA,$pointID); $pointID++; push(@edgeB,$pointID);
+        push(@ailCoords_x,$x); push(@ailCoords_y,$y); push(@ailCoords_z,$z);
 
       } elsif ($mifContents[$surfLine] =~ m/(-?\d+\.\d+)\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)/) {
         # 0 0 0
         $x = $1; $y = $2; $z = $3;
-#        if ($x != $ailCoords_x[@ailCoords_x-1] && $y != $ailCoords_y[@ailCoords_y-1] && $z != $ailCoords_z[@ailCoords_z-1]) {
-          push(@edgeA,$pointID); $pointID++; push(@edgeB,$pointID);
-          push(@ailCoords_x,$x); push(@ailCoords_y,$y); push(@ailCoords_z,$z);
-#        }
+        push(@edgeA,$pointID); $pointID++; push(@edgeB,$pointID);
+        push(@ailCoords_x,$x); push(@ailCoords_y,$y); push(@ailCoords_z,$z);
 
       } else {
 
         $n = @ailCoords_x;
         if ($n > 0) {
-          $line = $surfLine - 1;
+          print "$n POINTS READ\n";
+          $c++;
+          # $line is still currently set to the previously found surf line - set it to the line after the last surface point
+          $line = $surfLine;
           pop(@edgeA); pop(@edgeB); #strip the erroneous point from the end of the graph arrays
+          #Correct the MIF units
           for ($point=0;$point<@ailCoords_x;$point++) {
             $ailCoords_x[$point] *= 10; 
             $ailCoords_y[$point] *= 10;
@@ -142,7 +146,8 @@ for ($line=0;$line<@mifContents;$line++) {
           }
 
         } else {
-          $line = $surfLine - 1;
+          #in this case an empty surface was found - jump $line past the two entries surf and cp
+          $line = $surfLine;
         }
         last;
       }
@@ -154,7 +159,7 @@ for ($line=0;$line<@mifContents;$line++) {
       } else {
         printSurf(\@ailCoords_x, \@ailCoords_y, \@ailCoords_z, \@edgeA, \@edgeB);
       }
-      last;
+      if ($c > 0) { last; }
     } else {
       print "EMPTY SURFACE FOUND FOR ATOM $atom\n";
     }
@@ -287,13 +292,48 @@ sub printSurf {
 
 sub printCP {
 
-  print TOP "  \<CP\>\n";
-  print TOP "    \<type\>$cpType\<\/type\>\n";
-  print TOP "    \<rank\>$rank\<\/rank\>\n";
-  print TOP "    \<signature\>$signature\<\/signature\>\n";
+  print  TOP "  \<CP\>\n";
+  print  TOP "    \<type\>$cpType\<\/type\>\n";
+  print  TOP "    \<rank\>$rank\<\/rank\>\n";
+  print  TOP "    \<signature\>$signature\<\/signature\>\n";
   printf TOP "    \<x\>%8.5f\<\/x\>", $x;
   printf TOP "\<y\>%8.5f\<\/y\>", $y;
   printf TOP "\<z\>%8.5f\<\/z\>\n", $z;
-  print TOP "  \<\/CP\>\n";
+  print  TOP "  \<\/CP\>\n";
+
+}
+
+sub parseVertexLine {
+
+  $line = "$_[0]";
+  local $x = undef; local $y = undef; local $z = undef;
+
+  print "PARSING $line\n";
+
+  if ($line =~ m/(-?\d+\.\d+)E([+-]\d+)\s+(-?\d+\.\d+)E([+-]\d+)\s+(-?\d+\.\d+)E([+-]\d+)/) {
+    $x = $1 * (10 ** $2); $y = $3 * (10 ** $4); $z = $5 * (10 ** $6);
+  } elsif ($line =~ m/(-?\d+\.\d+)\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)E([+-]\d+)/) {
+    $x = $1; $y = $2; $z = $3 * (10 ** $4);
+  } elsif ($line =~ m/(-?\d+\.\d+)\s+(-?\d+\.\d+)E([+-]\d+)\s+(-?\d+\.\d+)E([+-]\d+)/) {
+    $x = $1; $y = $2 * (10 ** $3); $z = $4 * (10 ** $5);
+  } elsif ($line =~ m/(-?\d+\.\d+)E([+-]\d+)\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)E([+-]\d+)/) {
+    $x = $1 * (10 ** $2); $y = $3; $z = $4 * (10 ** $5); 
+  } elsif ($line =~ m/(-?\d+\.\d+)E([+-]\d+)\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)/) {
+    $x = $1 * (10 ** $2); $y = $3; $z = $4;
+  } elsif ($line =~ m/(-?\d+\.\d+)E([+-]\d+)\s+(-?\d+\.\d+)E([+-]\d+)\s+(-?\d+\.\d+)/) {
+    $x = $1 * (10 ** $2); $y = $3 * (10 ** $4); $z = $5;
+  } elsif ($line =~ m/(-?\d+\.\d+)\s+(-?\d+\.\d+)E([+-]\d+)\s+(-?\d+\.\d+)/) {
+    $x = $1; $y = $2 * (10 ** $3); $z = $4;
+  } elsif ($line =~ m/(-?\d+\.\d+)\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)/) {
+    $x = $1; $y = $2; $z = $3;
+  }
+  
+  if (defined $x) {
+    print "VECTOR IS DEFINED";
+    @vector = ($x, $y, $z);
+    return @vector;
+  } else {
+    return;
+  }
 
 }
