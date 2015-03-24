@@ -1,4 +1,7 @@
-open(MIF,"<","ALANINE0000\.mif");
+$removeRedundant = 0;
+$mifFile = "ALANINE0000\.mif";
+
+open(MIF,"<","$mifFile") || die "ERROR: FILE $mifFile DOES NOT EXIST\n";
 @mifContents = <MIF>;
 close MIF;
 chomp(@mifContents);
@@ -65,91 +68,96 @@ for ($line=0;$line<@mifContents;$line++) {
       if ($mifContents[$surfLine] =~ m/(-?\d+\.\d+)E([+-]\d+)\s+(-?\d+\.\d+)E([+-]\d+)\s+(-?\d+\.\d+)E([+-]\d+)/) {
         # 1 1 1
         $x = $1 * (10 ** $2); $y = $3 * (10 ** $4); $z = $5 * (10 ** $6);
-        if ($x != $ailCoords_x[@ailCoords_x-1] && $y != $ailCoords_y[@ailCoords_y-1] && $z != $ailCoords_z[@ailCoords_z-1]) {
+#        if ($x != $ailCoords_x[@ailCoords_x-1] && $y != $ailCoords_y[@ailCoords_y-1] && $z != $ailCoords_z[@ailCoords_z-1]) {
           push(@edgeA,$pointID); $pointID++; push(@edgeB,$pointID);
           push(@ailCoords_x,$x); push(@ailCoords_y,$y); push(@ailCoords_z,$z);
-        }
+#        }
 
       } elsif ($mifContents[$surfLine] =~ m/(-?\d+\.\d+)\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)E([+-]\d+)/) {
         # 0 0 1
         $x = $1; $y = $2; $z = $3 * (10 ** $4);
-        if ($x != $ailCoords_x[@ailCoords_x-1] && $y != $ailCoords_y[@ailCoords_y-1] && $z != $ailCoords_z[@ailCoords_z-1]) {
+#        if ($x != $ailCoords_x[@ailCoords_x-1] && $y != $ailCoords_y[@ailCoords_y-1] && $z != $ailCoords_z[@ailCoords_z-1]) {
           push(@edgeA,$pointID); $pointID++; push(@edgeB,$pointID);
           push(@ailCoords_x,$x); push(@ailCoords_y,$y); push(@ailCoords_z,$z);
-        }
+#        }
 
       } elsif ($mifContents[$surfLine] =~ m/(-?\d+\.\d+)\s+(-?\d+\.\d+)E([+-]\d+)\s+(-?\d+\.\d+)E([+-]\d+)/) {
         # 0 1 1
         $x = $1; $y = $2 * (10 ** $3); $z = $4 * (10 ** $5);
-        if ($x != $ailCoords_x[@ailCoords_x-1] && $y != $ailCoords_y[@ailCoords_y-1] && $z != $ailCoords_z[@ailCoords_z-1]) {
+#        if ($x != $ailCoords_x[@ailCoords_x-1] && $y != $ailCoords_y[@ailCoords_y-1] && $z != $ailCoords_z[@ailCoords_z-1]) {
           push(@edgeA,$pointID); $pointID++; push(@edgeB,$pointID);
           push(@ailCoords_x,$x); push(@ailCoords_y,$y); push(@ailCoords_z,$z);
-        }
+#        }
 
       } elsif ($mifContents[$surfLine] =~ m/(-?\d+\.\d+)E([+-]\d+)\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)E([+-]\d+)/) {
         # 1 0 1
         $x = $1 * (10 ** $2); $y = $3; $z = $4 * (10 ** $5); 
-        if ($x != $ailCoords_x[@ailCoords_x-1] && $y != $ailCoords_y[@ailCoords_y-1] && $z != $ailCoords_z[@ailCoords_z-1]) {
+#        if ($x != $ailCoords_x[@ailCoords_x-1] && $y != $ailCoords_y[@ailCoords_y-1] && $z != $ailCoords_z[@ailCoords_z-1]) {
           push(@edgeA,$pointID); $pointID++; push(@edgeB,$pointID);
           push(@ailCoords_x,$x); push(@ailCoords_y,$y); push(@ailCoords_z,$z);
-        }
+#        }
 
       } elsif ($mifContents[$surfLine] =~ m/(-?\d+\.\d+)E([+-]\d+)\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)/) {
         # 1 0 0
         $x = $1 * (10 ** $2); $y = $3; $z = $4;
-        if ($x != $ailCoords_x[@ailCoords_x-1] && $y != $ailCoords_y[@ailCoords_y-1] && $z != $ailCoords_z[@ailCoords_z-1]) {
+#        if ($x != $ailCoords_x[@ailCoords_x-1] && $y != $ailCoords_y[@ailCoords_y-1] && $z != $ailCoords_z[@ailCoords_z-1]) {
           push(@edgeA,$pointID); $pointID++; push(@edgeB,$pointID);
           push(@ailCoords_x,$x); push(@ailCoords_y,$y); push(@ailCoords_z,$z);
-        }
+#        }
 
       } elsif ($mifContents[$surfLine] =~ m/(-?\d+\.\d+)E([+-]\d+)\s+(-?\d+\.\d+)E([+-]\d+)\s+(-?\d+\.\d+)/) {
         # 1 1 0
         $x = $1 * (10 ** $2); $y = $3 * (10 ** $4); $z = $5;
-        if ($x != $ailCoords_x[@ailCoords_x-1] && $y != $ailCoords_y[@ailCoords_y-1] && $z != $ailCoords_z[@ailCoords_z-1]) {
+ #       if ($x != $ailCoords_x[@ailCoords_x-1] && $y != $ailCoords_y[@ailCoords_y-1] && $z != $ailCoords_z[@ailCoords_z-1]) {
           push(@edgeA,$pointID); $pointID++; push(@edgeB,$pointID);
           push(@ailCoords_x,$x); push(@ailCoords_y,$y); push(@ailCoords_z,$z);
-        }
+#        }
 
       } elsif ($mifContents[$surfLine] =~ m/(-?\d+\.\d+)\s+(-?\d+\.\d+)E([+-]\d+)\s+(-?\d+\.\d+)/) {
         # 0 1 0
         $x = $1; $y = $2 * (10 ** $3); $z = $4;
-        if ($x != $ailCoords_x[@ailCoords_x-1] && $y != $ailCoords_y[@ailCoords_y-1] && $z != $ailCoords_z[@ailCoords_z-1]) {
+#        if ($x != $ailCoords_x[@ailCoords_x-1] && $y != $ailCoords_y[@ailCoords_y-1] && $z != $ailCoords_z[@ailCoords_z-1]) {
           push(@edgeA,$pointID); $pointID++; push(@edgeB,$pointID);
           push(@ailCoords_x,$x); push(@ailCoords_y,$y); push(@ailCoords_z,$z);
-        }
+#        }
 
       } elsif ($mifContents[$surfLine] =~ m/(-?\d+\.\d+)\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)/) {
         # 0 0 0
         $x = $1; $y = $2; $z = $3;
-        if ($x != $ailCoords_x[@ailCoords_x-1] && $y != $ailCoords_y[@ailCoords_y-1] && $z != $ailCoords_z[@ailCoords_z-1]) {
+#        if ($x != $ailCoords_x[@ailCoords_x-1] && $y != $ailCoords_y[@ailCoords_y-1] && $z != $ailCoords_z[@ailCoords_z-1]) {
           push(@edgeA,$pointID); $pointID++; push(@edgeB,$pointID);
           push(@ailCoords_x,$x); push(@ailCoords_y,$y); push(@ailCoords_z,$z);
-        }
+#        }
 
       } else {
-        #THE SURFACE HAS ENDED
+
         $n = @ailCoords_x;
         if ($n > 0) {
           $line = $surfLine - 1;
           pop(@edgeA); pop(@edgeB); #strip the erroneous point from the end of the graph arrays
+          for ($point=0;$point<@ailCoords_x;$point++) {
+            $ailCoords_x[$point] *= 10; 
+            $ailCoords_y[$point] *= 10;
+            @ailCoords_z[$point] *= 10;
+          }
+
         } else {
           $line = $surfLine - 1;
         }
         last;
       }
     }
-    for ($point=0;$point<@ailCoords_x;$point++) {
-      $ailCoords_x[$point] *= 10; 
-      $ailCoords_y[$point] *= 10;
-      @ailCoords_z[$point] *= 10;
-    }
     $n = @ailCoords_x;
     if ($n > 0) {
-      reformatSurface(\@ailCoords_x, \@ailCoords_y, \@ailCoords_z, \@edgeA, \@edgeB);
+      if ($removeRedundant == 1) {
+        reformatSurface(\@ailCoords_x, \@ailCoords_y, \@ailCoords_z, \@edgeA, \@edgeB);
+      } else {
+        printSurf(\@ailCoords_x, \@ailCoords_y, \@ailCoords_z, \@edgeA, \@edgeB);
+      }
+      last;
     } else {
       print "EMPTY SURFACE FOUND FOR ATOM $atom\n";
     }
-#    printSurf(\@ailCoords_x, \@ailCoords_y, \@ailCoords_z, \@edgeA, \@edgeB);
   }
 }
 
@@ -179,13 +187,10 @@ sub reformatSurface {
         for ($j=$point;$j<@$xPoints;$j++) {
 
           if (@$xPoints[$point] == @$xPoints[$j] && @$yPoints[$point] == @$yPoints[$j] && @$zPoints[$point] == @$zPoints[$j]) {
-            if ($point != $j) { $isRedundant[$j] = 1; } #IF POINT AND j ARE THE SAME, j IS REDUNDANT - REPLACE j with KEPT - 1
+            if ($point != $j) { $isRedundant[$j] = 1; }
             $rep = $kept - 1;
-            #CLEAN UP THE EDGES - FOR ALL EDGE PAIRS,
             for ($m=0;$m<@$edgeA;$m++) {
-              #CHECK IF THE POINT WE ARE REMOVING (j) IS = A
               if (@$edgeA[$m] == $j) {
-                #AND IF IT IS, REPLACE IT WITH THE CURRENT VALUE IN THE NEW ARRAY
                 @$edgeA[$m] = $kept - 1;
               } 
               if (@$edgeB[$m] == $j) {
