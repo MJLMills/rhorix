@@ -1,3 +1,5 @@
+# Matthew JL Mills
+
 $removeRedundant = 0;
 $mifFile = "ALANINE0000\.mif";
 
@@ -9,108 +11,111 @@ chomp(@mifContents);
 open(TOP,">","new\.top");
 print TOP "\<topology\>\n";
 
-for ($line=0;$line<@mifContents;$line++) {
+MAIN_LOOP: for ($line=0;$line<@mifContents;$line++) {
   
-  #PARSE AN ATOMIC INTERACTION LINE
-  if ($mifContents[$line] =~ m/AIL\s+\d+\s+(\w+)\s+(\d+)\s+(\w+)\s+(\d+)/) {
+    #PARSE AN ATOMIC INTERACTION LINE
+    #PICK_READER
+    if ($mifContents[$line] =~ m/AIL\s+\d+\s+(\w+)\s+(\d+)\s+(\w+)\s+(\d+)/) {
 
-    $atomA = "$1$2"; 
-    $atomB = "$3$4";
-    #sometimes the AIL ID is printed twice - skip to next $line if so
-    if ($mifContents[$line+1] =~ m/\w+\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)/) {
+      $atomA = "$1$2"; 
+      $atomB = "$3$4";
+      #sometimes the AIL ID is printed twice - skip to next $line if so
+      if ($mifContents[$line+1] =~ m/\w+\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)/) {
    
-      my @ailCoords_x; my @ailCoords_y; my @ailCoords_z;
-      for ($ailLine=$line+1;$ailLine<@mifContents;$ailLine++) {
-        if ($mifContents[$ailLine] =~ m/\w+\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)/) {
-          push(@ailCoords_x,$1); push(@ailCoords_y,$2); push(@ailCoords_z,$3);
-        } else {
-          $line = $ailLine - 1; #jump the parser over the ail coordinates
-          last;
-        }
-      }
-      printLine(\@ailCoords_x, \@ailCoords_y, \@ailCoords_z);
-    }
-
-  #PARSE ALL CRITICAL POINTS
-  } elsif ($mifContents[$line] =~ m/CRIT/) {
-
-    for ($cpLine=$line+1;$cpLine<@mifContents;$cpLine++) {
-      if ($mifContents[$cpLine] =~ m/(\w+)\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)/) {
-        $cpType = $1; $x = $2; $y = $3; $z = $4;
-        $rank = getRank("$cpType");
-        $signature = getSignature("$cpType");
-        printCP();
-
-      } else {
-        $line = $cpLine - 1; #jump the parser over the critical points
-        last;
-      }
-    }
-
-  #PARSE AN INTERATOMIC OR BOUNDING SURFACE
-  } elsif ($mifContents[$line] =~ m/atom\s+(\w+)\_(\d+)/ || $mifContents[$line] =~ m/surf\s+(\w+)\_(\d+)/) {
-
-    $atom = "$1$2";
-    if ($mifContents[$line+1] =~ m/(\w+)\s+(\d+)/) {
-      print "READING SURFACE OF ATOM $atom ASSOCIATED WITH $1 $2\: ";
-    } else {
-      die "ERROR READING ASOOCIATED CP FOR SURFACE\n";
-    }
-    $pointID = 0;
-    #read the surface in - mifs are not in a consistent format so all possibilities are needed
-    #ORDER IS SUPER IMPORTANT!!!
-    my @edgeA; my @edgeB;
-    my @ailCoords_x; my @ailCoords_y; my @ailCoords_z;
-
-    for ($surfLine=$line+2;$surfLine<@mifContents;$surfLine++) {
-
-      my @vertexCoords = parseVertexLine($mifContents[$surfLine]);
-      if (@vertexCoords) {
-        print "READ COORD PROPERLY\n";
-        push(@edgeA,$pointID); $pointID++; push(@edgeB,$pointID);
-        push(@ailCoords_x,$x); push(@ailCoords_y,$y); push(@ailCoords_z,$z);
-      } else {
-
-        print "READ UNDEF PROPERLY\n";
-        $n = @ailCoords_x;
-        if ($n > 0) {
-          print "$n POINTS READ\n";
-          $c++;
-          # $line is still currently set to the previously found surf line - set it to the line after the last surface$
-          $line = $surfLine;
-          pop(@edgeA); pop(@edgeB); #strip the erroneous point from the end of the graph arrays
-          #Correct the MIF units
-          for ($point=0;$point<@ailCoords_x;$point++) {
-            $ailCoords_x[$point] *= 10;
-            $ailCoords_y[$point] *= 10;
-            @ailCoords_z[$point] *= 10;
+        my @ailCoords_x; my @ailCoords_y; my @ailCoords_z;
+        AIL_LOOP: for ($ailLine=$line+1;$ailLine<@mifContents;$ailLine++) {
+          if ($mifContents[$ailLine] =~ m/\w+\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)/) {
+            push(@ailCoords_x,$1); push(@ailCoords_y,$2); push(@ailCoords_z,$3);
+          } else {
+            $line = $ailLine - 1; #jump the parser over the ail coordinates
+            last AIL_LOOP;
           }
+        }
+        printLine(\@ailCoords_x, \@ailCoords_y, \@ailCoords_z);
+      }
+
+    #PARSE ALL CRITICAL POINTS
+    } elsif ($mifContents[$line] =~ m/CRIT/) {
+
+      CRIT_LOOP: for ($cpLine=$line+1;$cpLine<@mifContents;$cpLine++) {
+        if ($mifContents[$cpLine] =~ m/(\w+)\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)/) {
+          $cpType = $1; $x = $2; $y = $3; $z = $4;
+          $rank = getRank("$cpType");
+          $signature = getSignature("$cpType");
+          printCP();
 
         } else {
-          #in this case an empty surface was found - jump $line past the two entries surf and cp
-          $line = $surfLine;
+          $line = $cpLine - 1; #jump the parser over the critical points
+          last CRIT_LOOP;
         }
-        last; #debug - just get one surface
-
       }
-    }
 
-    $n = @ailCoords_x;
-    if ($n > 0) {
-      if ($removeRedundant == 1) {
-        reformatSurface(\@ailCoords_x, \@ailCoords_y, \@ailCoords_z, \@edgeA, \@edgeB);
+    #PARSE AN INTERATOMIC OR BOUNDING SURFACE
+    } elsif ($mifContents[$line] =~ m/atom\s+(\w+)\_(\d+)/ || $mifContents[$line] =~ m/surf\s+(\w+)\_(\d+)/) {
+
+      $atom = "$1$2";
+      if ($mifContents[$line+1] =~ m/(\w+)\s+(\d+)/) {
+        print "READING SURFACE OF ATOM $atom ASSOCIATED WITH $1 $2\: ";
       } else {
-        printSurf(\@ailCoords_x, \@ailCoords_y, \@ailCoords_z, \@edgeA, \@edgeB);
+        die "ERROR READING ASOOCIATED CP FOR SURFACE\n";
       }
-    } else {
-      print "EMPTY SURFACE FOUND FOR ATOM $atom\n";
-    }
+      $pointID = 0;
+      #read the surface in - mifs are not in a consistent format so all possibilities are needed
+      #ORDER IS SUPER IMPORTANT!!!
+      my @edgeA; my @edgeB;
+      my @ailCoords_x; my @ailCoords_y; my @ailCoords_z;
 
-  }
-}
+      SURF_LOOP: for ($surfLine=$line+2;$surfLine<@mifContents;$surfLine++) {
+
+        my @vertexCoords = parseVertexLine($mifContents[$surfLine]);
+        if (@vertexCoords) {
+          push(@edgeA,$pointID); $pointID++; push(@edgeB,$pointID);
+          push(@ailCoords_x,$x); push(@ailCoords_y,$y); push(@ailCoords_z,$z);
+
+        } else {
+
+          $n = @ailCoords_x;
+          if ($n > 0) {
+            print "$n POINTS READ\n";
+            # $line is still currently set to the previously found surf line - set it to the line after the last surface$
+            $line = $surfLine;
+            pop(@edgeA); pop(@edgeB); #strip the erroneous point from the end of the graph arrays
+            #Correct the MIF units
+            for ($point=0;$point<@ailCoords_x;$point++) {
+              $ailCoords_x[$point] *= 10;
+              $ailCoords_y[$point] *= 10;
+              @ailCoords_z[$point] *= 10;
+            }
+            $line = $surfLine - 1;
+            last SURF_LOOP;
+
+          } else {
+            #in this case an empty surface was found - jump $line past the two entries surf and cp
+            $line = $surfLine;
+          }
+        }
+      } # END SURF_LOOP
+
+      $n = @ailCoords_x;
+      if ($n > 0) {
+        if ($removeRedundant == 1) {
+          reformatSurface(\@ailCoords_x, \@ailCoords_y, \@ailCoords_z, \@edgeA, \@edgeB);
+        } else {
+          printSurf(\@ailCoords_x, \@ailCoords_y, \@ailCoords_z, \@edgeA, \@edgeB);
+        }
+      } else {
+        print "EMPTY SURFACE FOUND FOR ATOM $atom\n";
+      }
+      last MAIN_LOOP; #debug - write one surface
+
+    } # END PICK_READER
+
+} # end MAIN_LOOP
 
 print TOP "\<\/topology\>\n";
 close TOP;
+
+# SUBROUTINES #
 
 sub reformatSurface {
 
@@ -251,8 +256,6 @@ sub parseVertexLine {
   $line = "$_[0]";
   local $x = undef; local $y = undef; local $z = undef;
 
-  print "PARSING $line\n";
-
   if ($line =~ m/(-?\d+\.\d+)E([+-]\d+)\s+(-?\d+\.\d+)E([+-]\d+)\s+(-?\d+\.\d+)E([+-]\d+)/) {
     $x = $1 * (10 ** $2); $y = $3 * (10 ** $4); $z = $5 * (10 ** $6);
   } elsif ($line =~ m/(-?\d+\.\d+)\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)E([+-]\d+)/) {
@@ -272,7 +275,6 @@ sub parseVertexLine {
   }
   
   if (defined $x) {
-    print "VECTOR IS DEFINED";
     @vector = ($x, $y, $z);
     return @vector;
   } else {
@@ -284,7 +286,7 @@ sub parseVertexLine {
 sub getRank {
 
   $type = "$_[0]";
-  if ($type == "bcp" || $type == "rcp" || $type = "ccp") {
+  if ($type == "bcp" or $type == "rcp" or $type = "ccp") {
     return 3;
   } else {
     return 3;
