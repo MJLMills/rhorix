@@ -3,10 +3,7 @@
 $removeRedundant = 0;
 $mifFile = "ALANINE0000\.mif";
 
-open(MIF,"<","$mifFile") || die "ERROR: FILE $mifFile DOES NOT EXIST\n";
-@mifContents = <MIF>;
-close MIF;
-chomp(@mifContents);
+@mifContents = readFile("$mifFile");
 
 open(TOP,">","new\.top");
 print TOP "\<topology\>\n";
@@ -64,13 +61,14 @@ MAIN_LOOP: for ($line=0;$line<@mifContents;$line++) {
       #ORDER IS SUPER IMPORTANT!!!
       my @edgeA; my @edgeB;
       my @ailCoords_x; my @ailCoords_y; my @ailCoords_z;
-
+      $dupeCount = 0;
       SURF_LOOP: for ($surfLine=$line+2;$surfLine<@mifContents;$surfLine++) {
 
         my @vertexCoords = parseVertexLine($mifContents[$surfLine]);
         if (@vertexCoords) {
+          if ($vertexCoords[0] == $ailCoords_x[-1] && $vertexCoords[1] == $ailCoords_y[-1]) { $dupeCount++; }
           push(@edgeA,$pointID); $pointID++; push(@edgeB,$pointID);
-          push(@ailCoords_x,$x); push(@ailCoords_y,$y); push(@ailCoords_z,$z);
+          push(@ailCoords_x,$vertexCoords[0]); push(@ailCoords_y,$vertexCoords[1]); push(@ailCoords_z,$vertexCoords[2]);
 
         } else {
 
@@ -84,7 +82,7 @@ MAIN_LOOP: for ($line=0;$line<@mifContents;$line++) {
             for ($point=0;$point<@ailCoords_x;$point++) {
               $ailCoords_x[$point] *= 10;
               $ailCoords_y[$point] *= 10;
-              @ailCoords_z[$point] *= 10;
+              $ailCoords_z[$point] *= 10;
             }
             $line = $surfLine - 1;
             last SURF_LOOP;
@@ -95,7 +93,8 @@ MAIN_LOOP: for ($line=0;$line<@mifContents;$line++) {
           }
         }
       } # END SURF_LOOP
-
+      
+      print "$dupeCount DUPLICATE POINTS LOCATED\n";
       $n = @ailCoords_x;
       if ($n > 0) {
         if ($removeRedundant == 1) {
@@ -306,5 +305,16 @@ sub getSignature {
     return -3;
   }
 
+}
+
+sub readFile {
+
+  $fileName = "$_[0]";
+  open(INP,"<","$fileName") || die "ERROR: FILE $fileName DOES NOT EXIST\n";
+  @fileContents = <INP>;
+  close INP;
+  chomp(@fileContents);
+  return @fileContents;
+  
 }
 
