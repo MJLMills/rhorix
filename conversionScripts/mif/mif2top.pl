@@ -1,4 +1,5 @@
 # Matthew JL Mills
+#!/usr/bin/perl -w
 
 $removeRedundant = 0;
 $mifFile = "ALANINE0000\.mif";
@@ -25,6 +26,7 @@ MAIN_LOOP: for ($line=0;$line<@mifContents;$line++) {
             push(@ailCoords_x,$1); push(@ailCoords_y,$2); push(@ailCoords_z,$3);
           } else {
             $line = $ailLine - 1; #jump the parser over the ail coordinates
+            print "AIL SETTING LINE TO $line;\n";
             last AIL_LOOP;
           }
         }
@@ -43,6 +45,7 @@ MAIN_LOOP: for ($line=0;$line<@mifContents;$line++) {
 
         } else {
           $line = $cpLine - 1; #jump the parser over the critical points
+          print "CRIT SETTING LINE TO $line;\n";
           last CRIT_LOOP;
         }
       }
@@ -61,14 +64,27 @@ MAIN_LOOP: for ($line=0;$line<@mifContents;$line++) {
       #ORDER IS SUPER IMPORTANT!!!
       my @edgeA; my @edgeB;
       my @ailCoords_x; my @ailCoords_y; my @ailCoords_z;
-      $dupeCount = 0;
+      $vertex = 1;
       SURF_LOOP: for ($surfLine=$line+2;$surfLine<@mifContents;$surfLine++) {
 
         my @vertexCoords = parseVertexLine($mifContents[$surfLine]);
+        if ($surfLine >= @mifContents) { print "PAST END OF FILE\n"; }
         if (@vertexCoords) {
-          if ($vertexCoords[0] == $ailCoords_x[-1] && $vertexCoords[1] == $ailCoords_y[-1]) { $dupeCount++; }
-          push(@edgeA,$pointID); $pointID++; push(@edgeB,$pointID);
+
           push(@ailCoords_x,$vertexCoords[0]); push(@ailCoords_y,$vertexCoords[1]); push(@ailCoords_z,$vertexCoords[2]);
+
+          if ($vertex == 1) { #connect A to B
+            push(@edgeA,$pointID); $pointID++; push(@edgeB,$pointID);
+          } elsif ($vertex == 2) { # connect B to C
+            push(@edgeA,$pointID); $pointID++; push(@edgeB,$pointID);
+          } elsif ($vertex == 3) { # connect C to A
+            push(@edgeA,$pointID); push(@edgeB,$pointID-2); $pointID++;
+          }
+
+          $vertexCount++;
+
+          #cycle the vertex of the triangle
+          if ($vertex == 3) { $vertex = 1 } else { $vertex++ }
 
         } else {
 
@@ -76,7 +92,7 @@ MAIN_LOOP: for ($line=0;$line<@mifContents;$line++) {
           if ($n > 0) {
             print "$n POINTS READ\n";
             # $line is still currently set to the previously found surf line - set it to the line after the last surface$
-            $line = $surfLine;
+            $line = $surfLine; print "SURF SETTING LINE TO $line \= $surfLine\n";
             pop(@edgeA); pop(@edgeB); #strip the erroneous point from the end of the graph arrays
             #Correct the MIF units
             for ($point=0;$point<@ailCoords_x;$point++) {
@@ -84,17 +100,16 @@ MAIN_LOOP: for ($line=0;$line<@mifContents;$line++) {
               $ailCoords_y[$point] *= 10;
               $ailCoords_z[$point] *= 10;
             }
-            $line = $surfLine - 1;
+#            $line = $surfLine - 1; print "SURF SETTING LINE TO $line;\n";
             last SURF_LOOP;
 
           } else {
             #in this case an empty surface was found - jump $line past the two entries surf and cp
-            $line = $surfLine;
+            #$line = $surfLine;
           }
         }
       } # END SURF_LOOP
       
-      print "$dupeCount DUPLICATE POINTS LOCATED\n";
       $n = @ailCoords_x;
       if ($n > 0) {
         if ($removeRedundant == 1) {
@@ -105,7 +120,7 @@ MAIN_LOOP: for ($line=0;$line<@mifContents;$line++) {
       } else {
         print "EMPTY SURFACE FOUND FOR ATOM $atom\n";
       }
-      last MAIN_LOOP; #debug - write one surface
+#      last MAIN_LOOP; #debug - write one surface
 
     } # END PICK_READER
 
@@ -252,7 +267,7 @@ sub printCP {
 
 sub parseVertexLine {
 
-  $line = "$_[0]";
+  my $line = "$_[0]";
   local $x = undef; local $y = undef; local $z = undef;
 
   if ($line =~ m/(-?\d+\.\d+)E([+-]\d+)\s+(-?\d+\.\d+)E([+-]\d+)\s+(-?\d+\.\d+)E([+-]\d+)/) {
