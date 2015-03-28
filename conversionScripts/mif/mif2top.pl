@@ -4,7 +4,7 @@
 $removeRedundant = 0;
 $mifFile = "ALANINE0000\.mif";
 
-@mifContents = readFile("$mifFile");
+@mifContents = readFile($mifFile);
 
 open(TOP,">","new\.top");
 print TOP "\<topology\>\n";
@@ -15,8 +15,7 @@ MAIN_LOOP: for ($line=0;$line<@mifContents;$line++) {
     #PICK_READER
     if ($mifContents[$line] =~ m/AIL\s+\d+\s+(\w+)\s+(\d+)\s+(\w+)\s+(\d+)/) {
 
-      $atomA = "$1$2"; 
-      $atomB = "$3$4";
+      $atomA = "$1$2";  $atomB = "$3$4";
       #sometimes the AIL ID is printed twice - skip to next $line if so
       if ($mifContents[$line+1] =~ m/\w+\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)/) {
    
@@ -26,7 +25,6 @@ MAIN_LOOP: for ($line=0;$line<@mifContents;$line++) {
             push(@ailCoords_x,$1); push(@ailCoords_y,$2); push(@ailCoords_z,$3);
           } else {
             $line = $ailLine - 1; #jump the parser over the ail coordinates
-            print "AIL SETTING LINE TO $line;\n";
             last AIL_LOOP;
           }
         }
@@ -41,11 +39,10 @@ MAIN_LOOP: for ($line=0;$line<@mifContents;$line++) {
           $cpType = $1; $x = $2; $y = $3; $z = $4;
           $rank = getRank("$cpType");
           $signature = getSignature("$cpType");
-          printCP();
+          printCP($cpType,$rank,$signature,$x,$y,$z);
 
         } else {
           $line = $cpLine - 1; #jump the parser over the critical points
-          print "CRIT SETTING LINE TO $line;\n";
           last CRIT_LOOP;
         }
       }
@@ -59,16 +56,13 @@ MAIN_LOOP: for ($line=0;$line<@mifContents;$line++) {
       } else {
         die "ERROR READING ASOOCIATED CP FOR SURFACE\n";
       }
-      $pointID = 0;
-      #read the surface in - mifs are not in a consistent format so all possibilities are needed
-      #ORDER IS SUPER IMPORTANT!!!
+
       my @edgeA; my @edgeB;
       my @ailCoords_x; my @ailCoords_y; my @ailCoords_z;
-      $vertex = 1;
+      $vertex = 1; $pointID = 0;
       SURF_LOOP: for ($surfLine=$line+2;$surfLine<@mifContents;$surfLine++) {
 
         my @vertexCoords = parseVertexLine($mifContents[$surfLine]);
-        if ($surfLine >= @mifContents) { print "PAST END OF FILE\n"; }
         if (@vertexCoords) {
 
           push(@ailCoords_x,$vertexCoords[0]); push(@ailCoords_y,$vertexCoords[1]); push(@ailCoords_z,$vertexCoords[2]);
@@ -90,22 +84,23 @@ MAIN_LOOP: for ($line=0;$line<@mifContents;$line++) {
 
           $n = @ailCoords_x;
           if ($n > 0) {
-            print "$n POINTS READ\n";
+            $nTriangles = $n / 3;
+            print "$n POINTS READ \($nTriangles TRIANGLES\)\n";
             # $line is still currently set to the previously found surf line - set it to the line after the last surface$
-            $line = $surfLine; print "SURF SETTING LINE TO $line \= $surfLine\n";
-            pop(@edgeA); pop(@edgeB); #strip the erroneous point from the end of the graph arrays
+            $line = $surfLine;
             #Correct the MIF units
             for ($point=0;$point<@ailCoords_x;$point++) {
               $ailCoords_x[$point] *= 10;
               $ailCoords_y[$point] *= 10;
               $ailCoords_z[$point] *= 10;
             }
-#            $line = $surfLine - 1; print "SURF SETTING LINE TO $line;\n";
+            $line = $surfLine - 1;
             last SURF_LOOP;
 
           } else {
             #in this case an empty surface was found - jump $line past the two entries surf and cp
             #$line = $surfLine;
+            print "NUMBER OF POINTS IN SURFACE  <= 0: n = $n\n";
           }
         }
       } # END SURF_LOOP
@@ -133,10 +128,10 @@ close TOP;
 
 sub reformatSurface {
 
-  my ($xPoints,$yPoints,$zPoints,$edgeA,$edgeB) = @_;
-  my @isRedundant; my @xNew, @yNew, @zNew;
+  local ($xPoints,$yPoints,$zPoints,$edgeA,$edgeB) = @_;
+  local @isRedundant; my @xNew, @yNew, @zNew;
 
-  for ($i=0;$i<@$xPoints;$i++) {
+  for (local $i=0;$i<@$xPoints;$i++) {
     $isRedundant[$i] = 0;
   }
 
@@ -144,19 +139,19 @@ sub reformatSurface {
   if ($n_x == $n_y && $n_y == $n_z && $n_x != 0) {
 
     $kept = 0;
-    for ($point=0;$point<@$xPoints;$point++) {
+    for (local $point=0;$point<@$xPoints;$point++) {
       if ($isRedundant[$point] == 1) {
         next;
       } else {
         push(@xNew,@$xPoints[$point]); push(@yNew,@$yPoints[$point]); push(@zNew,@$zPoints[$point]);
         $kept++;
 
-        for ($j=$point;$j<@$xPoints;$j++) {
+        for (local $j=$point;$j<@$xPoints;$j++) {
 
           if (@$xPoints[$point] == @$xPoints[$j] && @$yPoints[$point] == @$yPoints[$j] && @$zPoints[$point] == @$zPoints[$j]) {
             if ($point != $j) { $isRedundant[$j] = 1; }
             $rep = $kept - 1;
-            for ($m=0;$m<@$edgeA;$m++) {
+            for (local $m=0;$m<@$edgeA;$m++) {
               if (@$edgeA[$m] == $j) {
                 @$edgeA[$m] = $kept - 1;
               } 
@@ -189,12 +184,13 @@ sub reformatSurface {
 
 sub printGraph {
 
-  my ($edgeA, $edgeB) = @_;
+  local ($edgeA, $edgeB) = @_;
+  local $n_A = @$edgeA; 
+  local $n_B = @$edgeB;
 
-  $n_A = @$edgeA; $n_B = @$edgeB;
   if ($n_A == $n_B) {
 
-    for ($edge=0;$edge<@$edgeA;$edge++) {
+    for (local $edge=0;$edge<@$edgeA;$edge++) {
       print TOP "    \<edge\>";
       print TOP " \<A\>@$edgeA[$edge]\<\/A\>";
       print TOP " \<B\>@$edgeB[$edge]\<\/B\>";
@@ -210,15 +206,14 @@ sub printGraph {
 sub printLine {
 
   #sub must receive three lists as references (i.e. \@array1, \@array2, \@array3)
-  my ($xPoints, $yPoints, $zPoints) = @_;
-  $nPoints = scalar(@$xPoints);
-#  print "writing $nPoints points\n";
+  local ($xPoints, $yPoints, $zPoints) = @_;
+  local $nPoints = scalar(@$xPoints);
 
   print TOP "  \<LINE\>\n";
   print TOP "    \<A\>$atomA\<\/A\>\n";
   print TOP "    \<B\>$atomB\<\/B\>\n";
 
-  for ($point=0;$point<$nPoints;$point++) {
+  for (local $point=0;$point<$nPoints;$point++) {
     print TOP "    \<vector\>";
     printf TOP " \<x\>%8.5f\<\/x\>", @$xPoints[$point];
     printf TOP " \<y\>%8.5f\<\/y\>", @$yPoints[$point];
@@ -231,14 +226,13 @@ sub printLine {
 
 sub printSurf {
 
-  #sub must receive three lists as references (i.e. \@array1, \@array2, \@array3)
-  my ($xPoints, $yPoints, $zPoints, $edgeA, $edgeB) = @_;
-  $nPoints = scalar(@$xPoints);
-#  print "writing $nPoints points\n";
+  #sub must receive five lists as references (i.e. \@array1, \@array2, \@array3, \@edgesA, \@edgesB)
+  local ($xPoints, $yPoints, $zPoints, $edgeA, $edgeB) = @_;
+  local $nPoints = scalar(@$xPoints);
 
   print TOP "  \<SURFACE\>\n";
   print TOP "    \<A\>$atom\<\/A\>\n";
-  for ($point=0;$point<$nPoints;$point++) {
+  for (local $point=0;$point<$nPoints;$point++) {
     print TOP "    \<vector\>";
     printf TOP " \<x\>%8.5f\<\/x\>", @$xPoints[$point];
     printf TOP " \<y\>%8.5f\<\/y\>", @$yPoints[$point];
@@ -254,6 +248,12 @@ sub printSurf {
 
 sub printCP {
 
+  local $cpType = $_[0];
+  local $rank   = $_[1];
+  local $signature = $_[2];
+
+  local $x = $_[3]; local $y = $_[4]; local $z = $_[5];
+
   print  TOP "  \<CP\>\n";
   print  TOP "    \<type\>$cpType\<\/type\>\n";
   print  TOP "    \<rank\>$rank\<\/rank\>\n";
@@ -267,7 +267,7 @@ sub printCP {
 
 sub parseVertexLine {
 
-  my $line = "$_[0]";
+  local $line = "$_[0]";
   local $x = undef; local $y = undef; local $z = undef;
 
   if ($line =~ m/(-?\d+\.\d+)E([+-]\d+)\s+(-?\d+\.\d+)E([+-]\d+)\s+(-?\d+\.\d+)E([+-]\d+)/) {
@@ -287,9 +287,9 @@ sub parseVertexLine {
   } elsif ($line =~ m/(-?\d+\.\d+)\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)/) {
     $x = $1; $y = $2; $z = $3;
   }
-  
+
   if (defined $x) {
-    @vector = ($x, $y, $z);
+    local @vector = ($x, $y, $z);
     return @vector;
   } else {
     return;
@@ -299,7 +299,8 @@ sub parseVertexLine {
 
 sub getRank {
 
-  $type = "$_[0]";
+  local $type = "$_[0]";
+
   if ($type == "bcp" or $type == "rcp" or $type = "ccp") {
     return 3;
   } else {
@@ -309,7 +310,8 @@ sub getRank {
 
 sub getSignature {
 
-  $type = "$_[0]";
+  local $type = "$_[0]";
+
   if ($type == "bcp") {
     return -1;
   } elsif ($type == "rcp") {
@@ -324,11 +326,14 @@ sub getSignature {
 
 sub readFile {
 
-  $fileName = "$_[0]";
+  local $fileName = "$_[0]";
+  local @fileContents;
+
   open(INP,"<","$fileName") || die "ERROR: FILE $fileName DOES NOT EXIST\n";
   @fileContents = <INP>;
   close INP;
   chomp(@fileContents);
+  
   return @fileContents;
   
 }
