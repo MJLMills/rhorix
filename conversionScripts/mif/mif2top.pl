@@ -99,8 +99,9 @@ MAIN_LOOP: for ($line=0;$line<@mifContents;$line++) {
 
           } else {
             #in this case an empty surface was found - jump $line past the two entries surf and cp
-            #$line = $surfLine;
-            print "NUMBER OF POINTS IN SURFACE  <= 0: n = $n\n";
+            $line = $surfLine;
+#            print "NUMBER OF POINTS IN SURFACE  <= 0: n = $n\n$mifContents[$surfLine]\n";
+            last SURF_LOOP;
           }
         }
       } # END SURF_LOOP
