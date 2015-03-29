@@ -118,7 +118,7 @@ MAIN_LOOP: for ($line=0;$line<@mifContents;$line++) {
         print "EMPTY SURFACE FOUND FOR ATOM $atom\n";
       }
       $c++;
-      if ($c > 2) { last MAIN_LOOP; } #debug - write one surface
+#      if ($c > 12) { last MAIN_LOOP; } #debug - write one surface
 
     } # END PICK_READER
 
@@ -134,6 +134,8 @@ sub reformatSurface {
   my ($xPoints,$yPoints,$zPoints,$edgeA,$edgeB) = @_;
   my @isRedundant; my @xNew; my @yNew; my @zNew;
 
+  $start = time;
+
   for ($i=0;$i<@$xPoints;$i++) {
     $isRedundant[$i] = 0;
   }
@@ -142,24 +144,28 @@ sub reformatSurface {
   if ($n_x == $n_y && $n_y == $n_z && $n_x != 0) {
 
     $kept = 0;
-    for ($point=0;$point<@$xPoints;$point++) {
+    CHECK_POINTS: for ($point=0;$point<@$xPoints;$point++) {
+
       if ($isRedundant[$point] == 1) {
-        next;
+        next CHECK_POINTS;
       } else {
         push(@xNew,@$xPoints[$point]); push(@yNew,@$yPoints[$point]); push(@zNew,@$zPoints[$point]);
-        $kept++;
+        $kept++; $rep = $kept - 1;
 
-        for ($j=$point;$j<@$xPoints;$j++) {
+        CORRECT_EDGES: for ($j=$point;$j<@$xPoints;$j++) {
+
+#          if ($isRedundant[$j] == 1) { next CORRECT_EDGES; }
 
           if (@$xPoints[$point] == @$xPoints[$j] && @$yPoints[$point] == @$yPoints[$j] && @$zPoints[$point] == @$zPoints[$j]) {
+
             if ($point != $j) { $isRedundant[$j] = 1; }
-            $rep = $kept - 1;
+
             for ($m=0;$m<@$edgeA;$m++) {
               if (@$edgeA[$m] == $j) {
-                @$edgeA[$m] = $kept - 1;
+                @$edgeA[$m] = $rep;
               } 
               if (@$edgeB[$m] == $j) {
-                @$edgeB[$m] = $kept - 1;
+                @$edgeB[$m] = $rep;
               }
             }
           }
@@ -169,6 +175,8 @@ sub reformatSurface {
       }
 
     }
+
+    $end = time; $elapsed = $end - $start; print "$elapsed SECONDS\t";
 
     if ($n_x > 0) {
       $n_redundant = 0;
