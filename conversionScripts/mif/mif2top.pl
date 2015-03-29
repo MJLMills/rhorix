@@ -1,7 +1,7 @@
 # Matthew JL Mills
 #!/usr/bin/perl -w
 
-$removeRedundant = 0;
+$removeRedundant = 1;
 $mifFile = "ALANINE0000\.mif";
 
 @mifContents = readFile($mifFile);
@@ -9,6 +9,7 @@ $mifFile = "ALANINE0000\.mif";
 open(TOP,">","new\.top");
 print TOP "\<topology\>\n";
 
+$c = 0;
 MAIN_LOOP: for ($line=0;$line<@mifContents;$line++) {
   
     #PARSE AN ATOMIC INTERACTION LINE
@@ -116,7 +117,8 @@ MAIN_LOOP: for ($line=0;$line<@mifContents;$line++) {
       } else {
         print "EMPTY SURFACE FOUND FOR ATOM $atom\n";
       }
-#      last MAIN_LOOP; #debug - write one surface
+      $c++;
+      if ($c > 2) { last MAIN_LOOP; } #debug - write one surface
 
     } # END PICK_READER
 
@@ -129,10 +131,10 @@ close TOP;
 
 sub reformatSurface {
 
-  local ($xPoints,$yPoints,$zPoints,$edgeA,$edgeB) = @_;
-  local @isRedundant; my @xNew, @yNew, @zNew;
+  my ($xPoints,$yPoints,$zPoints,$edgeA,$edgeB) = @_;
+  my @isRedundant; my @xNew; my @yNew; my @zNew;
 
-  for (local $i=0;$i<@$xPoints;$i++) {
+  for ($i=0;$i<@$xPoints;$i++) {
     $isRedundant[$i] = 0;
   }
 
@@ -140,19 +142,19 @@ sub reformatSurface {
   if ($n_x == $n_y && $n_y == $n_z && $n_x != 0) {
 
     $kept = 0;
-    for (local $point=0;$point<@$xPoints;$point++) {
+    for ($point=0;$point<@$xPoints;$point++) {
       if ($isRedundant[$point] == 1) {
         next;
       } else {
         push(@xNew,@$xPoints[$point]); push(@yNew,@$yPoints[$point]); push(@zNew,@$zPoints[$point]);
         $kept++;
 
-        for (local $j=$point;$j<@$xPoints;$j++) {
+        for ($j=$point;$j<@$xPoints;$j++) {
 
           if (@$xPoints[$point] == @$xPoints[$j] && @$yPoints[$point] == @$yPoints[$j] && @$zPoints[$point] == @$zPoints[$j]) {
             if ($point != $j) { $isRedundant[$j] = 1; }
             $rep = $kept - 1;
-            for (local $m=0;$m<@$edgeA;$m++) {
+            for ($m=0;$m<@$edgeA;$m++) {
               if (@$edgeA[$m] == $j) {
                 @$edgeA[$m] = $kept - 1;
               } 
@@ -167,6 +169,7 @@ sub reformatSurface {
       }
 
     }
+
     if ($n_x > 0) {
       $n_redundant = 0;
       for ($i=0;$i<@$xPoints;$i++) {
@@ -230,6 +233,8 @@ sub printSurf {
   #sub must receive five lists as references (i.e. \@array1, \@array2, \@array3, \@edgesA, \@edgesB)
   local ($xPoints, $yPoints, $zPoints, $edgeA, $edgeB) = @_;
   local $nPoints = scalar(@$xPoints);
+
+  print "PRINTING SURFACE OF $nPoints POINTS\n";
 
   print TOP "  \<SURFACE\>\n";
   print TOP "    \<A\>$atom\<\/A\>\n";
