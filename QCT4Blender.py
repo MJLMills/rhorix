@@ -74,7 +74,7 @@ def menu_function(self, context):
 
 def register():
     print("QCT4B: Registering Operator Class")
-    print("QCT4B: Use Operator \'Import Topology\' or File -> Import -> \.top TO INVOKE")
+    print("QCT4B: Use Operator \'Import Topology\' or File -> Import -> \.top to Invoke")
     bpy.utils.register_class(QCTBlender)
     bpy.types.INFO_MT_file_import.append(menu_function)
  
@@ -147,6 +147,8 @@ def createBlenderObjects():
     for cp in sphereList:
 
         cpSphere = bpy.ops.mesh.primitive_uv_sphere_add(location=cp.position)
+
+        #The necessary materials are created in the createMaterials function
         materialName = cp.type + '-CritPointColor'
         if materialName in bpy.data.materials:
             bpy.context.object.data.materials.append(bpy.data.materials[materialName])
@@ -160,6 +162,8 @@ def createBlenderObjects():
         newMesh.from_pydata(surface.points,surface.edges,[])
         newMesh.update()
         newObj = bpy.data.objects.new('SURFACE',newMesh)
+
+        #The necessary materials are created in the createMaterials function
         element = ''.join(i for i in surface.A if not i.isdigit())
         materialName = element + '-Surface_Material'
         if materialName in bpy.data.materials:
