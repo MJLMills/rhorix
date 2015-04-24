@@ -133,9 +133,9 @@ def readTopology(filepath):
 
                 edgeList = []
                 for edge in topologicalObject.findall('edge'):
-                    A = edge.find('A').text
-                    B = edge.find('B').text
-                    newEdge = [int(A),int(B)]
+                    a = edge.find('A').text
+                    b = edge.find('B').text
+                    newEdge = [int(a),int(b)]
                     edgeList.append(newEdge)
 
                 surface = Surface(A,vectorList,edgeList)
