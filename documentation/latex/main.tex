@@ -21,6 +21,15 @@ Blender also provides an API for Python scripting, allowing the writing of exten
 This document describes one such extension (termed an Add-On), which allows the user to read a file containing a set of objects consituting the topology of a scalar function of the chemical wavefunction of a system (the electron density $\rho(r)$ being the canonical example) and creates corresponding 3D objects for manipulation in Blender.
 This functionality allows the full power of Blender to be applied in creating images and animations of such topologies.
 
+Generation of pictorial representations of topologies is an important and typically overlooked problem.
+Blender, representing the state of the art for 3D drawing, has the potential to put QCT imaging at the edge of modern graphical capabilities.
+Past and current QCT drawing programs have at best provided access to the OpenGL libraries.
+Adding access to Blender allows the full use of the Blender Render and Cycles engines, massively increasing the potential for final images.
+Drawing on the same 3D canvas as used for the topology is also better facilitated by Blender.
+Arbitrary shapes are simple to draw/place/manipulate in blender, allowing for easy 3D annotation of rendered topologies.
+
+The basic goal of QCT4B is to allow the user to read a topology into Blender with a default acceptable representation,
+and then allow the user to apply the full set of Blender tools to making better renders specific to their goals.
 
 \section{Things QCT for Blender Does Not Do}
 
@@ -46,7 +55,9 @@ Interatomic Surfaces (IAS) are boundaries between basins.
 
 Given the variety of programs available for topological analysis of scalar functions computed from chemical wavefunctions,
 it seems apt to provide a generic file definition into which the output files of each program can be converted.
-This filetype can then be read by QCT4B and no dependence on the underlying analysis programs exists in the code.
+This filetype can then be read by QCT4B and no dependence on the underlying analysis programs exists in the code, meaning quirks of the topological analysis codes are not dealt with in QCT4B.
+A further benefit is to avoid tying a user faced with importing a foreign filetype to a single technology.
+That is, any language can be used to write a converter to the .top format, not just python.
 The extension '.top' will be used for these files, and they are based on the xml filetype.
 
 \section{Representing Components}
@@ -106,12 +117,40 @@ An element tree is created directly from the .top file. The root of this tree is
 
 
 The second step determines how the rendered scene will look.
-The default materials are intended to replicate the GUI of the program MORPHY.
+The default materials are intended to replicate the GUI of the program MORPHY and use the standard render engine.
 In future, it would be of benefit to be able to define and share 'profiles' that can be selected prior to reading.
 In order to maintain simplicity, a single material is created for each element rather than each atom.
 This allows the user to change the appearance of all atoms of a particular element at once.
 Where particular control over a single atom is needed (e.g. for emphasis), the user can create (via Blender's interface) a unique material for that atom.
 Surfaces are dealt with in the same way, although a separate material for surfaces and nuclei of a given element is defined.
-Similarly, all AILs share a single material.
+Similarly, all AILs share a single material with a black colour.
+
+Colors for the other materials are discussed above. The default material uses the Lambert diffuse shader (intensity 1), 
+the Cook-Torrance specular shader (color 1,1,1 and intensity 0.5) and has alpha and ambient set to 1.
+Changing these defaults currently has to be done in code, although they can be edited easily inside Blender.
+
+Creating the blender representations (step 3) simply involves iterating over the QCT objects and calling the appropriate Blender functions.
+
+Finally setting up the world really only requires addition of a light source and camera.
+It is assumed the user will want to reposition this camera, so its position is essentially irrelevant.
+
+\section{Blender Add-On Code}
+
+Certain code is required by Blender to define an Add-On. This section discusses this code in QCT4B.
+First the program has to import bpy, the blender python API.
+The Add-On itself is defined as a class that takes an Operator argument.
+The operator has to be given an ID 
+%(qct.import_topology)%
+ and a label (Import Topology).
+The operator class requires definition of the classes execute (called when the user runs the script)
+and invoke.
+Invoke opens a file select window with the filter set to only include files with the .top extension.
+Execute carries out the four steps discussed above.
+It is also necessary for the Add-On to define register and unregister functions which are used to include the Add-On in Blender itself.
+As suggested, these classes just register and deregister the operator. The register function is called when the script is added.
+This is achieved by the only line of executable code in the main program.
+Finally Blender required the definition of a dictionary. %bl_info.
+This contains basic information about the Add-On for display inside Blender, including the author, version number etc.
+
 
 \end{document}
