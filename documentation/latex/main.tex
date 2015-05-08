@@ -1,0 +1,117 @@
+\documentclass{report}
+
+\usepackage{amsmath,amsthm,amssymb}
+%\usepackage[backend=biber]{biblatex}
+%\addbibresource{main.bib}
+
+\title{QCT for Blender \\
+       \large ... \\ 
+       A Blender Extension for Importing Quantum Chemical Topologies}
+
+\author{Matthew J L Mills}
+
+\begin{document}
+
+\maketitle
+
+\chapter{Introduction}
+
+Blender is a free and open source 3D animation suite, supporting (amongst other things) modelling, animation and trenderint of 3D scenes. 
+Blender also provides an API for Python scripting, allowing the writing of extensions to the program's functionality.
+This document describes one such extension (termed an Add-On), which allows the user to read a file containing a set of objects consituting the topology of a scalar function of the chemical wavefunction of a system (the electron density $\rho(r)$ being the canonical example) and creates corresponding 3D objects for manipulation in Blender.
+This functionality allows the full power of Blender to be applied in creating images and animations of such topologies.
+
+
+\section{Things QCT for Blender Does Not Do}
+
+QCT for Blender is not able to perform topological analysis of scalar functions and never will.
+Python is not the place for such things, and a number of mature programs already exist.
+One such external program is required, and a list of existing programs is given below.
+
+\chapter{Quantum Chemical Topology}
+
+A detailed introduction to the theory of QCT (an umbrella term encompassing all methods involving topological analysis of scalar functions in chemistry) is outside the scope of this document.
+However, a description of the relevant concepts is warranted, being a prerequisite for understanding the .top filetype.
+
+\section{Components of a Topology}
+
+A topology consists of various objects, each with different 3D representation. 
+Critical points are points in space described by a position vector $r_{cp}$ and a ran and signature ($\omega$,$s$) which depend on the behaviour of the function around that point).
+Atomic Interaction Lines (AIL) are paths through the scalar field with particular properties.
+Interatomic Surfaces (IAS) are boundaries between basins.
+
+\chapter{Describing Topology: the .top File}
+
+\section{Introduction}
+
+Given the variety of programs available for topological analysis of scalar functions computed from chemical wavefunctions,
+it seems apt to provide a generic file definition into which the output files of each program can be converted.
+This filetype can then be read by QCT4B and no dependence on the underlying analysis programs exists in the code.
+The extension '.top' will be used for these files, and they are based on the xml filetype.
+
+\section{Representing Components}
+
+\subsection{Critical Points}
+Critical points are typically represented with a sphere centered on their coordinates.
+The color and radius of these spheres can be determined by their rank and signature.
+In particular it is usual to set the non-nuclear CPs to have a small radius, and to use the van der Waals radii of nuclear CPs.
+the set of van der Waals radii used can be found in the appendix.
+However, for CPs corresponding to nuclei, it is more typical to color them by element.
+Due to this mismatch between a pair of integers and an element name, a single text label is used in the .top file.
+Thus a label must be defined for each CP type, and they are listed in the following table.
+
+\begin{tabular}{ l c || r }
+$\omega$ & $s$ & Label \\
+\hline
+0 & 0 & bcp \\
+0 & 0 & rcp \\
+0 & 0 & ccp \\
+\end{tabular}
+
+The complete set of element and CP colors is given in the appendix of this document.
+
+Blender allows spheres to be created directly.
+
+\subsection{Atomic Interaction Lines}
+
+Atomic Interaction Lines are rendered as curves.
+At the lowest level, an AIL can be rendered as a set of disconnected points.
+This can be sufficient for analysis, but is not particularly attractive.
+Beyond this, the point can be connected by straight lines, or a smooth curve can be interpolated between them.
+As the latter is prettiest, whis is the route taken by QCT4B.
+Blender offers the ability to create an interpolated line from a set of points.
+
+\begin{equation}
+V_{m} = (1 - \lambda_{m}) V_{1} + \lambda_{m} V_{2}
+\end{equation}
+
+\chapter{Program Notes}
+
+The QCT4B Add-On can be summarised in the following scheme
+
+\begin{enumerate}
+
+  \item Read the .top file and convert into python objects.
+  \item Create the Blender materials required to render the topology.
+  \item Create the Blender representations (using the materials) of each topological object.
+  \item Setup the Blender world such that the renderer produces the desired default result.
+
+\end{enumerate}
+
+The first step requires python only. A class must be defined for each type of topological object.
+Due to the use of XML in the .top file, the python XML library can be used to majorly simplify reading.
+An object (i.e. an instantiation of one of the defined QCT classes) is created for each located topological element.
+The readTopology function has the required behaviour. It takes a single argument which is the full path to the .top file.
+An element tree is created directly from the .top file. The root of this tree is the <topology> tag, and the root is scanned branch-by-branch for topological objects.
+
+
+The second step determines how the rendered scene will look.
+The default materials are intended to replicate the GUI of the program MORPHY.
+In future, it would be of benefit to be able to define and share 'profiles' that can be selected prior to reading.
+In order to maintain simplicity, a single material is created for each element rather than each atom.
+This allows the user to change the appearance of all atoms of a particular element at once.
+Where particular control over a single atom is needed (e.g. for emphasis), the user can create (via Blender's interface) a unique material for that atom.
+Surfaces are dealt with in the same way, although a separate material for surfaces and nuclei of a given element is defined.
+Similarly, all AILs share a single material.
+
+\end{document}
