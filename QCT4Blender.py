@@ -149,6 +149,13 @@ def createBlenderObjects():
 
         cpSphere = bpy.ops.mesh.primitive_uv_sphere_add(location=cp.position,size=elementRadii[cp.type],segments=32,ring_count=16)
 
+        #Create and apply the subsurface modifiers for smooth rendering
+        bpy.context.object.modifiers.new("subd", type='SUBSURF')
+        bpy.context.object.modifiers['subd'].levels=1
+        bpy.context.object.modifiers['subd'].render_levels=4
+        bpy.context.scene.objects.active = bpy.context.object
+        bpy.ops.object.modifier_apply(apply_as='DATA', modifier='subd')
+
         #The necessary materials are created in the createMaterials function
         materialName = cp.type + '-CritPointColor'
         if materialName in bpy.data.materials:
