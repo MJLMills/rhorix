@@ -182,6 +182,14 @@ def createBlenderObjects():
         bpy.context.scene.objects.link(newObj)
 
     #create a polygon curve for each AIL
+
+    #this creates a single bezier circle to give the AILs uniform thickness
+    if len(lineList) != 0:
+         bpy.ops.curve.primitive_bezier_circle_add()
+         bpy.context.scene.objects.active = bpy.data.objects['BezierCircle']
+         bpy.ops.transform.resize(value=(0.25,0.25,0.25))
+
+    #this creates all the lines
     for line in lineList:
 
         weight = 1 #all points on curve have same weight
@@ -192,6 +200,7 @@ def createBlenderObjects():
         objectData = bpy.data.objects.new('ObjCurve',curveData)
         objectData.location = (0,0,0)
         objectData.data.materials.append(bpy.data.materials['AIL_Material'])
+        objectData.data.bevel_object = bpy.data.objects['BezierCircle']
         bpy.context.scene.objects.link(objectData)
 
         polyLine = curveData.splines.new('POLY')
