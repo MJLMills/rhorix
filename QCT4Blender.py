@@ -143,10 +143,11 @@ def readTopology(filepath):
 
 def createBlenderObjects():
 
+    elementRadii = defineRadii()
     #create a UV sphere for each CP
     for cp in sphereList:
 
-        cpSphere = bpy.ops.mesh.primitive_uv_sphere_add(location=cp.position)
+        cpSphere = bpy.ops.mesh.primitive_uv_sphere_add(location=cp.position,size=elementRadii[cp.type],segments=32,ring_count=16)
 
         #The necessary materials are created in the createMaterials function
         materialName = cp.type + '-CritPointColor'
