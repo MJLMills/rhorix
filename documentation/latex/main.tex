@@ -72,6 +72,15 @@ We recommend reading the remainder of this document before starting to use QCT4B
 Therefore this section explains how to get straight into using QCT4B to generate a standard-look rendered image of a .top file.
 For help with common rendering desires, see the Section 'Manipulating the Appearance'.
 
+The Add-On will handle the import and materials for the whole scene.
+It then remains to place appropriate lights and position the camera.
+The minimal need for the user is typically to move the camera to get the desired part of the system in the final render.
+QCT4B positions the camera such that the camera is outside the system and points at the origin.
+To move the camera, it is recommended that you enter the camera view mode (keypad 0), and then use the fly mode (shift-F) to position the camera using your mouse.
+The enter key freezes the camera when you find the viewpoint that you want.
+Pressing the F12 key will invoke the Blender Render engine and produce a rendered image of your scene from the chosen viewpoint.
+The Esc key leaves the render mode if you want ot make further changes.
+
 \chapter{Quantum Chemical Topology}
 
 A detailed introduction to the theory of QCT (an umbrella term encompassing all methods involving topological analysis of scalar functions in chemistry) is outside the scope of this document.
