@@ -37,6 +37,41 @@ QCT for Blender is not able to perform topological analysis of scalar functions 
 Python is not the place for such things, and a number of mature programs already exist.
 One such external program is required, and a list of existing programs is given below.
 
+\chapter{Installation and Quick Start}
+
+\section{Installation}
+
+This section describes the 2 ways of installing QCT4B. The obvious prerequisite Blender itself. Blender installation is covered in detail elsewhere, and here it is assumed you have a working version.
+There are two options for using the script.
+
+The more permanent solution is installation, i.e. putting the script into your Blender user preferences directory, which will cause it to appear in the Add-Ons list in the User Preferences window.
+Doing this directly is OS-dependent.
+This dependence can be avoided by installing from inside Blender.
+Navigate to User Preferences and choose the 'Add-Ons' tab.
+Click "Install Add-On" and navigate to the location of the script on your machine.
+This will copy the script to you personal Add-Ons directory, and it will now appear in the list of available Add-Ons.
+To activate it you must tick the checkbox for that entry. 
+You can then save the Blender configuration for all future documents, or alternatively tick the Add-On in each document you use for QCT drawing.
+
+The non-permanent option is to store the script in a text block within your Blender document. 
+This has to be added to each document you make so is less desirable unless you intend to make changes to the script, as it allows for quick editing and reloading of the program.
+To do this, bring up a Text Editor in a convenient window and click the 'New' button in the window header.
+Paste the script into the resulting Editor.
+Press Alt+P to execute the script. 
+After you make changes to the script, pressing Alt+P again will re-execute the script and apply your changes. 
+The location of any Python error messages is OS and execution-environment dependent.
+Check documentation if you cannot find them.
+
+Irrespective of the method, the script will add an operator named 'Import Topology' to the built-in list that can be accessed by pressing the spacebar with the 3D view active.
+Additionally, the operator is added as a menu item under File -> Import -> Quantum Chemical Topology (.top).
+No keyboard shortcuts are defined.
+
+\section{Quick Start}
+
+We recommend reading the remainder of this document before starting to use QCT4B, but realise that people do not like manuals.
+Therefore this section explains how to get straight into using QCT4B to generate a standard-look rendered image of a .top file.
+For help with common rendering desires, see the Section 'Manipulating the Appearance'.
+
 \chapter{Quantum Chemical Topology}
 
 A detailed introduction to the theory of QCT (an umbrella term encompassing all methods involving topological analysis of scalar functions in chemistry) is outside the scope of this document.
@@ -95,6 +130,14 @@ Blender offers the ability to create an interpolated line from a set of points.
 \begin{equation}
 V_{m} = (1 - \lambda_{m}) V_{1} + \lambda_{m} V_{2}
 \end{equation}
+
+\chapter{Manipulating the Appearance}
+
+Whilst the default appearance is fine for rendering images (the MORPHY GUI has been used to render images for a large number of publications), the main point of writing this program is to allow you to go further.
+Thus, some of the more common appearance changes are described here. 
+The user is urged to think creatively and come up with things not described in this document.
+A friendly user will let us know so that others can use their ideas.
+A perfect user would write a description of how they did it for direct inclusion below!
 
 \chapter{Program Notes}
 
