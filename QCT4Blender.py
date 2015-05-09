@@ -252,6 +252,10 @@ def createAILMaterial():
 def setupWorld():
     #This is where anything about the scene can be set, render options, lighting, camera and such
     print("TODO: SETUP WORLD")
+    cam = bpy.data.cameras.new("Cam")
+    cam.clip_end = 1000.0
+    cam_ob = bpy.data.objects.new("Cam", cam)
+    bpy.context.scene.objects.link(cam_ob)
 
 #This function creates a single material for each CP in the scene
 def createMaterials():
