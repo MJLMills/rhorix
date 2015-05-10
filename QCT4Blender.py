@@ -250,14 +250,22 @@ def createAILMaterial():
     mat.ambient = 1
 
 def setupWorld():
+
     #This is where anything about the scene can be set, render options, lighting, camera and such
     print("TODO: SETUP WORLD")
     cam = bpy.data.cameras.new("Cam")
     cam.clip_end = 1000.0
-    r = findCenter()
+    center = findCenter()
+    radius = computeRadius()
+    center[2] += (4.0 * radius)
     cam_ob = bpy.data.objects.new("Cam", cam)
-    cam_ob.location=(r[0],r[1],r[2])
+    cam_ob.location=center
     bpy.context.scene.objects.link(cam_ob)
+
+    bpy.context.scene.world.light_settings.use_environment_light = True
+    bpy.context.scene.world.light_settings.environment_energy = 0.25
+    bpy.context.scene.world.light_settings.use_ambient_occlusion = True
+    bpy.context.scene.world.light_settings.ao_factor = 0.5
 
 def findCenter():
 
@@ -276,6 +284,20 @@ def findCenter():
     z_origin = z_total / N
 
     return mathutils.Vector((float(x_origin),float(y_origin),float(z_origin)))
+
+def computeRadius():
+
+    max = -100000
+
+    center = findCenter()
+    for cp in sphereList:
+        position = cp.position - center
+        r = sqrt (position[0]*position[0] + position[1]*position[1] + position[2]*position[2])
+
+        if position[0] > max:
+            max = position[0]
+
+    return max
 
 #This function creates a single material for each CP in the scene
 def createMaterials():
