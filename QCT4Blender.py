@@ -254,8 +254,28 @@ def setupWorld():
     print("TODO: SETUP WORLD")
     cam = bpy.data.cameras.new("Cam")
     cam.clip_end = 1000.0
+    r = findCenter()
     cam_ob = bpy.data.objects.new("Cam", cam)
+    cam_ob.location=(r[0],r[1],r[2])
     bpy.context.scene.objects.link(cam_ob)
+
+def findCenter():
+
+    x_total = 0.0
+    y_total = 0.0
+    z_total = 0.0
+
+    for cp in sphereList:
+        x_total += cp.position[0]
+        y_total += cp.position[1]
+        z_total += cp.position[2]
+
+    N = len(sphereList)
+    x_origin = x_total / N
+    y_origin = y_total / N
+    z_origin = z_total / N
+
+    return mathutils.Vector((float(x_origin),float(y_origin),float(z_origin)))
 
 #This function creates a single material for each CP in the scene
 def createMaterials():
