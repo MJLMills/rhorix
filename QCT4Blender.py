@@ -1,6 +1,7 @@
 import xml.etree.ElementTree as ET
 import bpy
 import mathutils
+import math
 
 #These objects must be read from the .top file, and then
 #converted to blender data objects so that they persist on 
@@ -252,7 +253,6 @@ def createAILMaterial():
 def setupWorld():
 
     #This is where anything about the scene can be set, render options, lighting, camera and such
-    print("TODO: SETUP WORLD")
     cam = bpy.data.cameras.new("Cam")
     cam.clip_end = 1000.0
     center = findCenter()
@@ -263,9 +263,13 @@ def setupWorld():
     bpy.context.scene.objects.link(cam_ob)
 
     bpy.context.scene.world.light_settings.use_environment_light = True
-    bpy.context.scene.world.light_settings.environment_energy = 0.25
+    bpy.context.scene.world.light_settings.environment_energy = 0.20
     bpy.context.scene.world.light_settings.use_ambient_occlusion = True
-    bpy.context.scene.world.light_settings.ao_factor = 0.5
+    bpy.context.scene.world.light_settings.ao_factor = 0.3
+    bpy.context.scene.world.light_settings.samples = 10
+
+    bpy.context.scene.world.horizon_color = (0.05, 0.20, 0.35)
+    
 
 def findCenter():
 
@@ -292,7 +296,7 @@ def computeRadius():
     center = findCenter()
     for cp in sphereList:
         position = cp.position - center
-        r = sqrt (position[0]*position[0] + position[1]*position[1] + position[2]*position[2])
+        r = math.sqrt(position[0]*position[0] + position[1]*position[1] + position[2]*position[2])
 
         if position[0] > max:
             max = position[0]
@@ -347,9 +351,9 @@ def defineRadii():
     #Initial values taken from the old Java GUI - if not present, radius = 2.0
     elementRadii = \
     {
-    "bcp" : 0.50,
-    "rcp" : 0.50,
-    "ccp" : 0.50,
+    "bcp" : 0.75,
+    "rcp" : 0.75,
+    "ccp" : 0.75,
     "Ag"  : 1.72,
     "Ar"  : 1.88,
     "As"  : 1.85,
