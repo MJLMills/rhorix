@@ -2,6 +2,7 @@
 #!/usr/bin/perl -w
 
 $removeRedundant = 1;
+$printEdges = 0;
 $mifFile = "ALANINE0000\.mif";
 
 @mifContents = readFile($mifFile);
@@ -58,7 +59,7 @@ MAIN_LOOP: for ($line=0;$line<@mifContents;$line++) {
         die "ERROR READING ASOOCIATED CP FOR SURFACE\n";
       }
 
-      my @edgeA; my @edgeB;
+      my @edgeA; my @edgeB; my @faceA; my @faceB; my @faceC;
       my @ailCoords_x; my @ailCoords_y; my @ailCoords_z;
       $vertex = 1; $pointID = 0;
       SURF_LOOP: for ($surfLine=$line+2;$surfLine<@mifContents;$surfLine++) {
@@ -67,6 +68,8 @@ MAIN_LOOP: for ($line=0;$line<@mifContents;$line++) {
         if (@vertexCoords) {
 
           push(@ailCoords_x,$vertexCoords[0]); push(@ailCoords_y,$vertexCoords[1]); push(@ailCoords_z,$vertexCoords[2]);
+
+          if ($vertex == 1) {push(@faceA,$pointID); push(@faceB,$pointID+1); push(@faceC,$pointID+2); }
 
           if ($vertex == 1) { #connect A to B
             push(@edgeA,$pointID); $pointID++; push(@edgeB,$pointID);
@@ -110,15 +113,15 @@ MAIN_LOOP: for ($line=0;$line<@mifContents;$line++) {
       $n = @ailCoords_x;
       if ($n > 0) {
         if ($removeRedundant == 1) {
-          reformatSurface(\@ailCoords_x, \@ailCoords_y, \@ailCoords_z, \@edgeA, \@edgeB);
+          reformatSurface(\@ailCoords_x, \@ailCoords_y, \@ailCoords_z, \@edgeA, \@edgeB, \@faceA, \@faceB, \@faceC);
         } else {
-          printSurf(\@ailCoords_x, \@ailCoords_y, \@ailCoords_z, \@edgeA, \@edgeB);
+          printSurf(\@ailCoords_x, \@ailCoords_y, \@ailCoords_z, \@edgeA, \@edgeB, \@faceA, \@faceB, \@faceC);
         }
       } else {
         print "EMPTY SURFACE FOUND FOR ATOM $atom\n";
       }
       $c++;
-#      if ($c > 12) { last MAIN_LOOP; } #debug - write one surface
+#      if ($c > 5) { last MAIN_LOOP; } #debug - write one surface
 
     } # END PICK_READER
 
@@ -131,7 +134,7 @@ close TOP;
 
 sub reformatSurface {
 
-  my ($xPoints,$yPoints,$zPoints,$edgeA,$edgeB) = @_;
+  my ($xPoints,$yPoints,$zPoints,$edgeA,$edgeB,$faceA,$faceB,$faceC) = @_;
   my @isRedundant; my @xNew; my @yNew; my @zNew;
 
   $start = time;
@@ -152,22 +155,39 @@ sub reformatSurface {
         push(@xNew,@$xPoints[$point]); push(@yNew,@$yPoints[$point]); push(@zNew,@$zPoints[$point]);
         $kept++; $rep = $kept - 1;
 
-        CORRECT_EDGES: for ($j=$point;$j<@$xPoints;$j++) {
+        if ($printEdges == 1) {
+          CORRECT_EDGES: for ($j=$point;$j<@$xPoints;$j++) {
 
 #          if ($isRedundant[$j] == 1) { next CORRECT_EDGES; }
 
+            if (@$xPoints[$point] == @$xPoints[$j] && @$yPoints[$point] == @$yPoints[$j] && @$zPoints[$point] == @$zPoints[$j]) {
+
+              if ($point != $j) { $isRedundant[$j] = 1; }
+
+              for ($m=0;$m<@$edgeA;$m++) {
+                if (@$edgeA[$m] == $j) {
+                  @$edgeA[$m] = $rep;
+                } 
+                if (@$edgeB[$m] == $j) {
+                  @$edgeB[$m] = $rep;
+                }
+              }
+            }
+          }
+        }
+
+        CORRECT_FACES: for ($j=$point;$j<@$xPoints;$j++) {
+        
           if (@$xPoints[$point] == @$xPoints[$j] && @$yPoints[$point] == @$yPoints[$j] && @$zPoints[$point] == @$zPoints[$j]) {
 
             if ($point != $j) { $isRedundant[$j] = 1; }
 
-            for ($m=0;$m<@$edgeA;$m++) {
-              if (@$edgeA[$m] == $j) {
-                @$edgeA[$m] = $rep;
-              } 
-              if (@$edgeB[$m] == $j) {
-                @$edgeB[$m] = $rep;
-              }
+            for ($m=0;$m<@$faceA;$m++) {
+              if (@$faceA[$m] == $j) { @$faceA[$m] = $rep; }
+              if (@$faceB[$m] == $j) { @$faceB[$m] = $rep; }
+              if (@$faceC[$m] == $j) { @$faceC[$m] = $rep; }
             }
+
           }
 
         }
@@ -176,7 +196,7 @@ sub reformatSurface {
 
     }
 
-    $end = time; $elapsed = $end - $start; print "$elapsed SECONDS\t";
+    $end = time; $elapsed = $end - $start; print "TOOK $elapsed SECONDS TO FIX SURFACE\t";
 
     if ($n_x > 0) {
       $n_redundant = 0;
@@ -185,11 +205,32 @@ sub reformatSurface {
       } 
       $percent = ($n_redundant / $n_x) * 100; $remains = @xNew;
       printf "%d REDUNDANT POINTS \(OF $n_x\) REMOVED \(%5.2f \%\) LEAVING %d\n",$n_redundant,$percent,$remains;
-      printSurf(\@xNew, \@yNew, \@zNew, \@$edgeA, \@$edgeB);
+      printSurf(\@xNew, \@yNew, \@zNew, \@$edgeA, \@$edgeB, \@$faceA, \@$faceB, \@$faceC);
     }
 
   } else {
     die "ERROR: MISMATCHED COORDINATE ARRAYS IN reformatSurface SUBROUTINE\n";
+  }
+
+}
+
+sub printFaces {
+
+local ($faceA,$faceB,$faceC) = @_;
+
+  if (@$faceA == @$faceB && @$faceB == @$faceC) {
+
+    for (local $face=0;$face<@$faceA;$face++) {
+      print TOP "    \<face\>";
+      print TOP "\<A\>@$faceA[$face]\<\/A\>";
+      print TOP "\<B\>@$faceB[$face]\<\/B\>";
+      print TOP "\<C\>@$faceC[$face]\<\/C\>";
+      print TOP " \<\/face\>\n";
+    }
+
+  } else {
+    print "N_A = $n_A\nN_B = $n_B\nN_C = @$edgeC\n";
+    die "ERROR: MISMATCHED FACE ARRAYS IN printFaces SUBROUTINE\n";
   }
 
 }
@@ -239,7 +280,7 @@ sub printLine {
 sub printSurf {
 
   #sub must receive five lists as references (i.e. \@array1, \@array2, \@array3, \@edgesA, \@edgesB)
-  local ($xPoints, $yPoints, $zPoints, $edgeA, $edgeB) = @_;
+  local ($xPoints, $yPoints, $zPoints, $edgeA, $edgeB, $faceA, $faceB, $faceC) = @_;
   local $nPoints = scalar(@$xPoints);
 
   print "PRINTING SURFACE OF $nPoints POINTS\n";
@@ -254,7 +295,9 @@ sub printSurf {
     print TOP " \<\/vector\>\n";
   }
 
-  printGraph(\@$edgeA,\@$edgeB);
+  #only print the edges if you really want them for some reason. Kept for back-compatability for now
+  if ($printEdges == 1) { printGraph(\@$edgeA,\@$edgeB); }
+  printFaces(\@$faceA,\@$faceB,\@$faceC);
 
   print TOP "  \<\/SURFACE\>\n";
 
