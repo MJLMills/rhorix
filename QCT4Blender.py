@@ -177,7 +177,7 @@ def createBlenderObjects():
     for surface in surfaceList:
 
         newMesh = bpy.data.meshes.new('SURFACE')
-        if (surface.faces == null):
+        if (not surface.faces):
             newMesh.from_pydata(surface.points,surface.edges,[])
         else:
             newMesh.from_pydata(surface.points,[],surface.faces)
