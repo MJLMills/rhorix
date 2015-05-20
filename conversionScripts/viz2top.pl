@@ -6,7 +6,7 @@
 $nFiles = @vizFiles;
 print "$nFiles VIZ FILES IN FOLDER\n";
 
-open(TOP,">","h2o\.top");
+open(TOP,">","reaction-A1\.top");
 print TOP "\<topology\>\n";
 
 for ($file=0;$file<@vizFiles;$file++) {
@@ -24,28 +24,33 @@ for ($file=0;$file<@vizFiles;$file++) {
       $y = $4 * (10 ** $5);
       $z = $6 * (10 ** $7);
         
-      if ($vizContents[$line+1] =~ m/Type\s+\=\s+\((-?\d+)\,(-?\d+)\)/) {
-        $rank = $1; $signature = $2;
-      }
+      if ($vizContents[$line+1] =~ m/Type\s+\=\s+\(([-+]?\d+)\,([-+]?\d+)\)\s+(\w+)\s+([a-zA-Z_]+\d+)/) {
+        $rank = $1; $signature = $2; $type = $3; $label = $4;
+      } else { die "Malformed CP located: $vizContents[$line+1]\n"; }
 
-#    print "FOUND CP: rank=$rank; signature=$signature\n";
-#      printCP();
+      if ($type eq "NACP") {
+        $label =~ m/([a-zA-Z_]+)\d+/; $cpType = $1;
+      } else { $cpType = lc("$type"); }
 
-    } elsif ($vizContents[$line] =~ m/(\d+)\s+sample points along/) {
+#      print "FOUND CP: rank=$rank; signature=$signature\n";
+      printCP($cpType,$rank,$signature,$x,$y,$z);
+
+    } elsif ($vizContents[$line] =~ m/(\d+)\s+sample points along/ && $vizContents[$line] !~ m/IAS|RCP/) {
 
       $nPoints = $1;
       my @ailPoints_x; my @ailPoints_y; my @ailPoints_z;
-#    print "FOUND LINE\: $nPoints POINTS\n";
+      print "FOUND LINE\: $nPoints POINTS\n";
+
       for ($ailLine=$line+1;$ailLine<$line+$nPoints+1;$ailLine++) {
-        if ($vizContents[$ailLine] =~ m/\s+(-?\d+\.\d+)E([-+]\d+)\s+(-?\d+\.\d+)E([-+]\d+)\s+(-?\d+\.\d+)E([-+]\d+)\s+(-?\d+\.\d+)E([-+]\d+)\s+/) {
+        if ($vizContents[$ailLine] =~ m/\s+(-?\d+\.\d+)E([-+]\d+)\s+(-?\d+\.\d+)E([-+]\d+)\s+(-?\d+\.\d+)E([-+]\d+)\s+(-?\d+\.\d+)E([-+]\d+)/) {
           $x = $1 * (10 ** $2); push(@ailPoints_x, $x);
           $y = $3 * (10 ** $4); push(@ailPoints_y, $y);
           $z = $5 * (10 ** $6); push(@ailPoints_z, $z);
         } else {
-          die "Malformed AIL point\n";
+          die "Malformed AIL point: $vizContents[$ailLine]\n";
         }
       }
-#      printLine(\@ailPoints_x,\@ailPoints_y,\@ailPoints_z);
+      printLine(\@ailPoints_x,\@ailPoints_y,\@ailPoints_z);
 
     } elsif ($vizContents[$line] =~ m/\<IAS\s+Path\>/) {
     
@@ -63,7 +68,7 @@ for ($file=0;$file<@vizFiles;$file++) {
             die "Malformed IAS Path point\:\t$vizContents[$iasLine]\n";
           }
         }
-#        printLine(\@ailPoints_x,\@ailPoints_y,\@ailPoints_z);
+        printLine(\@ailPoints_x,\@ailPoints_y,\@ailPoints_z);
 
       } else {
         die "Malformed line in .iasviz file\n";
@@ -119,12 +124,14 @@ close TOP;
 sub printLine {
 
   #sub must receive three lists as references (i.e. \@array1, \@array2, \@array3)
-  my ($xPoints, $yPoints, $zPoints) = @_;
-  $nPoints = scalar(@$xPoints);
-  print "writing $nPoints points\n";
+  local ($xPoints, $yPoints, $zPoints) = @_;
+  local $nPoints = scalar(@$xPoints);
 
   print TOP "  \<LINE\>\n";
-  for ($point=0;$point<$nPoints;$point++) {
+  print TOP "    \<A\>1\<\/A\>\n";
+  print TOP "    \<B\>1\<\/B\>\n";
+
+  for (local $point=0;$point<$nPoints;$point++) {
     print TOP "    \<vector\>";
     printf TOP " \<x\>%8.5f\<\/x\>", @$xPoints[$point];
     printf TOP " \<y\>%8.5f\<\/y\>", @$yPoints[$point];
@@ -138,6 +145,7 @@ sub printLine {
 sub printCP {
 
   print TOP "  \<CP\>\n";
+  print TOP "    \<type\>$cpType\<\/type\>\n";
   print TOP "    \<rank\>$rank\<\/rank\>\n";
   print TOP "    \<signature\>$signature\<\/signature\>\n";
   printf TOP "    \<x\>%8.5f\<\/x\>", $x;
