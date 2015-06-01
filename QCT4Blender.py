@@ -343,7 +343,7 @@ if __name__ == "main":
  register()
 
 #For Debugging as text script
-register()
+#register()
 
 #Info for installed Add-On
 bl_info = \
