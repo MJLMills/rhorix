@@ -16,26 +16,38 @@
 
 \chapter{Introduction}
 
-Blender is a free and open source 3D animation suite, supporting (amongst other things) modelling, animation and trenderint of 3D scenes. 
+Blender is a free and open source 3D animation suite, supporting (amongst other things) modelling, animation and 
+rendering of 3D scenes. 
 Blender also provides an API for Python scripting, allowing the writing of extensions to the program's functionality.
-This document describes one such extension (termed an Add-On), which allows the user to read a file containing a set of objects consituting the topology of a scalar function of the chemical wavefunction of a system (the electron density $\rho(r)$ being the canonical example) and creates corresponding 3D objects for manipulation in Blender.
-This functionality allows the full power of Blender to be applied in creating images and animations of such topologies.
+This document describes one such extension (termed an Add-On), which allows the user to read a file containing a set 
+of objects constituting the topology of a scalar function of the chemical wavefunction of a system (the electron 
+density $\rho(r)$ being the canonical example) and creates corresponding 3D objects for manipulation in Blender.
+This functionality allows the full power of Blender to be applied in creating images of such topologies.
 
 Generation of pictorial representations of topologies is an important and typically overlooked problem.
-Blender, representing the state of the art for 3D drawing, has the potential to put QCT imaging at the edge of modern graphical capabilities.
-Past and current QCT drawing programs have at best provided access to the OpenGL libraries.
-Adding access to Blender allows the full use of the Blender Render and Cycles engines, massively increasing the potential for final images.
-Drawing on the same 3D canvas as used for the topology is also better facilitated by Blender.
-Arbitrary shapes are simple to draw/place/manipulate in blender, allowing for easy 3D annotation of rendered topologies.
+Blender, representing the state of the art for 3D drawing, has the potential to put QCT imaging at the edge 
+of modern graphical capabilities.
+Past and current QCT drawing programs have at best provided access to the OpenGL API (www.opengl.org).
+Adding access to Blender allows the full use of the Blender Render and Cycles engines, massively increasing the 
+potential for creativity and professional appearance of QCT images.
+Drawing on the same 3D canvas as used for the topology is also better facilitated by Blender, as this functionality
+already exists and is very flexible in Blender.
+Arbitrary shapes are simple to draw/place/manipulate in blender, allowing for easy 3D annotation of rendered 
+topologies.
 
-The basic goal of QCT4B is to allow the user to read a topology into Blender with a default acceptable representation,
-and then allow the user to apply the full set of Blender tools to making better renders specific to their goals.
+The basic goal of the described Add-On is to allow the user to read a topology into Blender with a default 
+acceptable representation, and then to allow the user to apply the full set of Blender tools towards making 
+rendered images specific to their goals.
 
 \section{Things QCT for Blender Does Not Do}
 
-QCT for Blender is not able to perform topological analysis of scalar functions and never will.
-Python is not the place for such things, and a number of mature programs already exist.
+QCT for Blender is not able to perform topological analysis of scalar functions and never will be.
+Python within a host is not an appropriate place for such functionality, and a number of mature programs 
+already exist.
 One such external program is required, and a list of existing programs is given below.
+
+Morphy
+AIMAll
 
 \chapter{Installation and Quick Start}
 
@@ -68,28 +80,37 @@ No keyboard shortcuts are defined.
 
 \section{Quick Start}
 
-We recommend reading the remainder of this document before starting to use QCT4B, but realise that people do not like manuals.
-Therefore this section explains how to get straight into using QCT4B to generate a standard-look rendered image of a .top file.
+We recommend reading the remainder of this document before starting to use QCT4B, but realise that people do 
+not like manuals.
+Therefore this section explains how to get straight into using QCT4B to generate a standard-appearance rendered 
+image of a .top file.
 For help with common rendering desires, see the Section 'Manipulating the Appearance'.
 
-The Add-On will handle the import and materials for the whole scene.
+The Add-On will handle the import and materials (which define color and appearance) for the whole scene.
 It then remains to place appropriate lights and position the camera.
-The minimal need for the user is typically to move the camera to get the desired part of the system in the final render.
+The minimal need for the user is typically to move the camera to get the desired part of the system in the final 
+render.
 QCT4B positions the camera such that the camera is outside the system and points at the origin.
 
-There are 2 important 3D viewports for the quickstart user. The program will show the 3D view window once the system is read in.
-The purpose of this view is to allow the manipulation of objects and materials, and provide a pre-rendered image of the scene.
-The second viewport is the Camera View. The camera view shows you which objects will be rendered to the final image.
-Thus you should check that your system appears correct in the 3D view first, and then enter the camera view mode to determine the viewpoint of your final 3D render.
+There are 2 important 3D viewports for the quickstart user. The program will show the 3D view window once the 
+system is read in.
+The purpose of this view is to allow the manipulation of objects and materials, and provide a pre-rendered image 
+of the scene.
+The second viewport is the Camera View. The camera view shows you which objects will be rendered to the final image 
+and the orientation they will have.
+Thus you should check that your system appears correctly drawn in the 3D view first, and then enter the camera 
+view mode to determine the viewpoint of your final 3D render.
 
-To move the camera, it is recommended that you enter the camera view mode (keypad 0), and then use the fly mode (shift-F) to position the camera using your mouse.
+To move the camera, it is recommended that you enter the camera view mode (keypad 0), and then use the fly mode 
+(shift-F) to position the camera using your mouse.
 The enter key freezes the camera when you find the viewpoint that you want.
-For larger systems, the z-clipping (which hides objects from the view deemed too far from the camera) will eliminate parts of your system.
+For larger systems, the z-clipping (which hides objects from the view deemed too far from the camera) will 
+eliminate parts of your system.
 If this happens, select the camera, and then its object Data panel.
 Increase the value of 'End' in the 'Clipping' section until the part of your scene you want returns to the camera view.
-Pressing the F12 key will invoke the Blender Render engine and produce a rendered image of your scene from the chosen viewpoint.
+Pressing the F12 key will invoke the Blender Render engine and produce a rendered image of your scene from the 
+chosen viewpoint.
 The Esc key leaves the render mode if you want to make further changes.
-
 
 The camera can be moved in other ways once in camera view mode. Please see link for more details.
 
@@ -97,13 +118,16 @@ The camera can be moved in other ways once in camera view mode. Please see link 
 
 \chapter{Quantum Chemical Topology}
 
-A detailed introduction to the theory of QCT (an umbrella term encompassing all methods involving topological analysis of scalar functions in chemistry) is outside the scope of this document.
-However, a description of the relevant concepts is warranted, being a prerequisite for understanding the .top filetype.
+A detailed introduction to the theory of QCT (an umbrella term encompassing all methods involving topological 
+analysis of scalar functions in chemistry) is outside the scope of this document.
+However, a description of the relevant concepts is warranted, being a prerequisite for understanding the .top 
+filetype.
 
 \section{Components of a Topology}
 
 A topology consists of various objects, each with different 3D representation. 
-Critical points are points in space described by a position vector $r_{cp}$ and a ran and signature ($\omega$,$s$) which depend on the behaviour of the function around that point).
+Critical points are points in space described by a position vector $r_{cp}$ and a ran and signature ($\omega$,$s$) 
+which depend on the behaviour of the function around that point).
 Atomic Interaction Lines (AIL) are paths through the scalar field with particular properties.
 Interatomic Surfaces (IAS) are boundaries between basins.
 
@@ -111,9 +135,11 @@ Interatomic Surfaces (IAS) are boundaries between basins.
 
 \section{Introduction}
 
-Given the variety of programs available for topological analysis of scalar functions computed from chemical wavefunctions,
-it seems apt to provide a generic file definition into which the output files of each program can be converted.
-This filetype can then be read by QCT4B and no dependence on the underlying analysis programs exists in the code, meaning quirks of the topological analysis codes are not dealt with in QCT4B.
+Given the variety of programs available for topological analysis of scalar functions computed from chemical 
+wavefunctions, it seems apt to provide a generic file definition into which the output files of each program 
+can be converted.
+This filetype can then be read by QCT4B and no dependence on the underlying analysis programs exists in the code, 
+meaning quirks of the topological analysis codes are not dealt with in QCT4B.
 A further benefit is to avoid tying a user faced with importing a foreign filetype to a single technology.
 That is, any language can be used to write a converter to the .top format, not just python.
 The extension '.top' will be used for these files, and they are based on the xml filetype.
@@ -123,9 +149,11 @@ The extension '.top' will be used for these files, and they are based on the xml
 \subsection{Critical Points}
 Critical points are typically represented with a sphere centered on their coordinates.
 The color and radius of these spheres can be determined by their rank and signature.
-In particular it is usual to set the non-nuclear CPs to have a small radius, and to use the van der Waals radii of nuclear CPs.
-the set of van der Waals radii used can be found in the appendix.
-However, for CPs corresponding to nuclei, it is more typical to color them by element.
+In particular it is usual to set the non-nuclear CPs to have a small radius, and to use the 
+van der Waals radii to set the relative sizes of nuclear CPs.
+The set of van der Waals radii used in the Add-On can be found in the appendix.
+For CPs corresponding to nuclei, it is typical to color them by element.
+Non-nuclear CPs are instead coloured by rank and singature.
 Due to this mismatch between a pair of integers and an element name, a single text label is used in the .top file.
 Thus a label must be defined for each CP type, and they are listed in the following table.
 
@@ -156,11 +184,12 @@ V_{m} = (1 - \lambda_{m}) V_{1} + \lambda_{m} V_{2}
 
 \chapter{Manipulating the Appearance}
 
-Whilst the default appearance is fine for rendering images (the MORPHY GUI has been used to render images for a large number of publications), the main point of writing this program is to allow you to go further.
+Whilst the default appearance is fine for rendering images (the MORPHY GUI has been used to render images for 
+a large number of publications), the main point of writing this program is to allow you to go further.
 Thus, some of the more common appearance changes are described here. 
 The user is urged to think creatively and come up with things not described in this document.
-A friendly user will let us know so that others can use their ideas.
-A perfect user would write a description of how they did it for direct inclusion below!
+A friendly user will let us know what they come up with (and how) so that others can build upon their ideas.
+A perfect user would write a full description of how they did it for direct inclusion below.
 
 \chapter{Program Notes}
 
@@ -175,27 +204,31 @@ The QCT4B Add-On can be summarised in the following scheme
 
 \end{enumerate}
 
-The first step requires python only. A class must be defined for each type of topological object.
+The first step requires python only. A class is defined for each type of topological object.
 Due to the use of XML in the .top file, the python XML library can be used to majorly simplify reading.
 An object (i.e. an instantiation of one of the defined QCT classes) is created for each located topological element.
-The readTopology function has the required behaviour. It takes a single argument which is the full path to the .top file.
-An element tree is created directly from the .top file. The root of this tree is the <topology> tag, and the root is scanned branch-by-branch for topological objects.
+The readTopology function has the required behaviour. It takes a single argument which is the full path to the 
+.top file.
+An element tree is created directly from the .top file. The root of this tree is the <topology> tag, and the 
+root is scanned branch-by-branch for topological objects.
 
 
 The second step determines how the rendered scene will look.
 The default materials are intended to replicate the GUI of the program MORPHY and use the standard render engine.
-In future, it would be of benefit to be able to define and share 'profiles' that can be selected prior to reading.
 In order to maintain simplicity, a single material is created for each element rather than each atom.
 This allows the user to change the appearance of all atoms of a particular element at once.
-Where particular control over a single atom is needed (e.g. for emphasis), the user can create (via Blender's interface) a unique material for that atom.
-Surfaces are dealt with in the same way, although a separate material for surfaces and nuclei of a given element is defined.
-Similarly, all AILs share a single material with a black colour.
+Where particular control over a single atom is needed (e.g. for emphasis), the user can create 
+(via Blender's interface) a unique material for that atom.
+Surfaces are dealt with in the same way, although a separate material for surfaces and nuclei of a given 
+element is defined.
+Similarly, all AILs share a single material with a default black colour.
 
-Colors for the other materials are discussed above. The default material uses the Lambert diffuse shader (intensity 1), 
-the Cook-Torrance specular shader (color 1,1,1 and intensity 0.5) and has alpha and ambient set to 1.
+Colours for the other materials are discussed above. The default material uses the Lambert diffuse shader 
+(intensity 1), the Cook-Torrance specular shader (color 1,1,1 and intensity 0.5) and has alpha and ambient set to 1.
 Changing these defaults currently has to be done in code, although they can be edited easily inside Blender.
 
-Creating the blender representations (step 3) simply involves iterating over the QCT objects and calling the appropriate Blender functions.
+Creating the blender representations (step 3) simply involves iterating over the QCT objects and calling the 
+appropriate Blender functions.
 
 Finally setting up the world really only requires addition of a light source and camera.
 It is assumed the user will want to reposition this camera, so its position is essentially irrelevant.
@@ -208,15 +241,16 @@ The Add-On itself is defined as a class that takes an Operator argument.
 The operator has to be given an ID 
 %(qct.import_topology)%
  and a label (Import Topology).
-The operator class requires definition of the classes execute (called when the user runs the script)
-and invoke.
+The operator class requires definition of the classes 'execute' (called when the user runs the script)
+and 'invoke'.
 Invoke opens a file select window with the filter set to only include files with the .top extension.
 Execute carries out the four steps discussed above.
-It is also necessary for the Add-On to define register and unregister functions which are used to include the Add-On in Blender itself.
-As suggested, these classes just register and deregister the operator. The register function is called when the script is added.
+It is also necessary for the Add-On to define register and unregister functions which are used to include the Add-On 
+in Blender itself.
+As suggested, these classes just register and deregister the operator. The register function is called when the 
+script is added.
 This is achieved by the only line of executable code in the main program.
 Finally Blender required the definition of a dictionary. %bl_info.
 This contains basic information about the Add-On for display inside Blender, including the author, version number etc.
-
 
 \end{document}
