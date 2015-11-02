@@ -183,6 +183,23 @@ Blender offers the ability to create an interpolated line from a set of points.
 V_{m} = (1 - \lambda_{m}) V_{1} + \lambda_{m} V_{2}
 \end{equation}
 
+\chapter{The .top File}
+
+In abstract terms, a critical point is an object with a position, rank and signature.
+To represent a critical point then requires a 3-vector of floating point numbers and two signed integers.
+In order to allow storage of associated CPs with other topological objects, a labelling system is also needed.
+To achieve this, it is necessary to provide a mapping between the rank and signature of a CP and a String variable.
+Functions for conversion in both directions then need to be defined.
+
+A gradient vector is a set of 3-vectors of floating point numbers, each of which gives the position of a point on its line.
+Special classes of gradient vector, such as AILs or those which are members of an IAS, are distinguished by their start and end points.
+All gradient vectors originate at either infinity, or a critical point, and all terminate at a critical point.
+In an object-oriented world, the start and end points of a given GP can be saved in a GP object as references.
+When storing on disk, it is necessary to use a reliable labelling system.
+
+An IAS is rigorously a set of gradient paths originating at a given BCP and extending to infinity.
+However, when drawing an IAS without gaps, it is necessary to triangulate the surface resulting in a set of points and their connections, i.e. a graph.
+
 \chapter{Manipulating the Appearance}
 
 Whilst the default appearance is fine for rendering images (the MORPHY GUI has been used to render images for 
