@@ -199,6 +199,17 @@ When storing on disk, it is necessary to use a reliable labelling system.
 
 An IAS is rigorously a set of gradient paths originating at a given BCP and extending to infinity.
 However, when drawing an IAS without gaps, it is necessary to triangulate the surface resulting in a set of points and their connections, i.e. a graph.
+This graph is the abstract form to be stored. Since the IAS is specifically associated with a BCP, the label of this BCP should also be stored.
+
+The top file therefore has the following structure:
+
+A root tag <topology> and closing tag <\topology>, inside which any number of the following items may be defined in any order:
+
+<CP>
+<LINE>
+<SURFACE>
+
+within these objects, positions are described by <vector> tags with <x>, <y> and <z> components.
 
 \chapter{Manipulating the Appearance}
 
