@@ -209,7 +209,10 @@ A root tag <topology> and closing tag <\topology>, inside which any number of th
 <LINE>
 <SURFACE>
 
-within these objects, positions are described by <vector> tags with <x>, <y> and <z> components.
+Within these objects, positions are described by <vector> tags with <x>, <y> and <z> components.
+The <CP> tag includes single <vector>, <rank> and <signature> elements and a <label>.
+The <LINE> tag includes 2 or more <vector> elements, along with labels for the start and end points.
+The <SURFACE> tag includes a set of <vector> elements and a set of <edge> elements composed of <A> and <B>, the indices of the points they connect.
 
 \chapter{Manipulating the Appearance}
 
