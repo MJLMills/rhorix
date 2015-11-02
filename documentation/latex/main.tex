@@ -42,9 +42,7 @@ rendered images specific to their goals.
 \section{Things QCT for Blender Does Not Do}
 
 QCT for Blender is not able to perform topological analysis of scalar functions and never will be.
-Python within a host is not an appropriate place for such functionality, and a number of mature programs 
-already exist.
-One such external program is required, and a list of existing programs is given below.
+A number of mature programs already exist, and a list is provided below.
 
 Morphy
 AIMAll
@@ -53,7 +51,8 @@ AIMAll
 
 \section{Installation}
 
-This section describes the 2 ways of installing QCT4B. The obvious prerequisite Blender itself. Blender installation is covered in detail elsewhere, and here it is assumed you have a working version.
+This section describes the 2 ways of installing QCT4B. The obvious prerequisite is Blender itself. 
+Blender installation is covered in detail elsewhere, and here it is assumed you have a working version.
 There are two options for using the script.
 
 The more permanent solution is installation, i.e. putting the script into your Blender user preferences directory, which will cause it to appear in the Add-Ons list in the User Preferences window.
@@ -82,13 +81,13 @@ No keyboard shortcuts are defined.
 
 We recommend reading the remainder of this document before starting to use QCT4B, but realise that people do 
 not like manuals.
-Therefore this section explains how to get straight into using QCT4B to generate a standard-appearance rendered 
-image of a .top file.
+Therefore, this section explains how to get straight into using QCT4B to generate a standard-appearance rendered 
+image from a .top file.
 For help with common rendering desires, see the Section 'Manipulating the Appearance'.
 
 The Add-On will handle the import and materials (which define color and appearance) for the whole scene.
 It then remains to place appropriate lights and position the camera.
-The minimal need for the user is typically to move the camera to get the desired part of the system in the final 
+The minimal demand on the user is typically to move the camera to get the desired part of the system in the final 
 render.
 QCT4B positions the camera such that the camera is outside the system and points at the origin.
 
@@ -102,7 +101,7 @@ Thus you should check that your system appears correctly drawn in the 3D view fi
 view mode to determine the viewpoint of your final 3D render.
 
 To move the camera, it is recommended that you enter the camera view mode (keypad 0), and then use the fly mode 
-(shift-F) to position the camera using your mouse.
+(Shift-F) to position the camera using your mouse.
 The enter key freezes the camera when you find the viewpoint that you want.
 For larger systems, the z-clipping (which hides objects from the view deemed too far from the camera) will 
 eliminate parts of your system.
@@ -139,7 +138,7 @@ Given the variety of programs available for topological analysis of scalar funct
 wavefunctions, it seems apt to provide a generic file definition into which the output files of each program 
 can be converted.
 This filetype can then be read by QCT4B and no dependence on the underlying analysis programs exists in the code, 
-meaning quirks of the topological analysis codes are not dealt with in QCT4B.
+meaning quirks of the topological analysis algorithms are not dealt with in QCT4B.
 A further benefit is to avoid tying a user faced with importing a foreign filetype to a single technology.
 That is, any language can be used to write a converter to the .top format, not just python.
 The extension '.top' will be used for these files, and they are based on the xml filetype.
@@ -150,10 +149,11 @@ The extension '.top' will be used for these files, and they are based on the xml
 Critical points are typically represented with a sphere centered on their coordinates.
 The color and radius of these spheres can be determined by their rank and signature.
 In particular it is usual to set the non-nuclear CPs to have a small radius, and to use the 
-van der Waals radii to set the relative sizes of nuclear CPs.
+van der Waals radii to set the relative sizes of nuclear attractor CPs.
 The set of van der Waals radii used in the Add-On can be found in the appendix.
+These are defined in a file and manipulation of defaults can be achieved by editing directly.
 For CPs corresponding to nuclei, it is typical to color them by element.
-Non-nuclear CPs are instead coloured by rank and singature.
+Non-nuclear CPs are instead coloured by rank and signature.
 Due to this mismatch between a pair of integers and an element name, a single text label is used in the .top file.
 Thus a label must be defined for each CP type, and they are listed in the following table.
 
@@ -165,7 +165,8 @@ $\omega$ & $s$ & Label \\
 0 & 0 & ccp \\
 \end{tabular}
 
-The complete set of element and CP colors is given in the appendix of this document.
+The complete set of element and CP colors is given in the appendix of this document. 
+These are also defined in an external file which can be edited.
 
 Blender allows spheres to be created directly.
 
