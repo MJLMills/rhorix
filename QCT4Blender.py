@@ -42,7 +42,7 @@ class Surface():
         self.edges = edges
         self.faces = faces
 
-#*#*#*#*#*#*#*#*#*#*# CLASS DEFINITION
+#*#*#*#*#*#*#*#*#*#*# CLASS DEFINITION (OPERATOR)
 
 class QCTBlender(bpy.types.Operator):
 
@@ -69,16 +69,44 @@ class QCTBlender(bpy.types.Operator):
         context.window_manager.fileselect_add(self)
         return {'RUNNING_MODAL'}
 
+
+#*#*#*#*#*#*#*#*#*#*# CLASS DEFINITION (OPERATOR)
+
+class SelectNuclei(bpy.types.Operator):
+
+    bl_idname = "qct.select_nuclei"
+    bl_label = "Select Nuclei"
+
+    def invoke(self,context,event):
+        print ("Select Nuclei Clicked")
+        return {'FINISHED'}
+
+#*#*#*#*#*#*#*#*#*#*# CLASS DEFINITION (GUI)
+
+class QCTPanel(bpy.types.panel):
+    
+    bl_region_type = "TOOLS"    #Appear in the toolshelf (T)
+    bl_space_type = "VIEW_3D"   #when the 3D view
+    bl_context = "objectmode"   #is in object mode.
+    bl_category = "Create"      #Appear in the Create tab of the toolshelf.
+    bl_label = "RhoRix Controls"
+
+    def draw(self,context):
+        uiColumn = self.layout.column(align=True)
+        uiColumn.operator("qct.select_nuclei", text="Select Nuclei")
+
 #*#*#*#*#*#*#*#*#*#* SCRIPT FUNCTION DEFINITIONS
 
 def menu_function(self, context):
     self.layout.operator(QCTBlender.bl_idname, text="Quantum Chemical Topology (.top)")
 
 def register():
-    print("QCT4B: Registering Operator Class")
+    print("QCT4B: Registering Operator Classes")
     print("QCT4B: Use Operator \'Import Topology\' or File -> Import -> \.top to Invoke")
     bpy.utils.register_class(QCTBlender)
     bpy.types.INFO_MT_file_import.append(menu_function)
+    bpy.utils.register_class(SelectNuclei)
+    bpy.utils.register_class(QCTPanel)
  
 def unregister():
     print("QCT4B: Deregistering Operator Class")
@@ -157,7 +185,7 @@ def createBlenderObjects():
     #create a UV sphere for each CP
     for cp in sphereList:
 
-        cpSphere = bpy.ops.mesh.primitive_uv_sphere_add(location=cp.position,size=elementRadii[cp.type],segments=32,ring_count=16)
+        cpSphere = bpy.ops.mesh.primitive_uv_sphere_add(location=cp.position,size=0.1*elementRadii[cp.type],segments=32,ring_count=16)
 
         #Create and apply the subsurface modifiers for smooth rendering
         bpy.context.object.modifiers.new("subd", type='SUBSURF')
