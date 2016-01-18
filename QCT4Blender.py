@@ -93,7 +93,7 @@ class QCTPanel(bpy.types.Panel):
 
     def draw(self,context):
         uiColumn = self.layout.column(align=True)
-        TheCol.prop(context.scene, "read_simple_topology")
+        uiColumn.prop(context.scene, "read_simple_topology")
         uiColumn.operator("qct.import_topology", text="Import Topology")
         uiColumn.operator("qct.select_nuclei", text="Select Nuclei")
 
