@@ -2,30 +2,36 @@
 # M J L Mills - Convert AIMAll .sumviz to QCT4Blender .top
 # https://github.com/MJLMills/QCT4Blender
 
-@vizFiles = `ls *.*viz`; chomp(@vizFiles);
+$topName = "B_TS.top";
+
+@vizFiles = `ls *.*viz`; 
+chomp(@vizFiles);
 $nFiles = @vizFiles;
 print "$nFiles VIZ FILES IN FOLDER\n";
 
-open(TOP,">","reaction-A1\.top");
+open(TOP,">","$topName") || die "CANNOT OPEN TOP FILE FOR WRITING\: $topName\n";
 print TOP "\<topology\>\n";
 
-for ($file=0;$file<@vizFiles;$file++) {
+for ($file=0; $file<@vizFiles; $file++) {
 
- print "READING $vizFiles[$file]\n";
+  print "READING $vizFiles[$file]\n";
   open(VIZ,"<","$vizFiles[$file]") || die "SPECIFIED FILE $vizFiles[$file] COULD NOT BE OPENED\n";
   @vizContents = <VIZ>;
   close VIZ;
   chomp(@vizContents);
 
   for ($line=0; $line<@vizContents; $line++) {
+
     if ($vizContents[$line] =~ m/CP\#\s+(\d+)\s+Coords\s+\=\s+(-?\d+\.\d+)E([+-]\d+)\s+(-?\d+\.\d+)E([+-]\d+)\s+(-?\d+\.\d+)E([+-]\d+)/) {
         
       $x = $2 * (10 ** $3);
       $y = $4 * (10 ** $5);
       $z = $6 * (10 ** $7);
         
-      if ($vizContents[$line+1] =~ m/Type\s+\=\s+\(([-+]?\d+)\,([-+]?\d+)\)\s+(\w+)\s+([a-zA-Z_]+\d+)/) {
+      if ($vizContents[$line+1] =~ m/Type\s+\=\s+\(([-+]?\d+)\,([-+]?\d+)\)\s+(\w+)\s+([a-zA-Z]\d+)/) {
         $rank = $1; $signature = $2; $type = $3; $label = $4;
+      } elsif ($vizContents[$line+1] =~ m/Type\s+\=\s+\(([-+]?\d+)\,([-+]?\d+)\)\s+(\w+)/) { #for cpconn=basic
+        $rank = $1; $signature = $2; $type = $3;
       } else { die "Malformed CP located: $vizContents[$line+1]\n"; }
 
       if ($type eq "NACP") {
@@ -39,7 +45,7 @@ for ($file=0;$file<@vizFiles;$file++) {
 
       $nPoints = $1;
       my @ailPoints_x; my @ailPoints_y; my @ailPoints_z;
-      print "FOUND LINE\: $nPoints POINTS\n";
+#      print "FOUND LINE\: $nPoints POINTS\n";
 
       for ($ailLine=$line+1;$ailLine<$line+$nPoints+1;$ailLine++) {
         if ($vizContents[$ailLine] =~ m/\s+(-?\d+\.\d+)E([-+]\d+)\s+(-?\d+\.\d+)E([-+]\d+)\s+(-?\d+\.\d+)E([-+]\d+)\s+(-?\d+\.\d+)E([-+]\d+)/) {
@@ -50,7 +56,7 @@ for ($file=0;$file<@vizFiles;$file++) {
           die "Malformed AIL point: $vizContents[$ailLine]\n";
         }
       }
-      printLine(\@ailPoints_x,\@ailPoints_y,\@ailPoints_z);
+#      printLine(\@ailPoints_x,\@ailPoints_y,\@ailPoints_z);
 
     } elsif ($vizContents[$line] =~ m/\<IAS\s+Path\>/) {
     
@@ -68,7 +74,7 @@ for ($file=0;$file<@vizFiles;$file++) {
             die "Malformed IAS Path point\:\t$vizContents[$iasLine]\n";
           }
         }
-        printLine(\@ailPoints_x,\@ailPoints_y,\@ailPoints_z);
+#        printLine(\@ailPoints_x,\@ailPoints_y,\@ailPoints_z);
 
       } else {
         die "Malformed line in .iasviz file\n";
@@ -89,7 +95,7 @@ for ($file=0;$file<@vizFiles;$file++) {
             die "Malformed IAS Path point\:\t$vizContents[$iasLine]\n";
           }
         }
-        printLine(\@ailPoints_x,\@ailPoints_y,\@ailPoints_z);
+#        printLine(\@ailPoints_x,\@ailPoints_y,\@ailPoints_z);
 
       } else {
         die "Malformed IAS Path point\:\t$vizContents[$iasLine]\n";
