@@ -83,12 +83,12 @@ class SelectNuclei(bpy.types.Operator):
 
 #*#*#*#*#*#*#*#*#*#*# CLASS DEFINITION (GUI)
 
-class QCTPanel(bpy.types.panel):
+class QCTPanel(bpy.types.Panel):
     
     bl_region_type = "TOOLS"    #Appear in the toolshelf (T)
     bl_space_type = "VIEW_3D"   #when the 3D view
     bl_context = "objectmode"   #is in object mode.
-    bl_category = "Create"      #Appear in the Create tab of the toolshelf.
+    bl_category = "Tools"      #Appear in the Create tab of the toolshelf.
     bl_label = "RhoRix Controls"
 
     def draw(self,context):
