@@ -392,7 +392,7 @@ bl_info = \
 "name"        : "QCT4Blender",
 "author"      : "Matthew J L Mills <mjohnmills@gmail.com>",
 "version"     : (0, 0, 0),
-"blender"     : (2, 69, 0),
+"blender"     : (2, 75, 0),
 "location"    : "View 3D > Object Mode > Tool Shelf",
 "description" : "Import and manipulate a QCT .top File",
 "warning"     : "",
