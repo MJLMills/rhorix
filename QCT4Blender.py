@@ -394,7 +394,7 @@ bl_info = \
 "version"     : (0, 0, 0),
 "blender"     : (2, 69, 0),
 "location"    : "View 3D > Object Mode > Tool Shelf",
-"description" : "Import a QCT .top File",
+"description" : "Import and manipulate a QCT .top File",
 "warning"     : "",
 "wiki_url"    : "",
 "tracker_url" : "",
