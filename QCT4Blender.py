@@ -93,6 +93,7 @@ class QCTPanel(bpy.types.Panel):
 
     def draw(self,context):
         uiColumn = self.layout.column(align=True)
+        TheCol.prop(context.scene, "read_simple_topology")
         uiColumn.operator("qct.import_topology", text="Import Topology")
         uiColumn.operator("qct.select_nuclei", text="Select Nuclei")
 
@@ -108,11 +109,22 @@ def register():
     bpy.types.INFO_MT_file_import.append(menu_function)
     bpy.utils.register_class(SelectNuclei)
     bpy.utils.register_class(QCTPanel)
+
+    bpy.types.Scene.read_simple_topology = bpy.props.BoolProperty \
+      (
+        name = "Simple Topology",
+        description = "Only read CPs and AILs",
+        default = False
+      )
  
 def unregister():
     print("QCT4B: Deregistering Operator Class")
     bpy.utils.unregister_class(QCTBlender)
     bpy.utils.INFO_MT_file_import.remove(menu_function)
+    bpy.utils.unregister_class(SelectNuclei)
+    bpy.utils.unregister_class(QCTPanel)
+
+    del bpy.types.Scene.read_simple_topology
 
 def readTopology(filepath):
 
