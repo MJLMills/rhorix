@@ -13,6 +13,7 @@ surfaceList = []   # list of Surface objects
 
 #*#*#*#*#*#*#*#*#*#*# CLASS DEFINITION
 
+# A critical point is a topological object with a single vector member
 class CriticalPoint():
 
     def __init__(self, type, rank, signature, position): #this is called on instantiation of the class
@@ -23,6 +24,7 @@ class CriticalPoint():
 
 #*#*#*#*#*#*#*#*#*#*# CLASS DEFINITION
 
+# A line is a set of vectors to be connected
 class Line():
 
     def __init__(self, A, B, points):
@@ -33,6 +35,7 @@ class Line():
 
 #*#*#*#*#*#*#*#*#*#*# CLASS DEFINITION
 
+# A surface is a set of points that is triangulated
 class Surface():
 
     def __init__(self, A, points, edges, faces):
@@ -41,6 +44,15 @@ class Surface():
         self.points = points
         self.edges = edges
         self.faces = faces
+
+#*#*#*#*#*#*#*#*#*#*# CLASS DEFINITION
+
+# A gradient vector field is a set of lines
+class GradientVectorField():
+
+    def __init__(self, A, lines):
+        self.A = A
+        self.lines = lines
 
 #*#*#*#*#*#*#*#*#*#*# CLASS DEFINITION (OPERATOR)
 
