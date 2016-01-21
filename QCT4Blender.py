@@ -209,17 +209,18 @@ def readTopology(filepath):
 
           A = topologicalObject.find('label').text
           lineList = []
-          for line in topologicalObject.findall('line'):
+          for gp in topologicalObject.findall('line'):
               vectorList = []
-              for point in line.findall('vector'):
+              for point in gp.findall('vector'):
                   x = point.find('x').text
                   y = point.find('y').text
                   z = point.find('z').text
                   pointVector = mathutils.Vector((float(x),float(y),float(z)))
                   vectorList.append(pointVector)
-              lineList.append(vectorList)
+              line = Line('H','H',vectorList)
+              lineList.append(line)
 
-          gvf = GradientVectorField(A,vectorList)
+          gvf = GradientVectorField(A,lineList)
           gvfList.append(gvf)
 
 def createBlenderObjects():
@@ -294,6 +295,10 @@ def createBlenderObjects():
             x,y,z = cList[num]
             polyLine.points[num].co = (x,y,z,weight)
 
+    bpy.ops.curve.primitive_bezier_circle_add()
+    bpy.context.scene.objects.active = bpy.data.objects['BezierCircle']
+    bpy.ops.transform.resize(value=(0.25,0.25,0.25))
+
     for gvf in gvfList:
 
         #create a line for each gradient path in the gradient vector field
@@ -307,7 +312,7 @@ def createBlenderObjects():
             objectData.location = (0,0,0)
             objectData.data.materials.append(bpy.data.materials[gvf.A + '-CritPointColor'])
             objectData.data.bevel_object = bpy.data.objects['BezierCircle']
-            bpy.context.scene.objects/link(objectData)
+            bpy.context.scene.objects.link(objectData)
 
             polyLine = curveData.splines.new('POLY')
             polyLine.points.add(len(cList)-1)
@@ -618,3 +623,4 @@ def defineColors():
     "Zr"    :    ( 0.580392157,  0.878431373,  0.878431373),
     }
     return elementColors
+
