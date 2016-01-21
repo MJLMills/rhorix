@@ -10,6 +10,7 @@ import math
 sphereList = []    # list of CriticalPoint objects
 lineList = []      # list of Line objects
 surfaceList = []   # list of Surface objects
+gvfList = []       # list of all GradientVectorField objects
 
 #*#*#*#*#*#*#*#*#*#*# CLASS DEFINITION
 
@@ -204,6 +205,23 @@ def readTopology(filepath):
                 surface = Surface(A,vectorList,edgeList,faceList)
                 surfaceList.append(surface)
 
+        elif topologicalObject.tag == 'GVF':
+
+          A = topologicalObject.find('label').text
+          lineList = []
+          for line in topologicalObject.findall('line'):
+              vectorList = []
+              for point in line.findall('vector'):
+                  x = point.find('x').text
+                  y = point.find('y').text
+                  z = point.find('z').text
+                  pointVector = mathutils.Vector((float(x),float(y),float(z)))
+                  vectorList.append(pointVector)
+              lineList.append(vectorList)
+
+          gvf = GradientVectorField(A,vectorList)
+          gvfList.append(gvf)
+
 def createBlenderObjects():
 
     elementRadii = defineRadii()
@@ -275,6 +293,27 @@ def createBlenderObjects():
         for num in range(len(cList)):
             x,y,z = cList[num]
             polyLine.points[num].co = (x,y,z,weight)
+
+    for gvf in gvfList:
+
+        #create a line for each gradient path in the gradient vector field
+        for line in gvf.lines:
+            weight = 1
+            cList = line.points
+            curveData = bpy.data.curves.new(name=gvf.A + '-GP', type='CURVE')
+            curveData.dimensions = '3D'
+
+            objectData = bpy.data.objects.new('ObjCurve',curveData)
+            objectData.location = (0,0,0)
+            objectData.data.materials.append(bpy.data.materials[gvf.A + '-CritPointColor'])
+            objectData.data.bevel_object = bpy.data.objects['BezierCircle']
+            bpy.context.scene.objects/link(objectData)
+
+            polyLine = curveData.splines.new('POLY')
+            polyLine.points.add(len(cList)-1)
+            for num in range(len(cList)):
+                x,y,z = cList[num]
+                polyLine.points[num].co = (x,y,z,weight)
 
 #This function creates a material for the given critical point called element-CritPointColor
 #This defines the default material for a CP other than its diffuse color
