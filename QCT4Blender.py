@@ -18,6 +18,7 @@ gvfList = []       # list of all GradientVectorField objects
 #*#*#*#*#*#*#*#*#*#*# CLASS DEFINITION
 
 # A critical point is a topological object with a single vector member
+# This does not need to change.
 class CriticalPoint():
 
     def __init__(self, type, rank, signature, position): #this is called on instantiation of the class
@@ -29,6 +30,8 @@ class CriticalPoint():
 #*#*#*#*#*#*#*#*#*#*# CLASS DEFINITION
 
 # A line is a set of vectors to be connected
+# NOTES - A line should be just a set of vectors. Topological objects are made of lines, such as AILs and GVF GPs.
+# The labelling should be done at a higher level, in an AIL or GP object.
 class Line():
 
     def __init__(self, A, B, points):
@@ -40,6 +43,8 @@ class Line():
 #*#*#*#*#*#*#*#*#*#*# CLASS DEFINITION
 
 # A surface is a set of points that is triangulated
+# This also needs to be abstracted one lower, as there are different kinds of surface (IAS, constant cap)
+# which may belong to multiple atoms (i.e. an IAS borders 2 nuclei)
 class Surface():
 
     def __init__(self, A, points, edges, faces):
@@ -51,7 +56,8 @@ class Surface():
 
 #*#*#*#*#*#*#*#*#*#*# CLASS DEFINITION
 
-# A gradient vector field is a set of lines
+# A gradient vector field is a set of GPs and a label for the nucleus each originates at.
+# Might be better to have a GP class at the bottom of the hierarchy rather than a line?
 class GradientVectorField():
 
     def __init__(self, A, lines):
@@ -75,7 +81,7 @@ class QCTBlender(bpy.types.Operator):
         #Create all necessary default materials
         createMaterials()
         #Create the blender data rep of the QCT and assign materials
-        #Anything created here is persistent, anything not converted to blender data is lost
+        #Anything created here is persistent, anything not converted to blender data is lost on save/open
         createBlenderObjects()
         #Setup the environment in which the QCT resides
         setupWorld()
@@ -95,6 +101,7 @@ class SelectNuclei(bpy.types.Operator):
 
     def invoke(self,context,event):
         print ("Select Nuclei Clicked")
+        # TODO - implement selection
         return {'FINISHED'}
 
 #*#*#*#*#*#*#*#*#*#*# CLASS DEFINITION (GUI)
@@ -139,7 +146,6 @@ def unregister():
     bpy.utils.INFO_MT_file_import.remove(menu_function)
     bpy.utils.unregister_class(SelectNuclei)
     bpy.utils.unregister_class(QCTPanel)
-
     del bpy.types.Scene.read_simple_topology
 
 def readTopology(filepath):
