@@ -1,6 +1,6 @@
-# RhoRix (QCT For Blender)
+# RhoRi$$\chi$$ (QCT For Blender)
 
-RhoRix is a [Blender](http://www.blender.org) *Add-On* (i.e. a script that extends Blender with extra functionality) that allows the user to read files containing topological objects defined by the theories of [Quantum Chemical Topology](http://www.chemistry.mcmaster.ca/bader/) and convert them to 3D scenes. Subsequently the full functionality of Blender can be used to render these objects. Note that the purpose of this program is to enable import of (and provide a standard appearance for) a topology, and the user is encouraged to consult the full Blender documentation and tutorials in order to obtain creative renders.
+RhoRi$$\chi$$ is a [Blender](http://www.blender.org) *Add-On* (i.e. a script that extends Blender with extra functionality) that allows the user to read files containing topological objects defined by the theories of [Quantum Chemical Topology](http://www.chemistry.mcmaster.ca/bader/) and convert them to 3D scenes. Subsequently the full functionality of Blender can be used to render these objects. Note that the purpose of this program is to enable import of (and provide a standard appearance for) a topology, and the user is encouraged to consult the full Blender documentation and tutorials in order to obtain creative renders.
 <p>
 The code was written with reference to Chapter 4 of the WikiBook '[Blender 3D: Noob to Pro](http://en.wikibooks.org/wiki/Blender_3D:_Noob_to_Pro#Table_of_Contents/)' and the appropriate section of the [Blender documentation](http://www.blender.org/api/blender_python_api_2_76_2/). Version 2.69.0 of Blender was used in the development and testing on other versions was not carried out (current version is 2.76.0).
 <p>
