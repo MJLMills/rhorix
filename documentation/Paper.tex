@@ -1,0 +1,74 @@
+\documentclass{tufte-handout}
+
+\newcommand{\blenderVersion}{2.76b}
+\newcommand{\programName}{RhoRix}
+\newcommand{\fullName}{RhoRix - A Program for Drawing of Quantum Chemical Topologies by M J L Mills}
+\newcommand{\programWebsite}{www.mjlmills.com/rhorix}
+\newcommand{\programCitation}{Mills \& Popelier, in Preparation}
+\newcommand{\addonPath}{User Preferences $\rightarrow$ Add-Ons}
+\newcommand{\operatorPath}{File $\rightarrow$ Import $\rightarrow$ Quantum Chemical Topology (.top)}
+\newcommand{\navLink}{www.blender.org/manual/editors/3dview/navigate/camera\_view.html}
+\newcommand{\blenderSite}{www.blender.org}
+\newcommand{\manualLink}{www.blender.org/manual/}
+\newcommand{\enterCamera}{keypad $0$}
+\newcommand{\flyMode}{Shift-F}
+\newcommand{\renderKey}{F12}
+\newcommand{\leaveRender}{Esc}
+
+\usepackage{graphicx} % allow embedded images
+ \setkeys{Gin}{width=\linewidth,totalheight=\textheight,keepaspectratio}
+ \graphicspath{{graphics/}} % set of paths to search for images
+\usepackage{amsmath}  % extended mathematics
+\usepackage{booktabs} % book-quality tables
+\usepackage{units}    % non-stacked fractions and better unit spacing
+\usepackage{multicol} % multiple column layout facilities
+\usepackage{lipsum}   % filler text
+\usepackage{fancyvrb} % extended verbatim environments
+ \fvset{fontsize=\normalsize}% default font size for fancy-verbatim environments
+
+% Standardize command font styles and environments
+\newcommand{\doccmd}[1]{\texttt{\textbackslash#1}}% command name -- adds backslash automatically
+\newcommand{\docopt}[1]{\ensuremath{\langle}\textrm{\textit{#1}}\ensuremath{\rangle}}% optional command argument
+\newcommand{\docarg}[1]{\textrm{\textit{#1}}}% (required) command argument
+\newcommand{\docenv}[1]{\textsf{#1}}% environment name
+\newcommand{\docpkg}[1]{\texttt{#1}}% package name
+\newcommand{\doccls}[1]{\texttt{#1}}% document class name
+\newcommand{\docclsopt}[1]{\texttt{#1}}% document class option name
+\newenvironment{docspec}{\begin{quote}\noindent}{\end{quote}}% command specification environment
+
+
+\title{\programName{}}
+\author{Matthew J L Mills}
+
+\begin{document}
+
+\maketitle
+
+% provide already setup default environment for rendering as a blender settings file
+
+\begin{abstract}
+\end{abstract}
+
+\section{Abstracting the Topology}
+
+The electron density of a chemical system is a scalar function, mapping points in 3-dimensional real space to a scalar. It is typically written $\rho(\vec{r})$, where $\vec{r}  \in \mathbb{R}^{3}$ is a 3-dimensional vector quantity with real elements. The topology of the electron density consists of series of objects that collect one or more of these vectors into sets based on their shared properties, along with other relevant information. A number of chemical concepts can be discussed in terms of properties defined at any point $\vec{r}$. As such a point can carry additional information. As such we define a Point object as follows:
+A point consists of a vector, $\vec{r}$, and a set of properties computed at that point.
+In order to keep the points generic, a dictionary data structure is used for properties that maps a String value to the corresponding stored property, for example the key "ElectronDensity" maps to the real value of $\rho(\vec{r})$. In this manner any property can be included with points, for example at critical points or along an atomic interaction line.
+\par{}
+The first topological object to be discussed is the critical point. As the name suggests, this is a single point in space described by a single position vector. It is often differentiated from other points with the notation $\vec{r}_{CP}$. The critical point is defined in terms of the gradient of the electron density, $\nabla \rho(\vec{r})$, which is itself a vector quantity. Critical points are stationary points of the electron density (i.e. $\vec{r}$ where $\nabla \rho(\vec{r})=0$. Critical points all share this property, yet they can differ in nature, representing minima, maxima and saddle points of $\rho\vec{r}$. Critical points are further categorised on the basis of $\nabla^{2} \rho(\vec{r_{CP}})$. The 2nd derivative operator produces a symmetric $3x3$ matrix of values which can be diagonalized to yield 3 eigenvalues. The number of non-zero eigenvalues is the rank ($\omega \in \{1,2,3\}$) of a given critical point, and the sum of their signs is the signature ($\sigma \in \{-3,-2...3\}$). These two integer values serve to completely characterize a critical point and are typically written $(\omega,\sigma)$. The majority of observed critical points are $\omega=3$ critical points. Critical points of type $(3,-3)$ are maxima, and one such critical point practically coincides with each nucleus in a system. Type $(3,-1)$ critical points appear between atoms and are referred to as bond critical points. Ring critical points are $(3,1)$ and cage critical points are $(3,3)$.
+Thus a CP object is the vector $\vec{r_{CP}}$ and the values of $(\omega,\sigma)$. In order to be uniquely identifiable, rigorously we can use the CP position since no two CPs can exist at the exact same position. In practice, numerical precision makes this impractical and prone to error; as such we instead provide a unique label to each CP.
+\par{}
+The remaining topological objects involve sets of points. The most common shared object is the gradient path. This is a line of steepest ascent through the electron density. These are not typically represented analytically, but are located by numerical procedures. As such, their natural representation is as an ordered set of connected points. These lines always begin and end (noting that the direction is not rigorously defined) at either a critical point or at an infinite distance from a critical point. We define a gradient path as an ordered set of vectors, each connected to the previous, as well as labels denoting the CPs connected by that path.
+
+Gradient paths can be formed into sets just as points can.
+
+\section{Mapping Topological Objects to 3D Representations}
+These 'topological objects' are to be rendered for viewing by \programName{}. To achieve this, each particular object must be mapped to a 3-dimensional object that can be drawn.
+
+Critical points are typically represented in the same manner as atoms have traditionally been represented - as spheres located at $\vec{r_{CP}}$. The sphere has two variables that can be exploited to add further information to the 3D representation, the radius and colour. The relative radii of nuclei has typically been defined by using the van der Waals experimental radii, with a linear scaling to fit the viewing window. Critical points are usually depicted as having the same radius irrespective of $(\omega,\sigme)$, which is visibly smaller than the smallest nuclear radius used. There are many mappings of elements to colours, most chemists will recognise white for hydrogen, gray for carbon, blue for nitrogen, red for oxygen, yellow for sulphur and so on. There is no specific reason for these colours other than historical and cultural. A brief survey of popular molecular graphics programs is provided in the supporting information and a set of colours was chosen based on this.
+For critical points there is significantly less cultural evidence for a 'standard'. As such we adopt the colours of MORPHY for standards (where applicable), and these colours are collected for every $(\omega,\sigma)$ pair in the supporting information.
+
+Gradient paths as computed by implemented algorithms are continuous curves represented by points on those curves. Thus we reconnect those points using an interpolating and smoothing algorithm.
+
+\end{document}
+
