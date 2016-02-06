@@ -391,7 +391,7 @@ def setupWorld():
 
     bpy.context.scene.world.light_settings.use_ambient_occlusion = True
     bpy.context.scene.world.light_settings.ao_factor = 1.00
-    bpy.context.scene.world.ao_blend_type = 'MULTIPLY' #ADD
+    bpy.context.scene.world.light_settings.ao_blend_type = 'MULTIPLY' #ADD
 
     #set the background to be plain and flat RGB
     bpy.context.scene.world.horizon_color = (0.05, 0.20, 0.35)
