@@ -1,6 +1,6 @@
-# QCT For Blender
+# RhoRix (QCT For Blender)
 
-This is a [Blender](http://www.blender.org) *Add-On* (i.e. a script that extends Blender with extra functionality) that allows the user to read files containing topological objects defined by the theories of [Quantum Chemical Topology](http://www.chemistry.mcmaster.ca/bader/) and convert them to 3D scenes. Subsequently the full functionality of Blender can be used to render these objects. Note that the purpose of this program is to enable import of (and provide a standard appearance for) a topology, and the user is encouraged to consult the full Blender documentation and tutorials in order to obtain creative renders.
+Rhorix is a [Blender](http://www.blender.org) *Add-On* (i.e. a script that extends Blender with extra functionality) that allows the user to read files containing topological objects defined by the theories of [Quantum Chemical Topology](http://www.chemistry.mcmaster.ca/bader/) and convert them to 3D scenes. Subsequently the full functionality of Blender can be used to render these objects. Note that the purpose of this program is to enable import of (and provide a standard appearance for) a topology, and the user is encouraged to consult the full Blender documentation and tutorials in order to obtain creative renders.
 <p>
 The code was written with reference to Chapter 4 of the WikiBook '[Blender 3D: Noob to Pro](http://en.wikibooks.org/wiki/Blender_3D:_Noob_to_Pro#Table_of_Contents/)' and the appropriate section of the [Blender documentation](http://www.blender.org/api/blender_python_api_2_76_2/). Version 2.69.0 of Blender was used in the development and testing on other versions was not carried out (current version is 2.76.0).
 <p>
@@ -14,5 +14,3 @@ There are two options for using the script.
 The non-permanent option is to store the script in a text block within your Blender document. This has to be added to each document you make so is less desirable unless you intend to make changes to the script, as it allows for quick editing and reloading of the program. To do this, bring up a Text Editor in a convenient window and click the 'New' button in the window header. Paste the script into the resulting Editor. Press Alt+P to execute the script. After you make changes to the script, pressing Alt+P again will re-execute the script and apply your changes. The location of any Python error messages is OS and execution-environment dependent. Check documentation if you cannot find them.
 <p>
 Irrespective of the method, the script will add an operator named 'Import Topology' to the built-in list that can be accessed by pressing the spacebar with the 3D view active. Additionally, the operator is added as a menu item under File -> Import -> Quantum Chemical Topology (.top). No keyboard shortcuts are defined.
-
-**Note**: This program does not work yet! See issues for details!
