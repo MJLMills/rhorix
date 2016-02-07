@@ -104,6 +104,26 @@ class SelectNuclei(bpy.types.Operator):
         # TODO - implement selection
         return {'FINISHED'}
 
+#*#*#*#*#*#*#*#*#*#*# CLASS DEFINITION (OPERATOR)
+
+class RenderStereo(bpy.types.Operator):
+
+    bl_idname = "qct.render_stereo"
+    bl_label = "Render Stereo"
+
+    def invoke(self,context,event):
+        print("Render Stereo Clicked")
+        bpy.context.scene.render.use_multiview = True
+        bpy.context.scene.render.views_format = 'STEREO_3D'
+        for object in bpy.data.objects:
+            object.selected = False
+        bpy.ops.object.select_pattern(pattern="Cam")
+        bpy.context.object.data.stereo.convergence_mode = 'OFFAXIS'
+        bpy.context.object.data.stereo.convergence_distance = 1.95
+        bpy.context.object.data.stereo.interocular_distance = 0.065
+
+        return {'FINISHED'}
+
 #*#*#*#*#*#*#*#*#*#*# CLASS DEFINITION (GUI)
 
 class QCTPanel(bpy.types.Panel):
@@ -119,6 +139,7 @@ class QCTPanel(bpy.types.Panel):
         uiColumn.prop(context.scene, "read_simple_topology")
         uiColumn.operator("qct.import_topology", text="Import Topology")
         uiColumn.operator("qct.select_nuclei", text="Select Nuclei")
+        uiColumn.operator("qct.render_stereo", text="Render Stereo")
 
 #*#*#*#*#*#*#*#*#*#* SCRIPT FUNCTION DEFINITIONS
 
@@ -131,6 +152,7 @@ def register():
     bpy.utils.register_class(QCTBlender)
     bpy.types.INFO_MT_file_import.append(menu_function)
     bpy.utils.register_class(SelectNuclei)
+    bpy.utils.register_class(RenderStereo)
     bpy.utils.register_class(QCTPanel)
 
     bpy.types.Scene.read_simple_topology = bpy.props.BoolProperty \
@@ -145,6 +167,7 @@ def unregister():
     bpy.utils.unregister_class(QCTBlender)
     bpy.utils.INFO_MT_file_import.remove(menu_function)
     bpy.utils.unregister_class(SelectNuclei)
+    bpy.utils.unregister_class(RenderStereo)
     bpy.utils.unregister_class(QCTPanel)
     del bpy.types.Scene.read_simple_topology
 
@@ -389,10 +412,11 @@ def setupWorld():
     bpy.context.scene.render.antialiasing_samples = '8'
     bpy.context.scene.render.use_full_sample = True
     bpy.context.scene.render.pixel_filter_type = 'MITCHELL' #GAUSSIAN|CATMULLROM|CUBIC|QUADRATIC|TENT|BOX
-    bpy.context.scene.file_format = 'PNG'
-    bpy.context.scene.color_depth = '16'
-    bpy.context.scene.compression = 0
-    
+    #The following are useful but do not appear to work
+    bpy.context.scene.render.file_format = 'PNG'
+    bpy.context.scene.render.color_depth = '16'
+    bpy.context.scene.render.compression = 0
+
     #Provide light coming from all directions using the ambient param of materials
     #Also set the light energy and colour source.
     bpy.context.scene.world.light_settings.use_environment_light = True
