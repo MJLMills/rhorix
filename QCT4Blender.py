@@ -381,21 +381,32 @@ def setupWorld():
     cam_ob.location=center
     bpy.context.scene.objects.link(cam_ob)
 
+    bpy.context.scene.render.resolution_x = 1000
+    bpy.context.scene.render.resolution_y = 1000    
+    bpy.context.scene.render.resolution_percentage = 50
 
+    bpy.context.scene.render.use_antialiasing = True
+    bpy.context.scene.render.antialiasing_samples = '8'
+    bpy.context.scene.render.use_full_sample = True
+    bpy.context.scene.render.pixel_filter_type = 'MITCHELL' #GAUSSIAN|CATMULLROM|CUBIC|QUADRATIC|TENT|BOX
+    bpy.context.scene.file_format = 'PNG'
+    bpy.context.scene.color_depth = '16'
+    bpy.context.scene.compression = 0
+    
     #Provide light coming from all directions using the ambient param of materials
     #Also set the light energy and colour source.
     bpy.context.scene.world.light_settings.use_environment_light = True
     bpy.context.scene.world.light_settings.environment_energy = 0.65
     bpy.context.scene.world.light_settings.environment_color = 'PLAIN' #|SKY_COLOR | SKY_TEXTURE
 
-#    bpy.context.scene.world.light_settings.use_ambient_occlusion = True
-#    bpy.context.scene.world.light_settings.ao_factor = 1.00
-#    bpy.context.scene.world.light_settings.ao_blend_type = 'MULTIPLY' #ADD
-
     #set the background to be plain and flat RGB
     bpy.context.scene.world.horizon_color = (0.05, 0.20, 0.35)
+
     #set the AO colour to outdoor midday
-#    bpy.context.scene.world.ambient_color = (0.90, 0.90, 0.80)
+    #bpy.context.scene.world.ambient_color = (0.90, 0.90, 0.80)
+    #bpy.context.scene.world.light_settings.use_ambient_occlusion = True
+    #bpy.context.scene.world.light_settings.ao_factor = 1.00
+    #bpy.context.scene.world.light_settings.ao_blend_type = 'MULTIPLY' #ADD
 
     #Set up the quality of the ambient, indirect and AO
     #Turn ray-tracing on for AO and env lighting
