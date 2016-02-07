@@ -381,27 +381,27 @@ def setupWorld():
     cam_ob.location=center
     bpy.context.scene.objects.link(cam_ob)
 
-    #Turn ray-tracing on for AO and env lighting
-    bpy.context.scene.render.use_raytrace = True
+
     #Provide light coming from all directions using the ambient param of materials
     #Also set the light energy and colour source.
     bpy.context.scene.world.light_settings.use_environment_light = True
-    bpy.context.scene.world.light_settings.environment_energy = 1.00
+    bpy.context.scene.world.light_settings.environment_energy = 0.65
     bpy.context.scene.world.light_settings.environment_color = 'PLAIN' #|SKY_COLOR | SKY_TEXTURE
 
-    bpy.context.scene.world.light_settings.use_ambient_occlusion = True
-    bpy.context.scene.world.light_settings.ao_factor = 1.00
-    bpy.context.scene.world.light_settings.ao_blend_type = 'MULTIPLY' #ADD
+#    bpy.context.scene.world.light_settings.use_ambient_occlusion = True
+#    bpy.context.scene.world.light_settings.ao_factor = 1.00
+#    bpy.context.scene.world.light_settings.ao_blend_type = 'MULTIPLY' #ADD
 
     #set the background to be plain and flat RGB
     bpy.context.scene.world.horizon_color = (0.05, 0.20, 0.35)
     #set the AO colour to outdoor midday
-    bpy.context.scene.world.ambient_color = (0.90, 0.90, 0.80)
+#    bpy.context.scene.world.ambient_color = (0.90, 0.90, 0.80)
 
     #Set up the quality of the ambient, indirect and AO
+    #Turn ray-tracing on for AO and env lighting
+    bpy.context.scene.render.use_raytrace = True
     bpy.context.scene.world.light_settings.gather_method = 'RAYTRACE'
-    bpy.context.scene.world.light_settings.samples = 10
-
+    bpy.context.scene.world.light_settings.samples = 6
 
 def findCenter():
 
