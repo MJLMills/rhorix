@@ -266,6 +266,7 @@ def createBlenderObjects():
     for cp in sphereList:
 
         cpSphere = bpy.ops.mesh.primitive_uv_sphere_add(location=cp.position,size=0.1*elementRadii[cp.type],segments=32,ring_count=16)
+        bpy.context.object.name = cp.type
 
         #Create and apply the subsurface modifiers for smooth rendering
         bpy.context.object.modifiers.new("subd", type='SUBSURF')
@@ -309,6 +310,7 @@ def createBlenderObjects():
     if len(lineList) != 0:
          bpy.ops.curve.primitive_bezier_circle_add()
          bpy.context.scene.objects.active = bpy.data.objects['BezierCircle']
+         bpy.context.object.name = 'AIL-BevelCircle'
          bpy.ops.transform.resize(value=(0.25,0.25,0.25))
 
     #this creates all the lines
@@ -322,7 +324,7 @@ def createBlenderObjects():
         objectData = bpy.data.objects.new('ObjCurve',curveData)
         objectData.location = (0,0,0)
         objectData.data.materials.append(bpy.data.materials['AIL_Material'])
-        objectData.data.bevel_object = bpy.data.objects['BezierCircle']
+        objectData.data.bevel_object = bpy.data.objects['AIL-BevelCircle']
         bpy.context.scene.objects.link(objectData)
 
         polyLine = curveData.splines.new('POLY')
@@ -334,6 +336,7 @@ def createBlenderObjects():
     #This is a hack for the GVF - FIX IT
     bpy.ops.curve.primitive_bezier_circle_add()
     bpy.context.scene.objects.active = bpy.data.objects['BezierCircle']
+    bpy.context.object.name = 'GVF-BevelCircle'
     bpy.ops.transform.resize(value=(0.25,0.25,0.25))
 
     for gvf in gvfList:
@@ -348,7 +351,7 @@ def createBlenderObjects():
             objectData = bpy.data.objects.new('ObjCurve',curveData)
             objectData.location = (0,0,0)
             objectData.data.materials.append(bpy.data.materials[gvf.A + '-CritPointColor'])
-            objectData.data.bevel_object = bpy.data.objects['BezierCircle']
+            objectData.data.bevel_object = bpy.data.objects['GVF-BevelCircle']
             bpy.context.scene.objects.link(objectData)
 
             polyLine = curveData.splines.new('POLY')
