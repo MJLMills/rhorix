@@ -276,7 +276,7 @@ def createBlenderObjects():
         bpy.ops.object.modifier_apply(apply_as='DATA', modifier='subd')
 
         #The necessary materials are created in the createMaterials function
-        materialName = cp.type + '-CritPointColor'
+        materialName = cp.type + '-CriticalPointMaterial'
         if materialName in bpy.data.materials:
             bpy.context.object.data.materials.append(bpy.data.materials[materialName])
         else:
@@ -350,7 +350,7 @@ def createBlenderObjects():
 
             objectData = bpy.data.objects.new('ObjCurve',curveData)
             objectData.location = (0,0,0)
-            objectData.data.materials.append(bpy.data.materials[gvf.A + '-CritPointColor'])
+            objectData.data.materials.append(bpy.data.materials[gvf.A + '-CriticalPointMaterial'])
             objectData.data.bevel_object = bpy.data.objects['GVF-BevelCircle']
             bpy.context.scene.objects.link(objectData)
 
@@ -364,7 +364,7 @@ def createBlenderObjects():
 #This defines the default material for a CP other than its diffuse color
 def createAtomMaterial(color,element):
 
-    mat = bpy.data.materials.new(element + '-CritPointColor')
+    mat = bpy.data.materials.new(element + '-CriticalPointMaterial')
     mat.diffuse_color = color
     mat.diffuse_shader = 'LAMBERT'
     mat.diffuse_intensity = 1.0
