@@ -122,6 +122,10 @@ class RenderStereo(bpy.types.Operator):
         bpy.context.object.data.stereo.convergence_distance = 1.95
         bpy.context.object.data.stereo.interocular_distance = 0.065
 
+        #This should check if stereo is turned on, then turn it off
+        if (False):
+            bpy.context.scene.render.use_multiview = False
+
         return {'FINISHED'}
 
 #*#*#*#*#*#*#*#*#*#*# CLASS DEFINITION (GUI)
@@ -327,6 +331,7 @@ def createBlenderObjects():
             x,y,z = cList[num]
             polyLine.points[num].co = (x,y,z,weight)
 
+    #This is a hack for the GVF - FIX IT
     bpy.ops.curve.primitive_bezier_circle_add()
     bpy.context.scene.objects.active = bpy.data.objects['BezierCircle']
     bpy.ops.transform.resize(value=(0.25,0.25,0.25))
