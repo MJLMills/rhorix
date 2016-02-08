@@ -85,6 +85,7 @@ class QCTBlender(bpy.types.Operator):
         createBlenderObjects()
         #Setup the environment in which the QCT resides
         setupWorld()
+        setupUI()
         return{'FINISHED'}
   
     def invoke(self, context, event):
@@ -261,6 +262,9 @@ def readTopology(filepath):
 
 def createBlenderObjects():
 
+    if (len(sphereList) > 0):
+      bpy.ops.group.create(name="Critical_Points")    
+
     elementRadii = defineRadii()
     #create a UV sphere for each CP
     for cp in sphereList:
@@ -274,6 +278,8 @@ def createBlenderObjects():
         bpy.context.object.modifiers['subd'].render_levels=4
         bpy.context.scene.objects.active = bpy.context.object
         bpy.ops.object.modifier_apply(apply_as='DATA', modifier='subd')
+
+        bpy.ops.object.group_link(group="Critical_Points")
 
         #The necessary materials are created in the createMaterials function
         materialName = cp.type + '-CriticalPointMaterial'
@@ -400,6 +406,10 @@ def createAILMaterial():
     mat.alpha = 1
     mat.ambient = 1
 
+def setupUI():
+
+    bpy.context.space_data.display_mode = 'GROUPS'
+
 def setupWorld():
 
     #This is where anything about the scene can be set, render options, lighting, camera and such
@@ -421,9 +431,9 @@ def setupWorld():
     bpy.context.scene.render.use_full_sample = True
     bpy.context.scene.render.pixel_filter_type = 'MITCHELL' #GAUSSIAN|CATMULLROM|CUBIC|QUADRATIC|TENT|BOX
     #The following are useful but do not appear to work
-    bpy.context.scene.render.file_format = 'PNG'
-    bpy.context.scene.render.color_depth = '16'
-    bpy.context.scene.render.compression = 0
+    #bpy.context.scene.render.file_format = 'PNG'
+    #bpy.context.scene.render.color_depth = '16'
+    #bpy.context.scene.render.compression = 0
 
     #Provide light coming from all directions using the ambient param of materials
     #Also set the light energy and colour source.
