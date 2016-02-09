@@ -14,12 +14,56 @@ for ($i=0; $i<@fileContents; $i++) {
   $line = "$fileContents[$i]";
 
   if    ($line =~ m/CP\#\s+\d+\s+Coords\s+\=/) { &parseCP(@fileContents[$i .. $i+1]) }
-  elsif ($line =~ m/CCP/)  {  }
+  elsif ($line =~ m/(\d+)\s+sample points along(.*)path/) { &parseLine(@fileContents[$i .. $i+$1]) }
 
 }
 
+#             94 sample points along path from RCP to BCP between atoms C2 and C3
+
+
 print TOP "\<\/topology\>\n";
 close TOP;
+
+sub parseLine {
+
+  local @xCoords; local @yCoords; local @zCoords;
+
+  if ($_[0] =~ m/\d+\s+sample points along(.*)path(.*)/) { 
+    $A = $1; $B = $2;
+    print "$A\t$B\n";
+  } else { die "Malformed LINE\n" }
+
+  for ($p=1; $p<@_; $p++) {
+    if ($_[$p] =~ m/(-?\d+\.\d+E[+-]\d+)\s+(-?\d+\.\d+E[+-]\d+)\s+(-?\d+\.\d+E[+-]\d+)\s+-?\d+\.\d+E[+-]\d+/) {
+      $x = $1; $y = $2; $z = $3; #$rho = $4;
+      push(@xCoords,$x); push(@yCoords,$y); push(@zCoords,$z);
+    } else { die "Malformed GP line\: $_[$p]\n";}
+  }
+
+  &printLine(\@xCoords,\@yCoords,\@zCoords);
+
+}
+
+sub printLine {
+
+  #sub must receive three lists as references (i.e. \@array1, \@array2, \@array3)
+  local ($xPoints, $yPoints, $zPoints) = @_;
+  local $nPoints = scalar(@$xPoints);
+
+  print TOP "  \<LINE\>\n";
+  print TOP "    \<A\>1\<\/A\>\n";
+  print TOP "    \<B\>1\<\/B\>\n";
+
+  for (local $point=0;$point<$nPoints;$point++) {
+    print TOP "    \<vector\>";
+    printf TOP " \<x\>%8.5f\<\/x\>", @$xPoints[$point];
+    printf TOP " \<y\>%8.5f\<\/y\>", @$yPoints[$point];
+    printf TOP " \<z\>%8.5f\<\/z\>", @$zPoints[$point];
+    print TOP " \<\/vector\>\n";
+  }
+  print TOP "  \<\/LINE\>\n";
+
+}
 
 sub parseCP {
 
