@@ -26,7 +26,7 @@ for ($i=0; $i<@fileContents; $i++) {
 
 sub openTopology {
   $_[0] =~ m/(.*)\..*/;
-  open(TOP,">","$1\.top") || die "Cannot create \.top file\: $1\.top\n";
+  open(TOP,">","$1\.top") || die "Cannot create \.top file\: $1\.top for output\n";
   print TOP "\<topology\>\n";
 }
 
@@ -57,8 +57,8 @@ sub parseLine {
 
   for ($p=1; $p<@_; $p++) {
     if ($_[$p] =~ m/(-?\d+\.\d+E[+-]\d+)\s+(-?\d+\.\d+E[+-]\d+)\s+(-?\d+\.\d+E[+-]\d+)\s+-?\d+\.\d+E[+-]\d+/) {
-      $x = $1; $y = $2; $z = $3; #$rho = $4;
-      push(@xCoords,$x); push(@yCoords,$y); push(@zCoords,$z);
+      #$rho = $4;
+      push(@xCoords,$1); push(@yCoords,$2); push(@zCoords,$3);
     } else { die "Malformed GP line\: $_[$p]\n";}
   }
 #  print "Parsed line of type\: $lineType\n";
@@ -115,11 +115,11 @@ sub printCP {
 
 sub readFile {
 
-  open(SVZ,"<","$_[0]") || die "Cannot open file\: $_[0]\n";
-  my @sumvizContents = <SVZ>;
-  chomp(@sumvizContents);
-  close SVZ;
-  return @sumvizContents;
+  open(INP,"<","$_[0]") || die "Cannot open input file\: $_[0] for reading\n";
+  my @inpContents = <INP>;
+  chomp(@inpContents);
+  close INP;
+  return @inpContents;
 
 }
 
@@ -127,7 +127,7 @@ sub checkArgs {
 
   my $nArg = @_;
   if ($nArg == 0 || $nArg > 1) {
-    die "Incorrect number of arguments\: $nArg\nPlease run script as \"perl newConv.pl filename.sumviz\"\n";
+    die "Incorrect number of arguments\: $nArg\nPlease run script as \"perl newConv.pl filename\"\n";
   } else {
     return "$_[0]";
   }
