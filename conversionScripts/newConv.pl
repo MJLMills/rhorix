@@ -4,25 +4,36 @@
 
 my $fileName = &checkArgs(@ARGV);
 my @fileContents = &readFile($fileName);
+openTopology($fileName);
 
-$fileName =~ m/(.*)\..*/;
-open(TOP,">","$1\.top") || die "Cannot create \.top file\: $1\.top\n";
-print TOP "\<topology\>\n";
-
+my $currentCP;
 for ($i=0; $i<@fileContents; $i++) {
 
   $line = "$fileContents[$i]";
 
-  if    ($line =~ m/CP\#\s+\d+\s+Coords\s+\=/) { &parseCP(@fileContents[$i .. $i+1]) }
-  elsif ($line =~ m/(\d+)\s+sample points along(.*)path/) { &parseLine(@fileContents[$i .. $i+$1]) }
+  if ($line =~ m/CP\#\s+(\d+)\s+Coords\s+\=/) {
+    $currentCP = $1;
+    &parseCP(@fileContents[$i .. $i+1]) 
+  } elsif ($line =~ m/(\d+)\s+sample points along(.*)path/) { 
+    &parseLine(@fileContents[$i .. $i+$1]) 
+  }
 
 }
 
-#             94 sample points along path from RCP to BCP between atoms C2 and C3
+&closeTopology;
 
+#!#! SUBROUTINES
 
-print TOP "\<\/topology\>\n";
-close TOP;
+sub openTopology {
+  $_[0] =~ m/(.*)\..*/;
+  open(TOP,">","$1\.top") || die "Cannot create \.top file\: $1\.top\n";
+  print TOP "\<topology\>\n";
+}
+
+sub closeTopology {
+  print TOP "\<\/topology\>\n";
+  close TOP;
+}
 
 sub parseLine {
 
@@ -30,7 +41,18 @@ sub parseLine {
 
   if ($_[0] =~ m/\d+\s+sample points along(.*)path(.*)/) { 
     $A = $1; $B = $2;
-    print "$A\t$B\n";
+#    print "$A\t$B\n";
+    if ($A =~ m/IAS/) {
+      $lineType = "$A";
+    } elsif ($B =~ m/from BCP to atom\s+(.*)/) {
+      $lineType = "AIL"
+    } elsif ($B =~ m/from RCP to BCP between atoms\s+(.*)\s+and\s+(.*)/) {
+      $lineType = "RCP-BCP"
+    } elsif ($A =~ /RCP attractor/) {
+      $lineType = "RCP-attractor"
+    } else {
+      die "Unknown Line Type\: sample points along $A path $B\n";
+    }
   } else { die "Malformed LINE\n" }
 
   for ($p=1; $p<@_; $p++) {
@@ -39,7 +61,7 @@ sub parseLine {
       push(@xCoords,$x); push(@yCoords,$y); push(@zCoords,$z);
     } else { die "Malformed GP line\: $_[$p]\n";}
   }
-
+#  print "Parsed line of type\: $lineType\n";
   &printLine(\@xCoords,\@yCoords,\@zCoords);
 
 }
