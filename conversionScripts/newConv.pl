@@ -30,15 +30,39 @@ sub parseIASVIZ {
 
     $line = "$_[$i]";
 
-    if ($line =~ m/<IAS Path>/ || $line =~ m/<Bond Path>/) {
-      if ($_[$i+1] =~ m/\d+\s+(\d+)/) { 
+    if ($line =~ m/\<IAS Path\>/ || $line =~ m/\<Bond Path\>/) {
+      if ($_[$i+1] =~ m/\d+\s+(\d+)/) {
         &parseIASVIZline(@_[$i+2 .. $i+$1+1]); 
       } else { die "Malformed line in IASVIZ\n"; }
+    } elsif ($line =~ m/\<Intersections of Integration Rays with Atomic Surface\>/) {
+      if ($_[$i+1] =~ m/\d+\s+(\d+)/) {
+        &parseIASIntersections(@_[$i+2 .. $i+$1+1]);
+        #There are an additional $1 single numbers after a line with 2 ints after the intersections - dunno what they are.
+        #  5.8509422438E-04
+      } else { die "Malformed line in IASVIZ\n"; }
+    } elsif ($line =~ m/<Intersections of Integration Rays With IsoDensity Surfaces>/) {
+      if ($_[$i+1] =~ m/(\d+)\s+(\d+\.\d+E[-+]\d+)\s+(\d+\.\d+E[-+]\d+)\s+(\d+\.\d+E[-+]\d+)\s+(\d+)/) {
+        #what are the sci-notation numbers? $5 is the number of points to read
+        &parseIsoDensityIntersections();
+      } else { die "Malformed line in IASVIZ\n"; }      
+    } elsif ($line =~ m/\<Electron Density Critical Points in Atomic Surface\>/) {
+      #this only needs to happen if the sumviz is not read
     }
 
   }
 
 }
+
+sub parseIsoDensityIntersections {
+#regex must match x y z
+# -1.0000000000E+00  -1.0000000000E+00  -1.0000000000E+00
+}
+
+sub parseIASIntersections {
+#regex must match: x y z rho ? ? ? ?
+#     1     0     1  9.9959105336E-01   1.6994685093E-02   2.2997972220E-02   8.4400576730E-01  -1.0000000000E+00   1.3000000000E+01  -1.0000000000E+00   1.3000000000E+01
+}
+
 
 sub parseSUMVIZ {
 
