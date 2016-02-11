@@ -6,23 +6,74 @@ my $fileName = &checkArgs(@ARGV);
 my @fileContents = &readFile($fileName);
 openTopology($fileName);
 
-my $currentCP;
-for ($i=0; $i<@fileContents; $i++) {
+$fileName =~ m/.*\.(.*)/;
+$extension = $1;
 
-  $line = "$fileContents[$i]";
-
-  if ($line =~ m/CP\#\s+(\d+)\s+Coords\s+\=/) {
-    $currentCP = $1;
-    &parseCP(@fileContents[$i .. $i+1]) 
-  } elsif ($line =~ m/(\d+)\s+sample points along(.*)path/) { 
-    &parseLine(@fileContents[$i .. $i+$1]) 
-  }
-
+if ($extension eq "sumviz") {
+  &parseSUMVIZ(@fileContents);
+} elsif ($extension eq "iasviz") {
+  &parseIASVIZ(@fileContents);
 }
 
 &closeTopology;
 
 #!#! SUBROUTINES
+
+sub parseIASVIZ {
+
+  #deal with the below
+  #<Intersections of Integration Rays with Atomic Surface>
+  #<Intersections of Integration Rays With IsoDensity Surfaces>
+
+  my $currentCP;
+  for ($i=0; $i<@_; $i++) {
+
+    $line = "$_[$i]";
+
+    if ($line =~ m/<IAS Path>/ || $line =~ m/<Bond Path>/) {
+      if ($_[$i+1] =~ m/\d+\s+(\d+)/) { 
+        &parseIASVIZline(@_[$i+2 .. $i+$1+1]); 
+      } else { die "Malformed line in IASVIZ\n"; }
+    }
+
+  }
+
+}
+
+sub parseSUMVIZ {
+
+  my $currentCP;
+  for ($i=0; $i<@_; $i++) {
+
+    $line = "$_[$i]";
+
+    if ($line =~ m/CP\#\s+(\d+)\s+Coords\s+\=/) {
+      $currentCP = $1;
+      &parseCP(@_[$i .. $i+1]);
+    } elsif ($line =~ m/(\d+)\s+sample points along(.*)path/) {
+      &parseLine(@_[$i .. $i+$1]);
+    }
+
+  }
+
+}
+
+sub parseIASVIZline {
+
+  local @xCoords; local @yCoords; local @zCoords;
+
+  foreach (@_) {
+    if ($_ =~ m/(-?\d+\.\d+E[+-]\d+)\s+(-?\d+\.\d+E[+-]\d+)\s+(-?\d+\.\d+E[+-]\d+)\s+-?\d+\.\d+E[+-]\d+/) {
+      push(@xCoords,$1); push(@yCoords,$2); push(@zCoords,$3);
+    } else {
+      die "Malformed LINE\: $_\n";
+    }
+  }
+
+  &printLine(\@xCoords,\@yCoords,\@zCoords);
+
+}
+
 
 sub openTopology {
   $_[0] =~ m/(.*)\..*/;
