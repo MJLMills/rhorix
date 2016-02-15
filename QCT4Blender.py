@@ -504,7 +504,7 @@ def computeRadius(sphereList):
 
     max = -100000
 
-    center = findCenter()
+    center = findCenter(sphereList)
     for cp in sphereList:
         position = cp.position - center
         r = math.sqrt(position[0]*position[0] + position[1]*position[1] + position[2]*position[2])
