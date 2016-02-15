@@ -10,10 +10,22 @@ import math
 #converted to blender data objects so that they persist on 
 #saving the blender file.
 
-sphereList = []    # list of CriticalPoint objects
-lineList = []      # list of Line objects
-surfaceList = []   # list of Surface objects
-gvfList = []       # list of all GradientVectorField objects
+#sphereList = []    # list of CriticalPoint objects
+#lineList = []      # list of Line objects
+#surfaceList = []   # list of Surface objects
+#gvfList = []       # list of all GradientVectorField objects
+
+#*#*#*#*#*#*#*#*#*#*# CLASS DEFINITION
+
+#This encapsulates the 3D representation of the topology.
+#It must ne used to eliminate the global state above.
+class Topology3D():
+    
+    def __init__(self,sphereList,lineList,surfaceList,gvfList):
+        self.sphereList = sphereList   # list of CriticalPoint objects
+        self.lineList = lineList       # list of Line objects
+        self.surfaceList = surfaceList # list of Surface objects
+        self.gvfList = gvfList         # list of all GradientVectorField objects
 
 #*#*#*#*#*#*#*#*#*#*# CLASS DEFINITION
 
@@ -77,14 +89,14 @@ class QCTBlender(bpy.types.Operator):
     def execute(self, context):
         print("QCT4B: Opening File " + self.filepath)
         #First create the object representation of the QCT in the .top file
-        readTopology(self.filepath)
+        topology = readTopology(self.filepath)
         #Create all necessary default materials
-        createMaterials()
+        createMaterials(topology.sphereList) #pass this the topology?
         #Create the blender data rep of the QCT and assign materials
         #Anything created here is persistent, anything not converted to blender data is lost on save/open
-        createBlenderObjects()
+        createBlenderObjects(topology) #pass this the topology?
         #Setup the environment in which the QCT resides
-        setupWorld()
+        setupWorld(topology.sphereList)
         setupUI()
         return{'FINISHED'}
   
@@ -101,8 +113,9 @@ class SelectNuclei(bpy.types.Operator):
     bl_label = "Select Nuclei"
 
     def invoke(self,context,event):
-        print ("Select Nuclei Clicked")
-        # TODO - implement selection
+        for object in bpy.data.objects:
+            object.selected = False
+        bpy.ops.object.select_pattern(pattern="CP")
         return {'FINISHED'}
 
 #*#*#*#*#*#*#*#*#*#*# CLASS DEFINITION (OPERATOR)
@@ -177,6 +190,11 @@ def unregister():
     del bpy.types.Scene.read_simple_topology
 
 def readTopology(filepath):
+
+    sphereList = []
+    lineList = []
+    surfaceList = []
+    gvfList = []
 
     #given an open topology file create all the corresponding python objects
     #this has to be more careful in case of malformed files - dtd maybe?
@@ -260,7 +278,15 @@ def readTopology(filepath):
           gvf = GradientVectorField(A,lineList)
           gvfList.append(gvf)
 
-def createBlenderObjects():
+    topology = Topology3D(sphereList,lineList,surfaceList,gvfList)
+    return topology
+
+def createBlenderObjects(topology):
+
+    sphereList = topology.sphereList
+    lineList = topology.lineList
+    surfaceList = topology.surfaceList
+    gvfList = topology.gvfList
 
     if (len(sphereList) > 0):
       bpy.ops.group.create(name="Critical_Points")    
@@ -410,13 +436,13 @@ def setupUI():
 
     bpy.context.space_data.display_mode = 'GROUPS'
 
-def setupWorld():
+def setupWorld(sphereList):
 
     #This is where anything about the scene can be set, render options, lighting, camera and such
     cam = bpy.data.cameras.new("Cam")
     cam.clip_end = 1000.0
-    center = findCenter()
-    radius = computeRadius()
+    center = findCenter(sphereList)
+    radius = computeRadius(sphereList)
     center[2] += (4.0 * radius)
     cam_ob = bpy.data.objects.new("Cam", cam)
     cam_ob.location=center
@@ -456,7 +482,7 @@ def setupWorld():
     bpy.context.scene.world.light_settings.gather_method = 'RAYTRACE'
     bpy.context.scene.world.light_settings.samples = 6
 
-def findCenter():
+def findCenter(sphereList):
 
     x_total = 0.0
     y_total = 0.0
@@ -474,7 +500,7 @@ def findCenter():
 
     return mathutils.Vector((float(x_origin),float(y_origin),float(z_origin)))
 
-def computeRadius():
+def computeRadius(sphereList):
 
     max = -100000
 
@@ -489,7 +515,7 @@ def computeRadius():
     return max
 
 #This function creates a single material for each CP in the scene
-def createMaterials():
+def createMaterials(sphereList):
 
     elementColors = defineColors()
     #create the necessary set of element colors for this topology
