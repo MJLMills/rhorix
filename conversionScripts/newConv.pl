@@ -99,7 +99,7 @@ sub parseSUMVIZ {
       $currentCP = $1;
       &parseCP(@_[$i .. $i+1]);
     } elsif ($line =~ m/(\d+)\s+sample points along(.*)path/) {
-      &parseLine(@_[$i .. $i+$1]);
+#      &parseLine(@_[$i .. $i+$1]);
     }
 
   }
@@ -193,7 +193,13 @@ sub parseCP {
   } else { die "Malformed CP line\: $_[0]\n"; }
 
   if ($_[1] =~ m/Type\s+\=\s+\((\d+)\,([-+]\d+)\)\s+(\w+)\s+(.*)/) {
-    $rank = $1; $signature = $2; $type = $3;
+    $rank = $1; $signature = $2; $type = $3; $conn = $4;
+    if ($type eq "NACP") {
+      $conn =~ m/([a-zA-Z])\d+/;
+      $type = $1;
+    } else {
+      $type = lc($type);
+    }
     #print "CONNECTIVITY\: $4\n";
   } else { die "Malformed CP line\: $_[1]\n"; }
 
