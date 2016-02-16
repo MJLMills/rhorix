@@ -44,7 +44,7 @@ sub parseIASVIZ {
 
       if ($_[$i+1] =~ m/(\d+)\s+(\d+\.\d+E[-+]\d+)\s+(\d+\.\d+E[-+]\d+)\s+(\d+\.\d+E[-+]\d+)\s+(\d+)/) {
         #what are the sci-notation numbers? $5 is the number of points to read
-        &parseIsoDensityIntersections(@_[$i+2 .. $i+1+$5]);
+#        &parseIsoDensityIntersections(@_[$i+2 .. $i+1+$5]);
       } else { die "Malformed line in IASVIZ\n"; }      
 
     } elsif ($line =~ m/\<Electron Density Critical Points in Atomic Surface\>/) {
@@ -277,10 +277,8 @@ sub typeToSignature {
 sub printSurface {
 
   #sub must receive five lists as references (i.e. \@array1, \@array2, \@array3)
-  local ($xPoints, $yPoints, $zPoints, $edgeA) = @_;
+  local ($xPoints, $yPoints, $zPoints) = @_;
   local $nPoints = scalar(@$xPoints);
-
-  print "PRINTING SURFACE OF $nPoints POINTS\n";
 
   print TOP "  \<SURFACE\>\n";
   print TOP "    \<A\>H2\<\/A\>\n";
@@ -291,10 +289,6 @@ sub printSurface {
     printf TOP " \<z\>%8.5f\<\/z\>", @$zPoints[$point];
     print TOP " \<\/vector\>\n";
   }
-
-  #only print the edges if you really want them for some reason. Kept for back-compatability for now
-#  if ($printEdges == 1) { printGraph(\@$edgeA,\@$edgeB); }
-#  printFaces(\@$faceA,\@$faceB,\@$faceC);
 
   print TOP "  \<\/SURFACE\>\n";
 
