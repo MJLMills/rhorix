@@ -27,7 +27,7 @@ sub parseIASVIZ {
     $line = "$_[$i]";
 
     if ($line =~ m/\<IAS Path\>/ || $line =~ m/\<Bond Path\>/) {
-
+      #IAS Paths are GPs from a BCP out to an isovalue. Not connected.
       if ($_[$i+1] =~ m/\d+\s+(\d+)/) {
         &parseIASVIZline(@_[$i+2 .. $i+$1+1]); 
       } else { die "Malformed line in IASVIZ\n"; }
@@ -70,21 +70,30 @@ sub parseIASCriticalPoints {
 }
 
 sub parseIsoDensityIntersections {
+
+  local @xCoords; local @yCoords; local @zCoords;
+
   for (@_) {
     if ($_ =~ m/(-?\d+\.\d+E[+-]\d+)\s+(-?\d+\.\d+E[+-]\d+)\s+(-?\d+\.\d+E[+-]\d+)/) {
-      $x = $1; $y = $2; $z = $3;
-      #figure out what to do with these
+      push(@xCoords,$1); push(@yCoords,$2); push(@zCoords,$3);
     } else { die "Malformed line\n"; }
   }
+
+  &printSurface(\@xCoords,\@yCoords,\@zCoords);
+
 }
 
 sub parseIASIntersections {
 
+  local @xCoords; local @yCoords; local @zCoords;
+
   for (@_) {
     if ($_ =~ m/\d+\s+\d+\s+\d+\s+(-?\d+\.\d+E[-+]\d+)\s+(-?\d+\.\d+E[-+]\d+)\s+(-?\d+\.\d+E[-+]\d+)\s+-?\d+\.\d+E[-+]\d+\s+-?\d+\.\d+E[-+]\d+\s+-?\d+\.\d+E[-+]\d+\s+-?\d+\.\d+E[-+]\d+\s+-?\d+\.\d+E[-+]\d+/) {
-      $x = $1; $y = $2; $z = $3;
+      push(@xCoords,$1); push(@yCoords,$2); push(@zCoords,$3);
     }
   }
+
+  &printSurface(\@xCoords,\@yCoords,\@zCoords);
 
 }
 
@@ -262,5 +271,31 @@ sub typeToSignature {
   } elsif ($arg eq "nacp") {
     return +3;
   }
+
+}
+
+sub printSurface {
+
+  #sub must receive five lists as references (i.e. \@array1, \@array2, \@array3)
+  local ($xPoints, $yPoints, $zPoints, $edgeA) = @_;
+  local $nPoints = scalar(@$xPoints);
+
+  print "PRINTING SURFACE OF $nPoints POINTS\n";
+
+  print TOP "  \<SURFACE\>\n";
+  print TOP "    \<A\>H2\<\/A\>\n";
+  for (local $point=0;$point<$nPoints;$point++) {
+    print TOP "    \<vector\>";
+    printf TOP " \<x\>%8.5f\<\/x\>", @$xPoints[$point];
+    printf TOP " \<y\>%8.5f\<\/y\>", @$yPoints[$point];
+    printf TOP " \<z\>%8.5f\<\/z\>", @$zPoints[$point];
+    print TOP " \<\/vector\>\n";
+  }
+
+  #only print the edges if you really want them for some reason. Kept for back-compatability for now
+#  if ($printEdges == 1) { printGraph(\@$edgeA,\@$edgeB); }
+#  printFaces(\@$faceA,\@$faceB,\@$faceC);
+
+  print TOP "  \<\/SURFACE\>\n";
 
 }
