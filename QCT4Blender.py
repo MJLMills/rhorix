@@ -230,7 +230,7 @@ def readTopology(filepath):
 
             elif topologicalObject.tag == 'SURFACE':
 
-                A = topologicalObject.find('A').text.lower
+                A = topologicalObject.find('A').text.lower()
 
                 edgeList = []
                 for edge in topologicalObject.findall('edge'):
