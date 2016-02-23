@@ -6,18 +6,53 @@ my $fileName = &checkArgs(@ARGV);
 my @fileContents = &readFile($fileName);
 openTopology($fileName);
 
-$fileName =~ m/.*\.(.*)/;
-$extension = $1;
+$fileName =~ m/(.*)\.(.*)/;
+$name = $1; $extension = $2;
+$atomFolder = "$name\_atomicfiles";
 
-if ($extension eq "sumviz") {
+if ($extension eq "sumviz" || $extension eq "mgpviz") {
   &parseSUMVIZ(@fileContents);
+  &parseAssociatedIASVIZ($atomFolder);
 } elsif ($extension eq "iasviz") {
   &parseIASVIZ(@fileContents);
+} else {
+  die "Extension \'$extension\' not recognised\n";
 }
 
 &closeTopology;
 
+sub parseAssociatedIASVIZ {
+  if (-d "$_[0]") {
+    print "Located atomic files\n";
+    @iasvizFiles = `ls $atomFolder\/*.iasviz`;
+    $nFiles = @iasvizFiles; print "Found $nFiles atomic output files\n";
+    #parse each iasviz file located
+    foreach (@iasvizFiles) {
+      my @iasvizContents = &readFile("$atomFolder\/$_");
+      &parseIASVIZsurfaces(@iasvizContents);
+    }
+  }
+}
+
 #!#! SUBROUTINES
+
+#just get the IAS from the iasviz file - use when mgpviz/sumviz is present
+sub parseIASVIZsurfaces {
+
+  for ($i=0; $i<@_; $i++) {
+
+    $line = "$_[$i]";
+
+    if ($line =~ m/\<IAS Path\>/) {
+      if ($_[$i+1] =~ m/\d+\s+(\d+)/) {
+        &parseIASVIZline(@_[$i+2 .. $i+$1+1]);
+      } else { 
+        die "Malformed line in IASVIZ\n"; 
+      }
+    }
+  }
+
+}
 
 sub parseIASVIZ {
 
@@ -108,7 +143,7 @@ sub parseSUMVIZ {
       $currentCP = $1;
       &parseCP(@_[$i .. $i+1]);
     } elsif ($line =~ m/(\d+)\s+sample points along(.*)path/) {
-#      &parseLine(@_[$i .. $i+$1]);
+      &parseLine(@_[$i .. $i+$1]);
     }
 
   }
@@ -210,7 +245,12 @@ sub parseCP {
       $type = lc($type);
     }
     #print "CONNECTIVITY\: $4\n";
-  } else { die "Malformed CP line\: $_[1]\n"; }
+  } elsif ($_[1] =~ m/Type\s+\=\s+\((\d+)\,([-+]\d+)\)\s+(\w+)/) {
+    $rank = $1; $signature = $2; $type = $3;
+    $type = lc($type);
+  } else { 
+    die "Malformed CP line\: $_[1]\n"; 
+  }
 
   &printCP($x,$y,$z,$rank,$signature,$type);
   
