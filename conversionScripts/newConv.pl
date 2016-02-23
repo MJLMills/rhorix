@@ -152,6 +152,7 @@ sub parseSUMVIZ {
 }
 
 #Parse a gradient path appearing in an IASVIZ file
+#Needs t be replaced for IAS Paths
 sub parseIASVIZline {
 
   local @xCoords; local @yCoords; local @zCoords;
