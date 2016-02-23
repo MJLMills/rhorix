@@ -79,7 +79,7 @@ sub parseIASVIZ {
 
       if ($_[$i+1] =~ m/(\d+)\s+(\d+\.\d+E[-+]\d+)\s+(\d+\.\d+E[-+]\d+)\s+(\d+\.\d+E[-+]\d+)\s+(\d+)/) {
         #what are the sci-notation numbers? $5 is the number of points to read
-#        &parseIsoDensityIntersections(@_[$i+2 .. $i+1+$5]);
+        &parseIsoDensityIntersections(@_[$i+2 .. $i+1+$5]);
       } else { die "Malformed line in IASVIZ\n"; }      
 
     } elsif ($line =~ m/\<Electron Density Critical Points in Atomic Surface\>/) {
@@ -132,6 +132,7 @@ sub parseIASIntersections {
 
 }
 
+#Parses sumviz and mgpviz files and prints topological objects
 sub parseSUMVIZ {
 
   my $currentCP;
@@ -150,6 +151,7 @@ sub parseSUMVIZ {
 
 }
 
+#Parse a gradient path appearing in an IASVIZ file
 sub parseIASVIZline {
 
   local @xCoords; local @yCoords; local @zCoords;
@@ -178,13 +180,13 @@ sub closeTopology {
   close TOP;
 }
 
+#Parse a GP from a sum/mgpviz file
 sub parseLine {
 
   local @xCoords; local @yCoords; local @zCoords;
 
   if ($_[0] =~ m/\d+\s+sample points along(.*)path(.*)/) { 
     $A = $1; $B = $2;
-#    print "$A\t$B\n";
     if ($A =~ m/IAS/) {
       $lineType = "$A";
     } elsif ($B =~ m/from BCP to atom\s+(.*)/) {
@@ -209,6 +211,7 @@ sub parseLine {
 
 }
 
+#Print a GP to the top file
 sub printLine {
 
   #sub must receive three lists as references (i.e. \@array1, \@array2, \@array3)
@@ -230,6 +233,7 @@ sub printLine {
 
 }
 
+#Parse a CP from a sum/mgpviz file
 sub parseCP {
 
   if ($_[0] =~ m/Coords\s+\=\s+(-?\d+\.\d+E[+-]\d+)\s+(-?\d+\.\d+E[+-]\d+)\s+(-?\d+\.\d+E[+-]\d+)/) {
@@ -256,6 +260,7 @@ sub parseCP {
   
 }
 
+#Print a CP object to the .top file
 sub printCP {
 
   print  TOP "  \<CP\>\n";
@@ -267,6 +272,7 @@ sub printCP {
 
 }
 
+#Attempt to read a file (arg is filename)
 sub readFile {
 
   open(INP,"<","$_[0]") || die "Cannot open input file\: $_[0] for reading\n";
@@ -277,6 +283,7 @@ sub readFile {
 
 }
 
+#Check that 1 arg was passed (the filename)
 sub checkArgs {
 
   my $nArg = @_;
@@ -314,6 +321,7 @@ sub typeToSignature {
 
 }
 
+#Print a disconnected surface to the .top file
 sub printSurface {
 
   #sub must receive five lists as references (i.e. \@array1, \@array2, \@array3)
