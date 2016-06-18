@@ -3,11 +3,14 @@
 
 $removeRedundant = 1;
 $printEdges = 0;
-$mifFile = "ALANINE0000\.mif";
 
+$mifFile = &checkArgs(@ARGV);
 @mifContents = readFile($mifFile);
 
-open(TOP,">","new\.top");
+$mifFile =~ m/(.*)\.mif/;
+$topFile = "$1\.top";
+
+open(TOP,">","$topfile") || die "Cannot create topology file\: $topFile\n";
 print TOP "\<topology\>\n";
 
 $c = 0;
@@ -395,3 +398,14 @@ sub readFile {
   
 }
 
+#Check that 1 arg was passed (the filename)
+sub checkArgs {
+
+  my $nArg = @_;
+  if ($nArg == 0 || $nArg > 1) {
+    die "Incorrect number of arguments\: $nArg\nPlease run script as \"perl mif2top.pl filename\"\n";
+  } else {
+    return "$_[0]";
+  }
+
+}
