@@ -1,5 +1,6 @@
-# Matthew JL Mills
 #!/usr/bin/perl -w
+# Dr. Matthew J L Mills - RhoRix
+# Convert morphy mif files to the top format
 
 $removeRedundant = 1;
 $printEdges = 0;
@@ -133,7 +134,8 @@ MAIN_LOOP: for ($line=0;$line<@mifContents;$line++) {
 print TOP "\<\/topology\>\n";
 close TOP;
 
-# SUBROUTINES #
+
+### SUBROUTINES ###
 
 sub reformatSurface {
 
