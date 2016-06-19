@@ -424,7 +424,7 @@ def createAILMaterial():
 
 def setupUI():
 
-    bpy.context.space_data.display_mode = 'GROUPS'
+    #bpy.context.space_data.display_mode = 'GROUPS'
 
 def setupWorld(sphereList):
 
