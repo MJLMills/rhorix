@@ -11,7 +11,7 @@ $mifFile = &checkArgs(@ARGV);
 $mifFile =~ m/(.*)\.mif/;
 $topFile = "$1\.top";
 
-open(TOP,">","$topfile") || die "Cannot create topology file\: $topFile\n";
+open(TOP,">","$topFile") || die "Cannot create topology file\: $topFile\n";
 print TOP "\<topology\>\n";
 
 $c = 0;
@@ -40,6 +40,7 @@ MAIN_LOOP: for ($line=0;$line<@mifContents;$line++) {
     #PARSE ALL CRITICAL POINTS
     } elsif ($mifContents[$line] =~ m/CRIT/) {
 
+      print "Parsing Critial Points\n";
       CRIT_LOOP: for ($cpLine=$line+1;$cpLine<@mifContents;$cpLine++) {
         if ($mifContents[$cpLine] =~ m/(\w+)\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)/) {
           $cpType = $1; $x = $2; $y = $3; $z = $4;
@@ -83,7 +84,7 @@ MAIN_LOOP: for ($line=0;$line<@mifContents;$line++) {
             push(@edgeA,$pointID); push(@edgeB,$pointID-2); $pointID++;
           }
 
-          $vertexCount++;
+          #$vertexCount++;
 
           #cycle the vertex of the triangle
           if ($vertex == 3) { $vertex = 1 } else { $vertex++ }
@@ -234,7 +235,7 @@ local ($faceA,$faceB,$faceC) = @_;
     }
 
   } else {
-    print "N_A = $n_A\nN_B = $n_B\nN_C = @$edgeC\n";
+    #print "N_A = $n_A\nN_B = $n_B\nN_C = @$edgeC\n";
     die "ERROR: MISMATCHED FACE ARRAYS IN printFaces SUBROUTINE\n";
   }
 
@@ -363,7 +364,7 @@ sub getRank {
 
   local $type = "$_[0]";
 
-  if ($type == "bcp" or $type == "rcp" or $type = "ccp") {
+  if ($type eq "bcp" or $type eq "rcp" or $type eq "ccp") {
     return 3;
   } else {
     return 3;
@@ -374,11 +375,11 @@ sub getSignature {
 
   local $type = "$_[0]";
 
-  if ($type == "bcp") {
+  if ($type eq "bcp") {
     return -1;
-  } elsif ($type == "rcp") {
+  } elsif ($type eq "rcp") {
     return 1;
-  } elsif ($type == "ccp") {
+  } elsif ($type eq "ccp") {
     return 3;
   } else {
     return -3;
