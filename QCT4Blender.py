@@ -87,7 +87,7 @@ class QCTBlender(bpy.types.Operator):
         createBlenderObjects(topology)
         #Setup the environment in which the QCT resides (camera,lights,etc.)
         setupWorld(topology.sphereList)
-        setupUI()
+        #setupUI()
         return{'FINISHED'}
   
     def invoke(self, context, event):
@@ -422,7 +422,7 @@ def createAILMaterial():
     mat.alpha = 1
     mat.ambient = 1
 
-def setupUI():
+#def setupUI():
 
     #bpy.context.space_data.display_mode = 'GROUPS'
 
