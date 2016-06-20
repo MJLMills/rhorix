@@ -2,7 +2,7 @@
 # Dr. Matthew J L Mills - RhoRix
 # Convert morphy mif files to the top format
 
-$removeRedundant = 1;
+$removeRedundant = 0;
 $printEdges = 0;
 $factor = 10;
 
@@ -77,7 +77,7 @@ MAIN_LOOP: for ($line=0; $line<@mifContents; $line++) {
 
     } elsif ($mifContents[$line] =~ m/atom\s+(\w+)\_(\d+)/ || $mifContents[$line] =~ m/surf\s+(\w+)\_(\d+)/) {
 
-      $atom = "$1$2";
+      $atom = "$1$2"; print "$atom\n";
       if ($mifContents[$line+1] =~ m/(\w+)\s+(\d+)/) {
         print "READING SURFACE OF ATOM $atom ASSOCIATED WITH $1 $2\: ";
       } else {
@@ -134,9 +134,9 @@ MAIN_LOOP: for ($line=0; $line<@mifContents; $line++) {
             #Correct the MIF units
 
             for ($point=0;$point<@ailCoords_x;$point++) {
-              $ailCoords_x[$point] *= 10;
-              $ailCoords_y[$point] *= 10;
-              $ailCoords_z[$point] *= 10;
+              #$ailCoords_x[$point] *= 10;
+              #$ailCoords_y[$point] *= 10;
+              #$ailCoords_z[$point] *= 10;
             }
 
             $line = $surfLine - 1;
