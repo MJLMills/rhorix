@@ -125,6 +125,7 @@ class DifferentiateInteractions(bpy.types.Operator):
     bl_label = "Differentiate Interactions"
 
     def invoke(self,context,event):
+        print ("Differentiating Interactions")
         # check the interatomic distances between AIL-connected nuclei
         # set the appropriate Bevel object for bond or NB interaction
 
@@ -470,6 +471,14 @@ def setupWorld(sphereList):
     cam_ob.location=center
     bpy.context.scene.objects.link(cam_ob)
 
+    #bpy.ops.object.active_object = cam
+    #must create spotlight at correct position, pointing in camera direction
+    #bpy.ops.object.lamp_add(type='SPOT',location=cam.location)
+    #spotlight becomes the new active object
+    # move to the left
+    #bpy.context.active_object.location.y -= radius
+
+
     bpy.context.scene.render.resolution_x = 1000
     bpy.context.scene.render.resolution_y = 1000    
     bpy.context.scene.render.resolution_percentage = 50
@@ -478,10 +487,9 @@ def setupWorld(sphereList):
     bpy.context.scene.render.antialiasing_samples = '8'
     bpy.context.scene.render.use_full_sample = True
     bpy.context.scene.render.pixel_filter_type = 'MITCHELL' #GAUSSIAN|CATMULLROM|CUBIC|QUADRATIC|TENT|BOX
-    #The following are useful but do not appear to work
-    #bpy.context.scene.render.file_format = 'PNG'
-    #bpy.context.scene.render.color_depth = '16'
-    #bpy.context.scene.render.compression = 0
+    bpy.context.scene.render.image_settings.file_format = 'PNG'
+    bpy.context.scene.render.image_settings.color_depth = '16'
+    bpy.context.scene.render.image_settings.compression = 0
 
     #Provide light coming from all directions using the ambient param of materials
     #Also set the light energy and colour source.
