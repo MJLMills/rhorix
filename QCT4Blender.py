@@ -105,7 +105,7 @@ class SelectNuclei(bpy.types.Operator):
     def invoke(self,context,event):
         for object in bpy.data.objects:
             object.select = False
-        bpy.ops.object.select_pattern(pattern="CP")
+        bpy.ops.object.select_pattern(pattern="*cp*")
         return {'FINISHED'}
 
 class ResizeAILs(bpy.types.Operator):
@@ -118,6 +118,15 @@ class ResizeAILs(bpy.types.Operator):
             object.select = False
         bpy.ops.object.select_pattern(pattern="AIL-BevelCircle")
         return {'FINISHED'}
+
+class DifferentiateInteractions(bpy.types.Operator):
+
+    bl_idname = "qct.differentiate_interactions"
+    bl_label = "Differentiate Interactions"
+
+    def invoke(self,context,event):
+        # check the interatomic distances between AIL-connected nuclei
+        # set the appropriate Bevel object for bond or NB interaction
 
 #*#*#*#*#*#*#*#*#*#*# CLASS DEFINITION (GUI OPERATOR)
 # This class renders the current scene from the camera in stereo
@@ -159,6 +168,7 @@ class QCTPanel(bpy.types.Panel):
         uiColumn.operator("qct.import_topology", text="Import Topology")
         uiColumn.operator("qct.select_nuclei",   text="Select Nuclei")
         uiColumn.operator("qct.render_stereo",   text="Render Stereo")
+        uiColumn.operator("qct.differentiate_interactions",text="Differentiate Interactions")
         uiColumn.operator("qct.resize_ails",     text="Resize AILs")
 
 #*#*#*#*#*#*#*#*#*#* SCRIPT FUNCTION DEFINITIONS
@@ -174,6 +184,7 @@ def register():
     bpy.utils.register_class(SelectNuclei)
     bpy.utils.register_class(RenderStereo)
     bpy.utils.register_class(ResizeAILs)
+    bpy.utils.register_class(DifferentiateInteractions)
     bpy.utils.register_class(QCTPanel)
 
     bpy.types.Scene.read_simple_topology = bpy.props.BoolProperty \
@@ -190,6 +201,7 @@ def unregister():
     bpy.utils.unregister_class(SelectNuclei)
     bpy.utils.unregister_class(RenderStereo)
     bpy.utils.unregister_class(ResizeAILs)
+    bpy.utils.unregister_class(DifferentiateInteractions)
     bpy.utils.unregister_class(QCTPanel)
     del bpy.types.Scene.read_simple_topology
 
