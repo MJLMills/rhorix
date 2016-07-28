@@ -471,13 +471,35 @@ def setupWorld(sphereList):
     cam_ob.location=center
     bpy.context.scene.objects.link(cam_ob)
 
-    #bpy.ops.object.active_object = cam
-    #must create spotlight at correct position, pointing in camera direction
-    #bpy.ops.object.lamp_add(type='SPOT',location=cam.location)
-    #spotlight becomes the new active object
-    # move to the left
-    #bpy.context.active_object.location.y -= radius
+    # must create spotlight at correct position, pointing in camera direction
+    bpy.ops.object.lamp_add(type='SPOT',location=cam_ob.location)
+    # spotlight becomes the new active object and has to be rotated 45 degrees left
+    # move to the left (-ve x-direction)
+    bpy.context.active_object.location.x = -1.0*center[2] * 0.707106781 #sin(45 degrees)
+    # and -ve along z
+    bpy.context.active_object.location.z = center[2] * 0.707106781
+    # and rotate in the xz-plane to face the model center - how?
+    # rotate 45 degrees about the y-axis
+    bpy.context.active_object.rotation_euler = mathutils.Euler((0.0,-0.785398,0.0),'XYZ')
 
+    # and move upwards (+ve y-direction)
+    bpy.context.active_object.location.y += 2
+    angle = 1.570796327 - math.atan(abs(bpy.context.active_object.location.x)/2) 
+    print(angle)
+    bpy.context.active_object.rotation_euler.z -= angle
+
+    # now do the light settings
+    bpy.context.active_object.data.distance = center[2]
+    bpy.context.active_object.data.energy = 10
+    bpy.context.active_object.data.spot_size = 0.8 # rads!
+
+    # and repeat this for the fill light, move in +ve x-direction and +ve y-direction
+    # and light should be weaker
+
+    # and now the rim light
+    #bpy.context.active_object.location.z = -4.0*radius
+    #bpy.context.active_object.rotation_euler = Euler((3.141519265359),{XYZ})
+    
 
     bpy.context.scene.render.resolution_x = 1000
     bpy.context.scene.render.resolution_y = 1000    
@@ -492,10 +514,10 @@ def setupWorld(sphereList):
     bpy.context.scene.render.image_settings.compression = 0
 
     #Provide light coming from all directions using the ambient param of materials
-    #Also set the light energy and colour source.
-    bpy.context.scene.world.light_settings.use_environment_light = True
-    bpy.context.scene.world.light_settings.environment_energy = 0.65
-    bpy.context.scene.world.light_settings.environment_color = 'PLAIN' #|SKY_COLOR | SKY_TEXTURE
+    #Also set the light energy and colour source. Turned off in favour of 3-point lights!
+    #bpy.context.scene.world.light_settings.use_environment_light = True
+    #bpy.context.scene.world.light_settings.environment_energy = 0.65
+    #bpy.context.scene.world.light_settings.environment_color = 'PLAIN' #|SKY_COLOR | SKY_TEXTURE
 
     #set the background to be plain and flat RGB
     bpy.context.scene.world.horizon_color = (0.05, 0.20, 0.35)
@@ -573,7 +595,7 @@ if __name__ == "main":
  register()
 
 #For Debugging as text script
-#register()
+register()
 
 #Info for installed Add-On
 bl_info = \
