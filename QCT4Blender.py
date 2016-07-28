@@ -478,23 +478,33 @@ def setupWorld(sphereList):
     bpy.context.active_object.location.x = -1.0*center[2] * 0.707106781 #sin(45 degrees)
     # and -ve along z
     bpy.context.active_object.location.z = center[2] * 0.707106781
-    # and rotate in the xz-plane to face the model center - how?
+    # and rotate in the xz-plane to face the model center
     # rotate 45 degrees about the y-axis
     bpy.context.active_object.rotation_euler = mathutils.Euler((0.0,-0.785398,0.0),'XYZ')
-
     # and move upwards (+ve y-direction)
-    bpy.context.active_object.location.y += 2
-    angle = 1.570796327 - math.atan(abs(bpy.context.active_object.location.x)/2) 
-    print(angle)
+    bpy.context.active_object.location.y += radius
+    angle = 1.570796327 - math.atan(abs(bpy.context.active_object.location.x)/radius) 
     bpy.context.active_object.rotation_euler.z -= angle
 
     # now do the light settings
     bpy.context.active_object.data.distance = center[2]
-    bpy.context.active_object.data.energy = 10
-    bpy.context.active_object.data.spot_size = 0.8 # rads!
+    bpy.context.active_object.data.energy = 15
+    bpy.context.active_object.data.spot_size = 1.0 # rads!
 
     # and repeat this for the fill light, move in +ve x-direction and +ve y-direction
     # and light should be weaker
+
+    bpy.ops.object.lamp_add(type='SPOT',location=cam_ob.location)
+    bpy.context.active_object.location.x = center[2] * 0.707106781 #sin(45 degrees)
+    bpy.context.active_object.location.z = center[2] * 0.707106781
+    bpy.context.active_object.rotation_euler = mathutils.Euler((0.0,0.785398,0.0),'XYZ')
+    bpy.context.active_object.location.y += radius
+    angle = 1.570796327 - math.atan(abs(bpy.context.active_object.location.x)/radius) 
+    bpy.context.active_object.rotation_euler.z += angle
+    bpy.context.active_object.data.distance = center[2]
+    bpy.context.active_object.data.energy = 5
+    bpy.context.active_object.data.spot_size = 1.0 # rads!
+
 
     # and now the rim light
     #bpy.context.active_object.location.z = -4.0*radius
