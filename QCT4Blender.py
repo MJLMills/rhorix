@@ -1,5 +1,5 @@
 # Matthew J L Mills - RhoRix Main Program
-# www.mjlmills.com/rhorix
+# www.mjohnmills.com/rhorix
 
 import xml.etree.ElementTree as ET
 import bpy
@@ -71,19 +71,20 @@ class GradientVectorField():
 class QCTBlender(bpy.types.Operator):
 
     bl_idname = "qct.import_topology"
-    bl_label = "Import Topology"
-    filter_glob = bpy.props.StringProperty(default="*.top", options={'HIDDEN'}) 
-    
+    bl_label  = "Import Topology"
+    filter_glob = bpy.props.StringProperty(default="*.top", options={'HIDDEN'})
     filepath = bpy.props.StringProperty(subtype="FILE_PATH")
  
     def execute(self, context):
         print("QCT4B: Opening File " + self.filepath)
-        #First create the object representation of the QCT in the .top file
+        # First create the object representation of the QCT in the .top file
+        # by reading them from the selected topology file.
         topology = readTopology(self.filepath)
-        #Create all necessary default materials
+        # Create all default materials needed to render this particular topology
         createMaterials(topology.sphereList)
-        #Create the blender data rep of the QCT and assign materials
-        #Anything created herein is persistent; anything not converted to blender data is lost on save/open
+        # Create the blender data rep of the QCT and assign materials
+        # Anything created herein is persistent.
+        # Anything not converted to blender data is lost on save/open of the .blend file
         createBlenderObjects(topology)
         #Setup the environment in which the QCT resides (camera,lights,etc.)
         setupWorld(topology.sphereList)
@@ -94,9 +95,8 @@ class QCTBlender(bpy.types.Operator):
         context.window_manager.fileselect_add(self)
         return {'RUNNING_MODAL'}
 
-
-#*#*#*#*#*#*#*#*#*#*# CLASS DEFINITION (OPERATOR)
-
+#*#*#*#*#*#*#*#*#*#*# CLASS DEFINITION (GUI OPERATOR)
+# This class should select all nuclear critical points of the topology
 class SelectNuclei(bpy.types.Operator):
 
     bl_idname = "qct.select_nuclei"
@@ -104,12 +104,23 @@ class SelectNuclei(bpy.types.Operator):
 
     def invoke(self,context,event):
         for object in bpy.data.objects:
-            object.selected = False
+            object.select = False
         bpy.ops.object.select_pattern(pattern="CP")
         return {'FINISHED'}
 
-#*#*#*#*#*#*#*#*#*#*# CLASS DEFINITION (OPERATOR)
+class ResizeAILs(bpy.types.Operator):
 
+    bl_idname = "qct.resize_ails"
+    bl_label = "Resize AILs"
+
+    def invoke(self,context,event):
+        for object in bpy.data.objects:
+            object.select = False
+        bpy.ops.object.select_pattern(pattern="AIL-BevelCircle")
+        return {'FINISHED'}
+
+#*#*#*#*#*#*#*#*#*#*# CLASS DEFINITION (GUI OPERATOR)
+# This class renders the current scene from the camera in stereo
 class RenderStereo(bpy.types.Operator):
 
     bl_idname = "qct.render_stereo"
@@ -136,18 +147,19 @@ class RenderStereo(bpy.types.Operator):
 
 class QCTPanel(bpy.types.Panel):
     
-    bl_region_type = "TOOLS"    #Appear in the toolshelf (T)
-    bl_space_type = "VIEW_3D"   #when the 3D view
-    bl_context = "objectmode"   #is in object mode.
-    bl_category = "Tools"      #Appear in the Create tab of the toolshelf.
-    bl_label = "RhoRix Controls"
+    bl_region_type = "TOOLS"      # Appear in the toolshelf (T)
+    bl_space_type  = "VIEW_3D"    # when the 3D view
+    bl_context     = "objectmode" # is in object mode.
+    bl_category    = "Tools"      # Appear in the Create tab of the toolshelf.
+    bl_label = "RhoRix Controls"  # The title of the GUI panel
 
     def draw(self,context):
         uiColumn = self.layout.column(align=True)
         uiColumn.prop(context.scene, "read_simple_topology")
         uiColumn.operator("qct.import_topology", text="Import Topology")
-        uiColumn.operator("qct.select_nuclei", text="Select Nuclei")
-        uiColumn.operator("qct.render_stereo", text="Render Stereo")
+        uiColumn.operator("qct.select_nuclei",   text="Select Nuclei")
+        uiColumn.operator("qct.render_stereo",   text="Render Stereo")
+        uiColumn.operator("qct.resize_ails",     text="Resize AILs")
 
 #*#*#*#*#*#*#*#*#*#* SCRIPT FUNCTION DEFINITIONS
 
@@ -161,6 +173,7 @@ def register():
     bpy.types.INFO_MT_file_import.append(menu_function)
     bpy.utils.register_class(SelectNuclei)
     bpy.utils.register_class(RenderStereo)
+    bpy.utils.register_class(ResizeAILs)
     bpy.utils.register_class(QCTPanel)
 
     bpy.types.Scene.read_simple_topology = bpy.props.BoolProperty \
@@ -176,22 +189,25 @@ def unregister():
     bpy.utils.INFO_MT_file_import.remove(menu_function)
     bpy.utils.unregister_class(SelectNuclei)
     bpy.utils.unregister_class(RenderStereo)
+    bpy.utils.unregister_class(ResizeAILs)
     bpy.utils.unregister_class(QCTPanel)
     del bpy.types.Scene.read_simple_topology
 
+# This function reads the topology file and creates the appropriate topological objects.
 def readTopology(filepath):
 
-    sphereList = []
-    lineList = []
+    sphereList  = []
+    lineList    = []
     surfaceList = []
-    gvfList = []
+    gvfList     = []
 
-    #given an open topology file create all the corresponding python objects
-    #this has to be more careful in case of malformed files - dtd maybe?
+    # Given an open topology file, create all the corresponding python objects
+    # This has to be more careful in case of malformed files - define the XML filetype.
     topologyTree = ET.parse(filepath)
     topologyRoot = topologyTree.getroot()
+    # This will not be necessary with the XML filetype
     if topologyRoot.tag != 'topology':
-        print('readTopology\: Not a Valid Topology File')
+        print('readTopology\: Not a Valid Topology File - root element is not topology')
         exit(1)
 
     for topologicalObject in topologyRoot:
@@ -271,12 +287,13 @@ def readTopology(filepath):
     topology = Topology3D(sphereList,lineList,surfaceList,gvfList)
     return topology
 
+# This function carries out the mapping from topological objects to 3D objects.
 def createBlenderObjects(topology):
 
-    sphereList = topology.sphereList
-    lineList = topology.lineList
+    sphereList  = topology.sphereList
+    lineList    = topology.lineList
     surfaceList = topology.surfaceList
-    gvfList = topology.gvfList
+    gvfList     = topology.gvfList
 
     if (len(sphereList) > 0):
       bpy.ops.group.create(name="Critical_Points")    
@@ -382,8 +399,9 @@ def createBlenderObjects(topology):
                 x,y,z = cList[num]
                 polyLine.points[num].co = (x,y,z,weight)
 
-#This function creates a material for the given critical point called element-CritPointColor
-#This defines the default material for a CP other than its diffuse color
+# This function creates a material for the given type of critical point 
+# called element-CritPointColor
+# This defines the default material for a CP other than its diffuse color
 def createAtomMaterial(color,element):
 
     mat = bpy.data.materials.new(element + '-CriticalPointMaterial')
@@ -396,7 +414,8 @@ def createAtomMaterial(color,element):
     mat.alpha = 1
     mat.ambient = 1
 
-#Create a default material for the surfaces around a given element - different to critpoints for flexibility
+#Create a default material for the surfaces around a given element
+# and is different to the CP material for flexibility
 def createSurfaceMaterial(color,element):
 
     mat = bpy.data.materials.new(element + '-Surface_Material')
@@ -409,7 +428,7 @@ def createSurfaceMaterial(color,element):
     mat.alpha = 1
     mat.ambient = 1
 
-#Create a default material for rendering AILs
+#Create a default material for rendering all AILs
 def createAILMaterial():
 
     mat = bpy.data.materials.new('AIL_Material')
@@ -426,12 +445,13 @@ def createAILMaterial():
 
     #bpy.context.space_data.display_mode = 'GROUPS'
 
+# This function sets up default render options, lights, camera to match the Morphy GUI
 def setupWorld(sphereList):
 
     #This is where anything about the scene can be set, render options, lighting, camera and such
     cam = bpy.data.cameras.new("Cam")
     cam.clip_end = 1000.0
-    center = findCenter(sphereList)
+    center = findCenter(sphereList) # this should be done outside this function and passed in
     radius = computeRadius(sphereList)
     center[2] += (4.0 * radius)
     cam_ob = bpy.data.objects.new("Cam", cam)
@@ -472,6 +492,7 @@ def setupWorld(sphereList):
     bpy.context.scene.world.light_settings.gather_method = 'RAYTRACE'
     bpy.context.scene.world.light_settings.samples = 6
 
+# Find the center of the distribution of critical points
 def findCenter(sphereList):
 
     x_total = 0.0
@@ -490,6 +511,7 @@ def findCenter(sphereList):
 
     return mathutils.Vector((float(x_origin),float(y_origin),float(z_origin)))
 
+# Get the radius of a sphere containing all the critical point objects
 def computeRadius(sphereList):
 
     max = -100000
@@ -504,7 +526,7 @@ def computeRadius(sphereList):
 
     return max
 
-#This function creates a single material for each CP in the scene
+#This function creates a single material for each type of CP in the scene
 def createMaterials(sphereList):
 
     elementColors = defineColors()
