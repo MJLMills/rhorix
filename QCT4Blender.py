@@ -471,45 +471,53 @@ def setupWorld(sphereList):
     cam_ob.location=center
     bpy.context.scene.objects.link(cam_ob)
 
-    # must create spotlight at correct position, pointing in camera direction
-    bpy.ops.object.lamp_add(type='SPOT',location=cam_ob.location)
-    # spotlight becomes the new active object and has to be rotated 45 degrees left
-    # move to the left (-ve x-direction)
-    bpy.context.active_object.location.x = -1.0*center[2] * 0.707106781 #sin(45 degrees)
-    # and -ve along z
-    bpy.context.active_object.location.z = center[2] * 0.707106781
-    # and rotate in the xz-plane to face the model center
-    # rotate 45 degrees about the y-axis
-    bpy.context.active_object.rotation_euler = mathutils.Euler((0.0,-0.785398,0.0),'XYZ')
-    # and move upwards (+ve y-direction)
-    bpy.context.active_object.location.y += radius
-    angle = 1.570796327 - math.atan(abs(bpy.context.active_object.location.x)/radius) 
-    bpy.context.active_object.rotation_euler.z -= angle
+    rad45 = 45.0*(3.141519265359/180.0)
+    rad90 = 90.0*(3.141519265359/180.0)
+    sin45 = math.sin(rad45)
 
-    # now do the light settings
+    #Now the lighting of the scene
+    # Must create spotlight for key light at camera position, pointing in camera direction
+    bpy.ops.object.lamp_add(type='SPOT',location=cam_ob.location)
+    # move to the left (-ve x-direction), +ve along z and +ve along y
+    x = -center[2]*sin45
+    y = radius
+    z = center[2]*sin45
+    bpy.context.active_object.location = (x, y, z)
+
+    angle = rad90 - math.atan(abs(x)/abs(y)) 
+    bpy.context.active_object.rotation_euler = mathutils.Euler((0.0,-rad45,-angle),'XYZ')
+
     bpy.context.active_object.data.distance = center[2]
     bpy.context.active_object.data.energy = 15
     bpy.context.active_object.data.spot_size = 1.0 # rads!
 
-    # and repeat this for the fill light, move in +ve x-direction and +ve y-direction
+    # and repeat this for the fill light, move in +ve x-direction. +ve along z and +ve y-direction
     # and light should be weaker
 
     bpy.ops.object.lamp_add(type='SPOT',location=cam_ob.location)
-    bpy.context.active_object.location.x = center[2] * 0.707106781 #sin(45 degrees)
-    bpy.context.active_object.location.z = center[2] * 0.707106781
-    bpy.context.active_object.rotation_euler = mathutils.Euler((0.0,0.785398,0.0),'XYZ')
-    bpy.context.active_object.location.y += radius
-    angle = 1.570796327 - math.atan(abs(bpy.context.active_object.location.x)/radius) 
-    bpy.context.active_object.rotation_euler.z += angle
+
+    x = center[2]*sin45
+    y = radius
+    z = x
+    bpy.context.active_object.location = (x, y, z)
+
+    angle = rad90 - math.atan(abs(x)/abs(y)) 
+    bpy.context.active_object.rotation_euler = mathutils.Euler((0.0,rad45,angle),'XYZ')
+
     bpy.context.active_object.data.distance = center[2]
     bpy.context.active_object.data.energy = 5
     bpy.context.active_object.data.spot_size = 1.0 # rads!
 
-
     # and now the rim light
-    #bpy.context.active_object.location.z = -4.0*radius
-    #bpy.context.active_object.rotation_euler = Euler((3.141519265359),{XYZ})
+    bpy.ops.object.lamp_add(type='SPOT',location=cam_ob.location)
+    bpy.context.active_object.location.z = -4.0*radius
+    bpy.context.active_object.rotation_euler = mathutils.Euler((3.141519265359,0.0,0.0),'XYZ')
+
+    bpy.context.active_object.data.distance = center[2]
+    bpy.context.active_object.data.energy = 5
+    bpy.context.active_object.data.spot_size = 1.0 # rads!
     
+    #Lights are done, move on to render settings
 
     bpy.context.scene.render.resolution_x = 1000
     bpy.context.scene.render.resolution_y = 1000    
