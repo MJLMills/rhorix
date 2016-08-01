@@ -318,7 +318,7 @@ def createBlenderObjects(topology):
     #create a UV sphere for each CP
     for cp in sphereList:
 
-        cpSphere = bpy.ops.mesh.primitive_uv_sphere_add(location=cp.position,size=0.1*elementRadii[cp.type],segments=32,ring_count=16)
+        cpSphere = bpy.ops.mesh.primitive_uv_sphere_add(location=cp.position,size=0.1*elementRadii[cp.type],segments=8,ring_count=4)
         bpy.context.object.name = cp.type
 
         #Create and apply the subsurface modifiers for smooth rendering
@@ -429,6 +429,7 @@ def createAtomMaterial(color,element):
     mat.specular_intensity = 0.5
     mat.alpha = 1
     mat.ambient = 1
+    mat.type = 'WIRE'
 
 #Create a default material for the surfaces around a given element
 # and is different to the CP material for flexibility
@@ -616,7 +617,7 @@ if __name__ == "main":
  register()
 
 #For Debugging as text script
-register()
+#register()
 
 #Info for installed Add-On
 bl_info = \
