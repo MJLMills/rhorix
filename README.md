@@ -5,7 +5,7 @@ RhoRix is a [Blender](http://www.blender.org) *Add-On* (i.e. a script that exten
 The code was written with reference to Chapter 4 of the WikiBook '[Blender 3D: Noob to Pro](http://en.wikibooks.org/wiki/Blender_3D:_Noob_to_Pro#Table_of_Contents/)' and the appropriate section of the [Blender documentation](http://www.blender.org/api/blender_python_api_2_76_2/).
 Full documentation will be provided in 'Manual.pdf', 'Quickstart.pdf' and a peer-reviewed paper.
 <p>
-######Using the Program
+#####Using the Program
 <p>
 There are two options for using the script. 
 <p>The more permanent solution is installation, i.e. putting the script into your Blender user preferences directory, which will cause it to appear in the Add-Ons list in the User Preferences window. Doing this directly is OS-dependent. This dependence can be avoided by installing from inside Blender. Navigate to User Preferences and choose the 'Add-Ons' tab. Click "Install Add-On" and navigate to the location of the script on your machine. This will copy the script to your personal Add-Ons directory, and it will now appear in the list of available Add-Ons. To activate it you must tick the checkbox for that entry. You can then save the Blender configuration for all future documents, or alternatively tick the Add-On in each document you use for QCT drawing.
