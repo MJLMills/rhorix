@@ -15,11 +15,18 @@ The non-permanent option is to store the script in a text block within your Blen
 Irrespective of the method, the script will add an operator named 'Import Topology' to the built-in list that can be accessed by pressing the spacebar with the 3D view active. Additionally, the operator is added as a menu item under File -> Import -> Quantum Chemical Topology (.top). No keyboard shortcuts are defined.
 <p>
 #####The Name
-This program is named for Nicholas Roerich (Nikolai Konstatinovich Rerikh), a Russian artist. 
+This program is named for Nicholas Roerich (Nikolai Konstatinovich Rerikh), a Russian artist[1].
 Roerich initiated the modern movement for the defense of cultural objects, culminating in the signing of the 'Roerich Pact'.
-He shared an interest in the Vedanta school of Indian philosophy with Erwin Schrodinger, the first scientist to suggest the charge density as a source of real-world physical concepts.
-Roerich also provided plotting and visual design for Stravinsky's 'The Rite of Spring', possibly the most influential musical work of the 20th century.
+He shared an interest in the Vedanta school of Indian philosophy with Erwin Schrodinger[2], the first scientist to suggest the charge density as a source of real-world physical concepts[3].
+Roerich also provided plotting and visual design for Stravinsky's 'The Rite of Spring'[4], possibly the most influential musical work of the 20th century.
 <p>
-The Greek character rho is used in scientific context to represent the charge density, the central scalar field of Atoms in Molecules; the reason for its inclusion is obvious.
-Finally the chi is borrowed from Donald Knuth's TeX typesetting system, tex being an abbreviation for the Greek for 'art' and 'craft', and the root of 'technical'.
+The Greek character rho is used in scientific context to represent the charge density, the central scalar field of Atoms in Molecules[5]; the reason for its inclusion is obvious.
+Finally the chi is borrowed from Donald Knuth's TeX typesetting system, tex being an abbreviation for the Greek for 'art' and 'craft', and the root of 'technical'[6].
 The name is written 'RhoRix', with a chi character used when appropriate.
+
+1) Jacqueline Decter, Ph.D - Messenger of Beauty: The Life and Visionary Art of Nicholas Roerich
+2) Walter Moore - Schrodinger, Life and Thought & Erwin Schrodinger - My View of the World
+3) Erwin Schrodinger - 
+4) Alex Ross - The Rest is Noise, Listening to the 21st Century
+5) Richard F. W. Bader - Atoms in Molecules, A Quantum Theory
+6) Donald Knuth - The TeXbook
