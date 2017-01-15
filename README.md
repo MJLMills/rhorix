@@ -23,10 +23,9 @@ Roerich also provided plotting and visual design for Stravinsky's 'The Rite of S
 The Greek character rho is used in scientific context to represent the charge density, the central scalar field of Atoms in Molecules[5]; the reason for its inclusion is obvious.
 Finally the chi is borrowed from Donald Knuth's TeX typesetting system, tex being an abbreviation for the Greek for 'art' and 'craft', and the root of 'technical'[6].
 The name is written 'RhoRix', with a chi character used when appropriate.
-
-1) Jacqueline Decter, Ph.D - Messenger of Beauty: The Life and Visionary Art of Nicholas Roerich
-2) Walter Moore - Schrodinger, Life and Thought & Erwin Schrodinger - My View of the World
-3) Erwin Schrodinger - 
-4) Alex Ross - The Rest is Noise, Listening to the 21st Century
-5) Richard F. W. Bader - Atoms in Molecules, A Quantum Theory
-6) Donald Knuth - The TeXbook
+<p>1) Jacqueline Decter, Ph.D - Messenger of Beauty: The Life and Visionary Art of Nicholas Roerich
+<p>2) Walter Moore - Schrodinger, Life and Thought & Erwin Schrodinger - My View of the World
+<p>3) Erwin Schrodinger - Collected Papers on Wave Mechanics
+<p>4) Alex Ross - The Rest is Noise, Listening to the 21st Century
+<p>5) Richard F. W. Bader - Atoms in Molecules, A Quantum Theory
+<p>6) Donald Knuth - The TeXbook
