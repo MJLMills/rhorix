@@ -13,3 +13,13 @@ There are two options for using the script.
 The non-permanent option is to store the script in a text block within your Blender document. This has to be added to each document you make so is less desirable unless you intend to make changes to the script, as it allows for quick editing and reloading of the program. To do this, bring up a Text Editor in a convenient window and click the 'New' button in the window header. Paste the script into the resulting Editor. Press Alt+P to execute the script. After you make changes to the script, pressing Alt+P again will re-execute the script and apply your changes. The location of any Python error messages is OS and execution-environment dependent. Check documentation if you cannot find them.
 <p>
 Irrespective of the method, the script will add an operator named 'Import Topology' to the built-in list that can be accessed by pressing the spacebar with the 3D view active. Additionally, the operator is added as a menu item under File -> Import -> Quantum Chemical Topology (.top). No keyboard shortcuts are defined.
+<p>
+#####The Name
+This program is named for Nicholas Roerich (Nikolai Konstatinovich Rerikh), a Russian artist. 
+Roerich initiated the modern movement for the defense of cultural objects, culminating in the signing of the 'Roerich Pact'.
+He shared an interest in the Vedanta school of Indian philosophy with Erwin Schrodinger, the first scientist to suggest the charge density as a source of real-world physical concepts.
+Roerich also provided plotting and visual design for Stravinsky's 'The Rite of Spring', possibly the most influential musical work of the 20th century.
+<p>
+The Greek character rho is used in scientific context to represent the charge density, the central scalar field of Atoms in Molecules; the reason for its inclusion is obvious.
+Finally the chi is borrowed from Donald Knuth's TeX typesetting system, tex being an abbreviation for the Greek for 'art' and 'craft', and the root of 'technical'.
+The name is written 'RhoRix', with a chi character used when appropriate.
