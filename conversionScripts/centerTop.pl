@@ -18,17 +18,18 @@ open(TOP,">","rotated\.top") || die "Cannot create rotated output file\: rotated
 # Finally move the whole system to the center of mass
 foreach(@topContents) {
 
-  if ($_ =~ m/\<vector\>\s+\<x\>(-?\d+\.\d+)\<\/x\>\s+\<y\>(-?\d+\.\d+)\<\/y\>\s+\<z\>(-?\d+\.\d+)\<\/z\>\s+\<\/vector\>/) {
+  if ($_ =~ m/\<vector\>\s+\<x\>\s*(-?\d+\.\d+)\<\/x\>\s+\<y\>\s*(-?\d+\.\d+)\<\/y\>\s+\<z\>\s*(-?\d+\.\d+)\<\/z\>\s+\<\/vector\>/) {
     $x = $1 - @$com[0];
     $y = $2 - @$com[1];
     $z = $3 - @$com[2];
     printf TOP "\<vector\> \<x\>%10.5f\<\/x\> \<y\>%10.5f\<\/y\> \<z\>%10.5f\<\/z\> \<\/vector\>\n", $x,$y,$z;
-  } elsif ($_ =~ m/\<x\>(-?\d+\.\d+)\<\/x\>\s+\<y\>(-?\d+\.\d+)\<\/y\>\s+\<z\>(-?\d+\.\d+)\<\/z\>/) {
+  } elsif ($_ =~ m/\<x\>\s*(-?\d+\.\d+)\<\/x\>\s+\<y\>\s*(-?\d+\.\d+)\<\/y\>\s+\<z\>\s*(-?\d+\.\d+)\<\/z\>/) {
     $x = $1 - @$com[0];
     $y = $2 - @$com[1];
     $z = $3 - @$com[2];
-    printf TOP "\<x\>%10.5f\<\/x\> \<y\>%10.5f\<\/y\> \<z\>%10.5f\<\/z\>\n", $x,$y,$z;
+    printf TOP "\<x\>\s*%10.5f\<\/x\>\<y\>\s*%10.5f\<\/y\>\<z\>\s*%10.5f\<\/z\>\n", $x,$y,$z;
   } else {
+    print "NO MATCH\:$_\n";
     print TOP "$_\n";
   }
 
