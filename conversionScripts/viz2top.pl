@@ -2,6 +2,8 @@
 # Matthew J L Mills
 # Convert AIMAll output to .top format.
 
+$onlyAIL = 1;
+
 my $fileName = &checkArgs(@ARGV);
 my @fileContents = &readFile($fileName);
 openTopology($fileName);
@@ -208,8 +210,11 @@ sub parseLine {
     } else { die "Malformed GP line\: $_[$p]\n";}
   }
 #  print "Parsed line of type\: $lineType\n";
-  &printLine(\@xCoords,\@yCoords,\@zCoords);
-
+  if ($onlyAIL == 1 && $lineType eq "AIL") {
+    &printLine(\@xCoords,\@yCoords,\@zCoords);
+  } elsif ($onlyAIL == 0) {
+    &printLine(\@xCoords,\@yCoords,\@zCoords);
+  }
 }
 
 #Print a GP to the top file
