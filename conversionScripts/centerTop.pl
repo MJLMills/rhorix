@@ -27,7 +27,7 @@ foreach(@topContents) {
     $x = $1 - @$com[0];
     $y = $2 - @$com[1];
     $z = $3 - @$com[2];
-    printf TOP "\<x\>\s*%10.5f\<\/x\>\<y\>\s*%10.5f\<\/y\>\<z\>\s*%10.5f\<\/z\>\n", $x,$y,$z;
+    printf TOP "\<x\>%10.5f\<\/x\>\<y\>%10.5f\<\/y\>\<z\>%10.5f\<\/z\>\n", $x,$y,$z;
   } else {
     print "NO MATCH\:$_\n";
     print TOP "$_\n";
