@@ -249,7 +249,7 @@ sub parseCP {
   if ($_[1] =~ m/Type\s+\=\s+\((\d+)\,([-+]\d+)\)\s+(\w+)\s+(.*)/) {
     $rank = $1; $signature = $2; $type = $3; $conn = $4;
     if ($type eq "NACP") {
-      $conn =~ m/([a-zA-Z])\d+/;
+      $conn =~ m/([a-zA-Z]+)\d+/;
       $type = $1;
     } else {
       $type = lc($type);

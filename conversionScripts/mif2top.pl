@@ -75,7 +75,9 @@ MAIN_LOOP: for ($line=0; $line<@mifContents; $line++) {
 
     # Parse an interatomic or bounding surface
 
-    } elsif ($mifContents[$line] =~ m/atom\s+(\w+)\_(\d+)/ || $mifContents[$line] =~ m/surf\s+(\w+)\_(\d+)/) {
+    } elsif ($mifContents[$line] =~ m/atom\s+(\w+)(\d+)/ || $mifContents[$line] =~ m/surf\s+(\w+)(\d+)/) {
+
+     print "SURFACE\: $mifContents[$line]\n";
 
       $atom = "$1$2"; print "$atom\n";
       if ($mifContents[$line+1] =~ m/(\w+)\s+(\d+)/) {

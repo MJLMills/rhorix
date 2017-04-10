@@ -2,19 +2,24 @@
 # Matthew J L Mills
 
 # Read the .top file (name passed as argument)
-@topContents = readFile(checkArgs(@ARGV));
+$topFile = checkArgs(@ARGV);
+@topContents = readFile($topFile);
 
 # Strip all the critical points from the file
 my $criticalPoints = getCriticalPoints(\@topContents);
+
 # And then keep only the nuclear attractor CPs
 ($elements, $cartesianCoords) = getNuclearCoordinates($criticalPoints);
+
 # Convert the element symbols to masses
 $masses = getMasses($elements);
+
 # and calculate the center of mass for the system
 my $com = computeCOM($masses,$cartesianCoords);
-print "@$com\n";
+#print "@$com\n";
 
-open(TOP,">","rotated\.top") || die "Cannot create rotated output file\: rotated\.top\n";
+$topFile =~ m/(.*)\.top/;
+open(TOP,">","$1-centered\.top") || die "Cannot create rotated output file\: rotated\.top\n";
 # Finally move the whole system to the center of mass
 foreach(@topContents) {
 
@@ -41,7 +46,7 @@ sub computeCOM {
   my @masses = @{$_[0]};
   my @cartesianCoordinates = @{$_[1]};
 
-  my @totalMass = 0;
+  my $totalMass = 0;
   my @com;
   for($atom=0; $atom<@$masses; $atom++) {
 
@@ -52,7 +57,7 @@ sub computeCOM {
     }
 
   }
-
+  if ($totalMass == 0) { die "Total Mass = 0\n"; }
   for ($i=0; $i<3; $i++) {
     $com[$i] /= $totalMass;
   }
@@ -90,6 +95,16 @@ sub getMassFromElement() {
     return 30.9728;
   } elsif ($element eq "S") {
     return 32.065;
+  } elsif ($element eq "F") {
+    return 18.9984;
+  } elsif ($element eq "B") {
+    return 10.811;
+  } elsif ($element eq "Br") {
+    return 79.904;
+  } elsif ($element eq "Cl") {
+    return 35.453;
+  } elsif ($element eq "Se") {
+    return 78.96;
   } else {
     die "No mass defined for element $element\n";
   }
@@ -109,9 +124,9 @@ sub getNuclearCoordinates {
       if ($_ =~ m/<type>(.*)<\/type>/) {
         $type = $1;
         if ($type ne "bcp" && $type ne "rcp" && $type ne "ccp") {
-          #type equalss the element
+          #type equals the element
           foreach(@cp) {
-            if ($_ =~ m/\<x\>(-?\d+\.\d+)\<\/x\>\s+\<y\>(-?\d+\.\d+)\<\/y\>\s+\<z\>(-?\d+\.\d+)\<\/z\>/) {
+            if ($_ =~ m/\<x\>\s*(-?\d+\.\d+)\<\/x\>\s+\<y\>\s*(-?\d+\.\d+)\<\/y\>\s+\<z\>\s*(-?\d+\.\d+)\<\/z\>/) {
               my @coords = ($1,$2,$3);
               push(@elements,$type);
               push(@cartesianCoords,\@coords);
@@ -122,7 +137,6 @@ sub getNuclearCoordinates {
     }
 
   }
-
   return(\@elements,\@cartesianCoords);
 
 }
