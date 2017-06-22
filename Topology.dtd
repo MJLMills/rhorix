@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Document Type Definition for topology of a 3D scalar field -->
+<!-- For use with Rhorix--> 
+<!-- Version 1.0 - June 21 2017 -->
+<!-- Dr. M J L Mills, Joint BioEnergy Institute, Emeryville, CA -->
+
+<!-- ###### Elements appearing in multiple other elements ###### -->
+
+<!-- Each critical point is associated with a unique (among CPs) integer index -->
+<!ELEMENT cp_index (#PCDATA)>
+<!-- Each nucleus is associated with a unique (among nuclei) integer index -->
+<!ELEMENT nucleus_index (#PCDATA)>
+
+<!-- A position vector gives the Cartesian coordinates of a point in the real 3D space -->
+<!ELEMENT PositionVector (x,y,z)>
+  <!ELEMENT x (#PCDATA)>
+  <!ELEMENT y (#PCDATA)>
+  <!ELEMENT z (#PCDATA)>
+
+<!-- A Map connects a key (String, name of scalar function) to a value (Real, the function measured at a point) -->
+<!ELEMENT Map (Pair*)>
+  <!ELEMENT Pair (key,value)>
+    <!ELEMENT key (#PCDATA)>
+    <!ELEMENT value (#PCDATA)>
+
+<!-- A point in the 3D real space has Cartesian coordinates and function values measured at the point -->
+<!ELEMENT Point (PositionVector,Map?)>
+
+<!-- The gradient vector field is the set of gradient paths of the system -->
+<!-- Each of which is a set of points in R3 connecting a pair of critical points -->
+<!-- In the XML file we just store indices to the appropriate CPs to be converted to references when parsing -->
+<!ELEMENT GradientPath (cp_index,cp_index,Point*)>
+
+<!-- ###### The root tag is the topology ###### -->
+<!ELEMENT Topology (SystemName,SourceInformation,Nuclei,CriticalPoint*,GradientVectorField?)>
+
+  <!-- While not inherent, it is convenient to give the system a summarizing name. -->
+  <!ELEMENT SystemName (#PCDATA)>
+
+  <!-- For the sake of reproducibility, list the QM program, level of theory and analysis code -->
+  <!ELEMENT SourceInformation (QuantumSoftware?,QuantumMethod?,BasisSet?,AnalysisSoftware?)>
+
+    <!-- The electron density is computed under a level of theory - combination of a method and basis set -->
+    <!-- using a quantum chemistry tool -->
+    <!-- While there are more parameters in a quantum chemical calculation, they are not stored -->
+    <!ELEMENT QuantumSoftware (#PCDATA)>
+    <!ELEMENT QuantumMethod (#PCDATA)>
+    <!ELEMENT BasisSet (#PCDATA)>
+    <!-- The software used in the topological analysis (and version) -->
+    <!ELEMENT AnalysisSoftware (#PCDATA)>
+
+  <!-- The charge density has a parametric dependence on the nuclear coordinates -->
+  <!-- i.e. is correct only for a single point in nuclear configuration space -->
+  <!-- and the nuclei of a system have constant elemental identities-->
+  <!ELEMENT Nuclei (Nucleus*)>
+    <!ELEMENT Nucleus (element,nucleus_index,PositionVector)>
+      <!ELEMENT element (#PCDATA)>
+
+  <!-- Each topological feature of the electron density has an associated critical point -->
+  <!ELEMENT CriticalPoint (cp_index,rank,signature,Point)>
+    <!-- The kind of a critical point is given by the pair of values (rank,signature), integers computed from the Hessian of Rho -->
+    <!ELEMENT rank (#PCDATA)>
+    <!ELEMENT signature (#PCDATA)>   
+
+  <!-- The gradient vector field is represented by trajectories traced by grad(Rho) -->
+  <!-- Each of these trajectories is a gradient path connecting two critical points -->
+  <!-- Gradient paths are collected according to their type and nature into topological objects to render -->
+  <!ELEMENT GradientVectorField (MolecularGraph?,AtomicBasin*,Envelope*,InteratomicSurface*,RingSurface*)>
+
+    <!-- An atomic interaction line is a pair of GPs connecting neighbouring nuclei -->
+    <!ELEMENT AtomicInteractionLine (GradientPath*)>
+
+    <!-- The molecular graph is the complete network of atomic interaction lines -->
+    <!ELEMENT MolecularGraph (AtomicInteractionLine*)>
+    <!-- A ring is the part of a molecular graph bounding a ring surface -->
+    <!ELEMENT Ring (AtomicInteractionLine*)>
+    <!-- A cage is a part of a molecular graph containing at least 2 rings, such that the union of -->
+    <!-- the ring surfaces bounds a region of R3 containing a CCP -->  
+    <!ELEMENT Cage (Ring*)>
+
+    <!-- An atomic basin is the set of gradient paths inside an atom -->
+    <!ELEMENT AtomicBasin (GradientPath*)>
+
+    <!-- An envelope is a set of points with identical values of a scalar function -->
+    <!-- All paths in an envelope are attracted from infinity to a single NACP or NNACP -->
+    <!ELEMENT Envelope (isovalue,cp_index,Point*)>
+      <!ELEMENT isovalue (#PCDATA)>
+
+    <!-- The atomic surface of an atom is the boundary of its basin; a union of interatomic surfaces -->
+    <!ELEMENT AtomicSurface (cp_index,InterAtomicSurface*)>
+
+      <!-- Interatomic Surfaces are objects separating neighbouring basins -->
+      <!-- They are composed of gradient paths originating at a single BCP -->
+      <!ELEMENT InteratomicSurface (GradientPath*,Triangulation)>
+        <!-- Alternatively a surface can be represented as a set of connected points on that surface -->
+        <!-- Either a set of edges or faces may be given -->
+        <!ELEMENT Triangulation (PositionVector*,Face*,Edge*)>
+          <!ELEMENT Face (face_a,face_b,face_c)>
+            <!ELEMENT face_a (#PCDATA)>      
+            <!ELEMENT face_b (#PCDATA)>
+            <!ELEMENT face_c (#PCDATA)>
+          <!ELEMENT Edge (edge_a,edge_b)>
+            <!ELEMENT edge_a (#PCDATA)>
+            <!ELEMENT edge_b (#PCDATA)>
+
+    <!-- A ring surface is a set of gradient paths beginning at a ring critical point and ending at -->
+    <!-- either a ring nucleus or a BCP between the ring nuclei -->
+    <!ELEMENT RingSurface (cp_index,GradientPath*)>
