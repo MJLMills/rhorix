@@ -1,9 +1,9 @@
-package utilities;
+package Utilities;
 require Exporter;
 
 our @ISA = qw(Exporter);
-our @EXPORT = qw(checkArgs);
-our @EXPORT_OK = qw(getExt);
+our @EXPORT = ();
+our @EXPORT_OK = qw(stripExt getExt readFile checkArgs);
 our $VERSION = 1.0;
 
 # stripExt - Remove the extension from a filename
