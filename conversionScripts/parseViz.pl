@@ -1,3 +1,11 @@
+package ParseViz;
+require Exporter;
+
+our @ISA = qw(Exporter);
+our @EXPORT = ();
+our @EXPORT_OK = qw(parseMgpviz);
+our $VERSION = 1.0;
+
 ### Viz File Parsing Subroutines ###
 
 sub parseMgpviz {
