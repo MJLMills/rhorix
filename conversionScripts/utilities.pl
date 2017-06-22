@@ -1,4 +1,10 @@
-### General Subroutines ###
+package utilities;
+require Exporter;
+
+our @ISA = qw(Exporter);
+our @EXPORT = qw(checkArgs);
+our @EXPORT_OK = qw(getExt);
+our $VERSION = 1.0;
 
 # stripExt - Remove the extension from a filename
 # Arguments: $_[0] - name of file
