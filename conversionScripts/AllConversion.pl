@@ -3,6 +3,7 @@
 # Script to convert plaintext output files from QCT codes to XML format (Topology.dtd)
 
 use Utilities qw(checkArgs getExt readFile stripExt);
+use ParseViz qw(parseMgpviz);
 
 # The single (mandatory) command line argument is the name of the file to convert.
 # Must be mgpviz (set -wsp=true); script checks for corresponding atomic iasviz files (-iaswrite=true).
