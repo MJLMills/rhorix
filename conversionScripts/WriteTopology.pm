@@ -2,6 +2,16 @@
 # Matthew J L Mills - Perl library for writing XML files adherent to the Topology.dtd document model
 # This file is part of Rhorix 1.0, June 22, 2017
 
+package WriteTopology;
+require Exporter;
+
+our @ISA = qw(Exporter);
+our @EXPORT = ();
+our @EXPORT_OK = qw(writeTopologyXML);
+our $VERSION = 1.0;
+
+use XmlRoutines qw(writePCData openTag closeTag writeXMLHeader);
+
 sub writeTopologyXML {
 
   writeXMLHeader("1.0","UTF-8","Topology","/Users/mjmills/Desktop/Topology.dtd");

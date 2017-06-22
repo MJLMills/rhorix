@@ -1,4 +1,14 @@
+package VizUtils;
+require Exporter;
+
+our @ISA = qw(Exporter);
+our @EXPORT = ();
+our @EXPORT_OK = qw(checkMgpvizFile);
+our $VERSION = 1.0;
+
+
 ### Viz File-Specific Subroutines ###
+
 
 # checkMgpvizFile - Check validity of an mgpviz file
 # Arguments: $_[0] - Reference to array of mgpviz file contents

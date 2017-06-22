@@ -6,6 +6,8 @@ our @EXPORT = ();
 our @EXPORT_OK = qw(parseMgpviz);
 our $VERSION = 1.0;
 
+use Utilities qw(readFile);
+
 ### Viz File Parsing Subroutines ###
 
 sub parseMgpviz {

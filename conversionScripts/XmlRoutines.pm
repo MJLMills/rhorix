@@ -1,5 +1,13 @@
 ### XML File Output Subroutines ###
 
+package XmlRoutines;
+require Exporter;
+
+our @ISA = qw(Exporter);
+our @EXPORT = ();
+our @EXPORT_OK = qw(writePCData openTag closeTag writeXMLHeader);
+our $VERSION = 1.0;
+
 # writePCData - Write a single parsed character data XML element on a single line
 # Arguments: $_[0] - Name of the element
 #            $_[1] - Value of the element
