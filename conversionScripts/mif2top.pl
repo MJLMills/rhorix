@@ -2,7 +2,7 @@
 # Dr. Matthew J L Mills - RhoRix
 # Convert morphy mif files to the top format
 
-$removeRedundant = 0;
+$removeRedundant = 1;
 $printEdges = 0;
 $factor = 10;
 
@@ -251,7 +251,7 @@ sub reformatSurface {
         if ($isRedundant[$i] == 1) { $n_redundant++; };
       } 
       $percent = ($n_redundant / $n_x) * 100; $remains = @xNew;
-      printf "%d REDUNDANT POINTS \(OF $n_x\) REMOVED \(%5.2f \%\) LEAVING %d\n",$n_redundant,$percent,$remains;
+      printf "%d REDUNDANT POINTS \(OF $n_x\) REMOVED \(%5.2f percent\) LEAVING %d\n",$n_redundant,$percent,$remains;
       printSurf(\@xNew, \@yNew, \@zNew, \@$edgeA, \@$edgeB, \@$faceA, \@$faceB, \@$faceC);
     }
 

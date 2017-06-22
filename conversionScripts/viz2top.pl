@@ -14,7 +14,7 @@ $atomFolder = "$name\_atomicfiles";
 
 if ($extension eq "sumviz" || $extension eq "mgpviz") {
   &parseSUMVIZ(@fileContents);
-  &parseAssociatedIASVIZ($atomFolder);
+#  &parseAssociatedIASVIZ($atomFolder);
 } elsif ($extension eq "iasviz") {
   &parseIASVIZ(@fileContents);
 } else {
