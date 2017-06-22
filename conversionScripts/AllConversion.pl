@@ -2,7 +2,7 @@
 # Dr. Matthew J L Mills
 # Script to convert plaintext output files from QCT codes to XML format (Topology.dtd)
 
-USE utilities.pl;
+use utilities;
 
 # The single (mandatory) command line argument is the name of the file to convert.
 # Must be mgpviz (set -wsp=true); script checks for corresponding atomic iasviz files (-iaswrite=true).
