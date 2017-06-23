@@ -1,14 +1,18 @@
+# ParseViz Perl Module
+# Dr. Matthew J L Mills - Rhorix v1.0 - June 2017
+
 package ParseViz;
 require Exporter;
+use Utilities qw(readFile);
+
+### Module Settings ###
 
 our @ISA = qw(Exporter);
 our @EXPORT = ();
 our @EXPORT_OK = qw(parseMgpviz);
 our $VERSION = 1.0;
 
-use Utilities qw(readFile);
-
-### Viz File Parsing Subroutines ###
+### Subroutines ###
 
 sub parseMgpviz {
 
