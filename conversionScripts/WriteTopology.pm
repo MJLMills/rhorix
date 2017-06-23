@@ -4,13 +4,16 @@
 
 package WriteTopology;
 require Exporter;
+use XmlRoutines qw(writePCData openTag closeTag writeXMLHeader);
+
+### Module Settings ###
 
 our @ISA = qw(Exporter);
 our @EXPORT = ();
 our @EXPORT_OK = qw(writeTopologyXML);
 our $VERSION = 1.0;
 
-use XmlRoutines qw(writePCData openTag closeTag writeXMLHeader);
+### Subroutines ###
 
 # writeTopologyXML - Write a Topology XML file
 # Arguments: $_[0] - 
