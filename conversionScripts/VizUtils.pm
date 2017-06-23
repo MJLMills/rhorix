@@ -1,5 +1,6 @@
 # VizUtils Perl Module
 # Dr. Matthew J L Mills - Rhorix v1.0 - June 2017
+# Subroutines for tasks related to AIMAll viz files.
 
 package VizUtils;
 require Exporter;
