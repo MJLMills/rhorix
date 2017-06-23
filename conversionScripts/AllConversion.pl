@@ -7,6 +7,8 @@ use VizUtils qw(checkMgpvizFile);
 use ParseViz qw(parseMgpviz);
 use WriteTopology qw(writeTopologyXML);
 
+$dtdPath = "/Users/mjmills/RhoRix/RhoRix/Topology.dtd";
+
 # The single (mandatory) command line argument is the name of the file to convert.
 # Must be mgpviz (set -wsp=true); script checks for corresponding atomic iasviz files (-iaswrite=true).
 
@@ -28,7 +30,8 @@ $signatures,
 $cpCoordinates,
 $scalarProperties) = parseMgpviz($mgpvizContents,$systemName);
 
-writeTopologyXML($systemName,
+writeTopologyXML($dtdPath,
+                 $systemName,
                  $elements,
                  $nuclearIndices,
                  $nuclearCoordinates,

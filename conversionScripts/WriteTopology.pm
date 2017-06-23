@@ -16,12 +16,12 @@ use XmlRoutines qw(writePCData openTag closeTag writeXMLHeader);
 # Arguments: $_[0] - 
 sub writeTopologyXML {
 
-  writeXMLHeader("1.0","UTF-8","Topology","/Users/mjmills/Desktop/Topology.dtd");
+  writeXMLHeader("1.0","UTF-8","Topology",$_[0]);
 
   openTag("Topology");
-  writePCData("SystemName",$_[0]);
-  writeNuclei($_[1],$_[2],$_[3]);
-  writeCriticalPoints($_[4],$_[5],$_[6],$_[7],$_[8]);
+  writePCData("SystemName",$_[1]);
+  writeNuclei($_[2],$_[3],$_[4]);
+  writeCriticalPoints($_[5],$_[6],$_[7],$_[8],$_[9]);
   #writeGradientVectorField(); WHICH SHOULD INCLUDE THE BELOW ROUTINES
 
   #writeGradientPaths;
