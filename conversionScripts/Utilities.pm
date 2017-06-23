@@ -4,10 +4,14 @@
 package Utilities;
 require Exporter;
 
-our @ISA = qw(Exporter);
-our @EXPORT = ();
+### Module Settings ###
+
+our @ISA       = qw(Exporter);
+our @EXPORT    = ();
 our @EXPORT_OK = qw(stripExt getExt readFile checkArgs);
-our $VERSION = 1.0;
+our $VERSION   = 1.0;
+
+### Subroutines ###
 
 # stripExt - Remove the extension from a filename
 # Arguments: $_[0] - name of file
