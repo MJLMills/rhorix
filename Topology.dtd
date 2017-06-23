@@ -95,7 +95,7 @@
       <!ELEMENT InteratomicSurface (GradientPath*,Triangulation)>
         <!-- Alternatively a surface can be represented as a set of connected points on that surface -->
         <!-- Either a set of edges or faces may be given -->
-        <!ELEMENT Triangulation (PositionVector*,Face*,Edge*)>
+        <!ELEMENT Triangulation (Point*,Face*,Edge*)>
           <!ELEMENT Face (face_a,face_b,face_c)>
             <!ELEMENT face_a (#PCDATA)>      
             <!ELEMENT face_b (#PCDATA)>
