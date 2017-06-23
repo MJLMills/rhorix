@@ -12,6 +12,8 @@ our $VERSION = 1.0;
 
 use XmlRoutines qw(writePCData openTag closeTag writeXMLHeader);
 
+# writeTopologyXML - Write a Topology XML file
+# Arguments: $_[0] - 
 sub writeTopologyXML {
 
   writeXMLHeader("1.0","UTF-8","Topology","/Users/mjmills/Desktop/Topology.dtd");
@@ -300,19 +302,63 @@ sub writeEnvelope {
 
 }
 
+# writeRingSurface - Write a RingSurface XML element
+# Arguments: $_[0] - Reference to array of reference to arrays of 3-arrays of Reals
 sub writeRingSurface {
 
+  openTag("RingSurface");
+  foreach(@{$_[0]}) {
+    writeGradientPath($_);
+  }
+  closeTag("RingSurface");
+
 }
 
+# writeAtomicBasin - Write an AtomicBasin XML element
+# Arguments: $_[0] - Reference to array of gradient paths in the basin
 sub writeAtomicBasin {
 
+  openTag("AtomicBasin");
+    foreach(@{$_[0]}) {
+      writeGradientPath($_);
+    }
+  closeTag("AtomicBasin");
+
 }
 
+# writeAtomicInteractionLine - Writen an AtomicInteractionLine XML element
+# Arguments: $_[0] - Reference to an array of 3-arrays of reals (Cartesians on GP 1)
+#            $_[1] - Reference to an array of 3-arrays of reals (Cartesians on GP 2)
 sub writeAtomicInteractionLine {
 
+  openTag("AtomicInteractionLine");
+    writeGradientPath($_[0]);
+    writeGradientPath($_[1]);
+  closeTag("AtomicInteractionLine");
+
 }
 
+# writeMolecularGraph - Write a MolecularGraph XML element (list of AILS)
+# Arguments: $_[0] - 
 sub writeMolecularGraph {
 
+  openTag("MolecularGraph");
+  closeTag("MolecularGraph");
+
 }
 
+# writeRing - Write a Ring XML Element (list of AILs)
+sub writeRing {
+
+  openTag("Ring");
+  closeTag("Ring");
+
+}
+
+# writeCage - Write a Cage XML Element (list of Rings)
+sub writeCage {
+
+  openTag("Cage");
+  closeTag("Cage");
+
+}
