@@ -1,26 +1,31 @@
 #!/usr/bin/perl -w
 # Dr. Matthew J L Mills
-# Script to convert plaintext output files from QCT codes to XML format (Topology.dtd)
+# Script to convert plaintext mgpviz output files from AIMAll to XML files conformant to the document model in Topology.dtd.
+# Rhorix v1.0
 
 use Utilities qw(checkArgs getExt readFile stripExt);
 use VizUtils qw(checkMgpvizFile);
 use ParseViz qw(parseMgpviz);
 use WriteTopology qw(writeTopologyXML);
 
+# This could be an argument
 $dtdPath = "/Users/mjmills/RhoRix/RhoRix/Topology.dtd";
 
 # The single (mandatory) command line argument is the name of the file to convert.
-# Must be mgpviz (set -wsp=true); script checks for corresponding atomic iasviz files (-iaswrite=true).
-
 my $mgpvizFile = &checkArgs(\@ARGV,"mgpviz");
-if (getExt($mgpvizFile) ne "mgpviz") { die "Error\: Script requires an mgpviz file"; }
+# Must be mgpviz format and extension (set -wsp=true); script checks for corresponding atomic iasviz files (-iaswrite=true).
+if (getExt($mgpvizFile) ne "mgpviz") { die "Error\: $0 script requires an mgpviz file as input\n"; }
 
+# Read the input file and check for completion
 $mgpvizContents = readFile($mgpvizFile);
 checkMgpvizFile($mgpvizContents);
 
+# Name for the system is taken from the filename
 $systemName = stripExt($mgpvizFile,"mgpviz");
 
-# Attempt to read data from the mgpviz file
+# Attempt to read all data from the mgpviz file
+# This subroutine also checks for and parses the corresponding iasviz files
+
 ($elements,
 $nuclearIndices,
 $nuclearCoordinates,
@@ -29,6 +34,8 @@ $ranks,
 $signatures,
 $cpCoordinates,
 $scalarProperties) = parseMgpviz($mgpvizContents,$systemName);
+
+# Write the data to the XML Topology file
 
 writeTopologyXML($dtdPath,
                  $systemName,
