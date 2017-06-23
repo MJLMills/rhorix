@@ -82,11 +82,6 @@
     <!-- An atomic basin is the set of gradient paths inside an atom -->
     <!ELEMENT AtomicBasin (GradientPath*)>
 
-    <!-- An envelope is a set of points with identical values of a scalar function -->
-    <!-- All paths in an envelope are attracted from infinity to a single NACP or NNACP -->
-    <!ELEMENT Envelope (isovalue,cp_index,Point*)>
-      <!ELEMENT isovalue (#PCDATA)>
-
     <!-- The atomic surface of an atom is the boundary of its basin; a union of interatomic surfaces -->
     <!ELEMENT AtomicSurface (cp_index,InterAtomicSurface*)>
 
@@ -103,6 +98,11 @@
           <!ELEMENT Edge (edge_a,edge_b)>
             <!ELEMENT edge_a (#PCDATA)>
             <!ELEMENT edge_b (#PCDATA)>
+
+    <!-- An envelope is a set of points with identical values of a scalar function -->
+    <!-- All paths in an envelope are attracted from infinity to a single NACP or NNACP -->
+    <!ELEMENT Envelope (isovalue,cp_index,Point*,Triangulation)>
+      <!ELEMENT isovalue (#PCDATA)>
 
     <!-- A ring surface is a set of gradient paths beginning at a ring critical point and ending at -->
     <!-- either a ring nucleus or a BCP between the ring nuclei -->
