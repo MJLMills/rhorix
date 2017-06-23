@@ -66,7 +66,7 @@
   <!-- The gradient vector field is represented by trajectories traced by grad(Rho) -->
   <!-- Each of these trajectories is a gradient path connecting two critical points -->
   <!-- Gradient paths are collected according to their type and nature into topological objects to render -->
-  <!ELEMENT GradientVectorField (MolecularGraph?,AtomicBasin*,Envelope*,InteratomicSurface*,RingSurface*)>
+  <!ELEMENT GradientVectorField (MolecularGraph?,AtomicBasin*,Envelope*,AtomicSurface*,RingSurface*)>
 
     <!-- An atomic interaction line is a pair of GPs connecting neighbouring nuclei -->
     <!ELEMENT AtomicInteractionLine (GradientPath*)>
