@@ -1,5 +1,6 @@
 # Utilities Perl Module
 # Dr. Matthew J L Mills - Rhorix v1.0 - June 2017
+# Subroutines for tasks related to XML files in general.
 
 package XmlRoutines;
 require Exporter;
