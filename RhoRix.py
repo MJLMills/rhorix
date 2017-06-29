@@ -1,5 +1,5 @@
 # RhoRix Main Program
-# www.mjohnmills.com/rhorix
+# Dr. Matthew J L Mills - Rhorix 1.0 - June 2017
 
 #import xml.etree.ElementTree as ET
 import bpy

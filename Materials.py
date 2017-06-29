@@ -2,8 +2,11 @@
 # Dr. Matthew J L Mills - Rhorix 1.0 - June 2017
 
 # Materials are usually assigned to points by using the properties of a critical point
-# associated with that object. This necessitates the definition of a library of materials
-# for different CPs.
+# associated with that point. This necessitates the definition of a library of materials
+# for different CPs. In addition, the particular material assigned may depend on the nature of
+# the point itself - is it a CP, or on a gradient path, or on a triangulated surface? Might want to make
+# surface transparent, e.g. while not altering the CP spheres
+# For this latter reason, we must create separate sphere, surface dicts
 # NACPS  - material assigned according to element of practically coincident nucleus
 # NNACPs - all one material
 # BCPs   - all one material
@@ -13,13 +16,14 @@
 # The goal is to be able to pass a CP to a dict/function and get back the corresponding material
 
 
-#This function creates a single material for each type of CP in the scene
-def createMaterials(sphereList):
-
+# This function creates a single material for each type of CP in the scene
+# and should add them to a dict from each cp to its corresponding material
+def createMaterials(critical_points):
+r
     elementColors = defineColors()
     #create the necessary set of element colors for this topology
     createdList = [] #list of the nuclear types created so far
-    for cp in sphereList:
+    for cp in critical_points:
         #check the material for this sphere hasn't been made already
         duplicate = False
         for element in createdList:
@@ -35,6 +39,8 @@ def createMaterials(sphereList):
             createdList.append(cp.type)
 
     createAILMaterial()
+
+# THE following only differ by the name they are given
 
 # This function creates a material for the given type of critical point 
 # called element-CritPointColor
