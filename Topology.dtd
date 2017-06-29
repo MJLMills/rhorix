@@ -44,11 +44,11 @@
     <!-- The electron density is computed under a level of theory - combination of a method and basis set -->
     <!-- using a quantum chemistry tool -->
     <!-- While there are more parameters in a quantum chemical calculation, they are not stored -->
-    <!ELEMENT QuantumSoftware (#PCDATA)>
-    <!ELEMENT QuantumMethod (#PCDATA)>
-    <!ELEMENT BasisSet (#PCDATA)>
+    <!ELEMENT quantum_software (#PCDATA)>
+    <!ELEMENT quantum_method (#PCDATA)>
+    <!ELEMENT basis_set (#PCDATA)>
     <!-- The software used in the topological analysis (and version) -->
-    <!ELEMENT AnalysisSoftware (#PCDATA)>
+    <!ELEMENT analysis_software (#PCDATA)>
 
   <!-- The charge density has a parametric dependence on the nuclear coordinates -->
   <!-- i.e. is correct only for a single point in nuclear configuration space -->
