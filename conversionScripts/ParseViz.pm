@@ -14,6 +14,7 @@ our $VERSION = 1.0;
 
 ### Subroutines ###
 
+
 sub parseMgpviz {
 
   # First read the data about the nuclei - elements, unique indices and Cartesian coordinates of each nucleus
@@ -26,7 +27,7 @@ sub parseMgpviz {
   # Read the gradient paths associated with CPs
 #  ($paths,$index_a,$index_b) = parseGradientPathsFromViz($_[0]);
 
-  parseRelatedIasvizFiles($elements,$nuclearIndices,$_[1]);
+  ($IASs,$envelopes) = parseRelatedIasvizFiles($elements,$nuclearIndices,$_[1]);
 
   return $elements,
          $nuclearIndices,
@@ -215,14 +216,18 @@ sub parseRelatedIasvizFiles {
     
     $element = lc($elements[$i]);
     $iasvizFile = "$iasvizDir\/$element$indices[$i]\.iasviz";
-    $iasvizContents = readFile($iasvizFile);
+    if (-e $iasvizFile) {
 
-    $atom = parseAtomFromIasviz($iasvizContents);
-    $iasPaths = parseIAS($iasvizContents);
-    push(@IASs,$iasPaths);
+      $iasvizContents = readFile($iasvizFile);
 
-    $envelope = parseIsodensitySurfaceIntersections($iasvizContents);
-    push(@envelopes,$envelope);
+      $atom = parseAtomFromIasviz($iasvizContents);
+      $iasPaths = parseIAS($iasvizContents);
+      push(@IASs,$iasPaths);
+
+      $envelope = parseIsodensitySurfaceIntersections($iasvizContents);
+      push(@envelopes,$envelope);
+
+    }
 
   }
   return \@IASs, \@envelopes;

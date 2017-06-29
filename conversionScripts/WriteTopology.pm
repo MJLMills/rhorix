@@ -128,7 +128,7 @@ sub writeCriticalPoints {
   @cpCoordinates    = @{$_[3]};
   @scalarProperties = @{$_[4]};
 
-  for ($i=0; $i<@indices; $i++) {
+  for ($i=0; $i<@cpIndices; $i++) {
     writeCP($cpIndices[$i],$ranks[$i],$signatures[$i],$cpCoordinates[$i],$scalarProperties[$i]);
   }
 
