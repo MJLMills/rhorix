@@ -20,15 +20,15 @@ class QCTBlender(bpy.types.Operator):
         print("QCT4B: Opening File " + self.filepath)
         # First create the object representation of the QCT in the .top file
         # by reading them from the selected topology file.
-        topology = readTopology(self.filepath)
+        topology = readTopology(self.filepath) # TODO - replace with function in ParseTopology.py
         # Create all default materials needed to render this particular topology
-        createMaterials(topology.sphereList)
+        createMaterials(topology.sphereList) # TODO - update to reflect new topology class
         # Create the blender data rep of the QCT and assign materials
         # Anything created herein is persistent.
         # Anything not converted to blender data is lost on save/open of the .blend file
-        createBlenderObjects(topology)
+        createBlenderObjects(topology) # TODO - update to reflect new topology class
         #Setup the environment in which the QCT resides (camera,lights,etc.)
-        setupWorld(topology.sphereList)
+        setupWorld(topology.sphereList)  # TODO - update to reflect new topology class
         #setupUI()
         return{'FINISHED'}
   
