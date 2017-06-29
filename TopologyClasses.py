@@ -1,9 +1,12 @@
+# TopologyClasses Python 3 Module
 # Dr. Matthew J L Mills - Rhorix 1.0 - June 2017
 
-#TopologyClasses Module
 # This is a Python implementation of the class hierarchy needed to parse XML files
-# adhering to the document model defined in Topology.dtd
-# Should be loaded into Rhorix.py as needed
+# adhering to the document model defined in Topology.dtd.
+# Should be loaded into Rhorix.py as needed through 'from TopologyClasses import *'
+
+import mathutils
+import math
 
 class Topology():
 	
@@ -13,7 +16,7 @@ class Topology():
 		self.gradient_vector_field = gradient_vector_field
 
 	# Find the center of the distribution of critical points
-	def findCenter():
+	def computeCenter():
 
 		x_total = 0.0
 		y_total = 0.0
@@ -36,7 +39,7 @@ class Topology():
 
 		max = -100000
 
-		center = findCenter(critical_points)
+		center = self.computeCenter()
 		for cp in critical_points:
 			position = cp.position - center
 			r = math.sqrt(position[0]*position[0] + position[1]*position[1] + position[2]*position[2])
@@ -76,32 +79,60 @@ class AtomicInteractionLine():
 		self.gradient_paths = gradient_paths
 
 class AtomicBasin():
-	def __init__(self,gradient_paths):
+	def __init__(self,gradient_paths,critical_point):
 		self.gradient_paths = gradient_paths
 
+	def getNuclearAttractorCriticalPoint():
+		for gradient_path in gradient_paths:
+			for cp in gradient_path.critical_points:
+				if (cp.rank == 3 and cp.signature == -3):
+					return cp
+
+# An envelope is a set of points with an optional triangulation thereof.
+# As it does not have gradient paths it must have an explicit critical point member.
 class Envelope():
-	def __init__(self,isovalue,points,triangulation):
+	def __init__(self,isovalue,points,triangulation,nacp):
 		self.isovalue      = isovalue
 		self.points        = points
 		self.triangulation = triangulation
+		self.nacp          = nacp
 
+# An atomic surface is a set of interatomic surfaces sharing a common BCP
 class AtomicSurface():
 	def __init__(self,interatomic_surfaces):
 		self.interatomic_surfaces = interatomic_surfaces
 
+# The gradient paths of an interatomic surface share a single BCP
 class InteratomicSurface():
 	def __init__(self,gradient_paths,triangulation):
 		self.gradient_paths = gradient_paths
 		self.triangulation  = triangulation
 
+	def getBondCriticalPoint():
+		for gradient_path in gradient_paths:
+			for cp in gradient_path.critical_points:
+				if (cp.rank == 3 and cp.signature == -1):
+					return cp
+
+# A ring surface is a set of gradient paths sharing a single RCP
+# There are a set of ring paths - GPs from the RCP to BCPs
+# and the remainder connect the RCP to nuclei connected by the BCPs
 class RingSurface():
 	def __init__(self,gradient_paths):
 		self.gradient_paths = gradient_paths
 
+	def getRingCriticalPoint():
+		for gradient_path in gradient_paths:
+			for cp in gradient_path.critical_points:
+				if (cp.rank == 3 and cp.signature == +1):
+					return cp
+
+# A ring is the set of AILs bounding a RCP
 class Ring():
 	def __init__(self,atomic_interaction_lines):
 		self.atomic_interaction_lines = atomic_interaction_lines
 
+# A cage is the set of rings bounding a CCP
 class Cage():
 	def __init__(self,rings):
 		self.rings = rings
@@ -129,5 +160,7 @@ class Face():
 		self.c = c
 
 class GradientPath():
-	def __init__(self,points):
+	def __init__(self,critical_points,points):
+		self.critical_points = critical_points
 		self.points = points
+		
