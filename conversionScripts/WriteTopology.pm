@@ -1,6 +1,6 @@
-#!/usr/bin/perl
-# Matthew J L Mills - Perl library for writing XML files adherent to the Topology.dtd document model
-# This file is part of Rhorix 1.0, June 22, 2017
+# WriteTopology Perl Module
+# Dr. Matthew J L Mills - Rhorix v1.0 - June 2017
+# Subroutines for tasks related to writing XML files adherent to the Topology.dtd document model
 
 package WriteTopology;
 require Exporter;
