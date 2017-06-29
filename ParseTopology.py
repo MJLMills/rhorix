@@ -7,7 +7,7 @@ from TopologyClasses import *
 # For Blender, points in space must be stored as mathutils Vector objects hence there is no Position Vector object in this implementation
 #import mathutils.Vector #Blender module
 
-# For debugging purposes you may want to write the Python topology object
+# For debugging purposes you may want to write a Python topology object
 def printTopology(topology):
 
 	for nucleus in topology.nuclei:
