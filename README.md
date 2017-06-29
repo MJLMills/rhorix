@@ -4,6 +4,9 @@ RhoRix is a [Blender](http://www.blender.org) *Add-On* (i.e. a script that exten
 <p>
 The code was written with reference to Chapter 4 of the WikiBook '[Blender 3D: Noob to Pro](http://en.wikibooks.org/wiki/Blender_3D:_Noob_to_Pro#Table_of_Contents/)' and the appropriate section of the [Blender documentation](http://www.blender.org/api/blender_python_api_2_76_2/).
 Full documentation will be provided in 'Manual.pdf', 'Quickstart.pdf' and a peer-reviewed paper.
+
+The included conversion programs are implemented in Perl, as a set of traditional modules (sets of subroutines for import).
+
 <p>
 #####Using the Program
 <p>
