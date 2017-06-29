@@ -1,7 +1,7 @@
 # Matthew J L Mills - RhoRix Main Program
 # www.mjohnmills.com/rhorix
 
-import xml.etree.ElementTree as ET
+#import xml.etree.ElementTree as ET
 import bpy
 import mathutils
 import math
