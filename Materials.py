@@ -1,6 +1,18 @@
 # Materials Python 3 Module
 # Dr. Matthew J L Mills - Rhorix 1.0 - June 2017
 
+# Materials are usually assigned to points by using the properties of a critical point
+# associated with that object. This necessitates the definition of a library of materials
+# for different CPs.
+# NACPS  - material assigned according to element of practically coincident nucleus
+# NNACPs - all one material
+# BCPs   - all one material
+# RCPs   - all one material
+# CCPS   - all one material
+# degen  - all one material
+# The goal is to be able to pass a CP to a dict/function and get back the corresponding material
+
+
 #This function creates a single material for each type of CP in the scene
 def createMaterials(sphereList):
 
