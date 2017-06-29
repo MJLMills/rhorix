@@ -10,7 +10,7 @@ from TopologyClasses import *
 
 #*#*#*#*#*#*#*#*#*#*# CLASS DEFINITION (OPERATOR)
 
-class QCTBlender(bpy.types.Operator):
+class Rhorix(bpy.types.Operator):
 
     bl_idname = "qct.import_topology"
     bl_label  = "Import Topology"
@@ -120,12 +120,12 @@ class QCTPanel(bpy.types.Panel):
 #*#*#*#*#*#*#*#*#*#* SCRIPT FUNCTION DEFINITIONS
 
 def menu_function(self, context):
-    self.layout.operator(QCTBlender.bl_idname, text="Quantum Chemical Topology (.top)")
+    self.layout.operator(Rhorix.bl_idname, text="Quantum Chemical Topology (.top)")
 
 def register():
     print("QCT4B: Registering Operator Classes")
     print("QCT4B: Use Operator \'Import Topology\' or File -> Import -> \.top to Invoke")
-    bpy.utils.register_class(QCTBlender)
+    bpy.utils.register_class(Rhorix)
     bpy.types.INFO_MT_file_import.append(menu_function)
     bpy.utils.register_class(SelectNuclei)
     bpy.utils.register_class(RenderStereo)
@@ -142,7 +142,7 @@ def register():
  
 def unregister():
     print("QCT4B: Deregistering Operator Class")
-    bpy.utils.unregister_class(QCTBlender)
+    bpy.utils.unregister_class(Rhorix)
     bpy.utils.INFO_MT_file_import.remove(menu_function)
     bpy.utils.unregister_class(SelectNuclei)
     bpy.utils.unregister_class(RenderStereo)
