@@ -5,66 +5,7 @@ import xml.etree.ElementTree as ET
 import bpy
 import mathutils
 import math
-
-#*#*#*#*#*#*#*#*#*#*# CLASS DEFINITION
-
-#This encapsulates the 3D representation of the topology.
-class Topology3D():
-    
-    def __init__(self,sphereList,lineList,surfaceList,gvfList):
-        self.sphereList = sphereList   # list of CriticalPoint objects
-        self.lineList = lineList       # list of Line objects
-        self.surfaceList = surfaceList # list of Surface objects
-        self.gvfList = gvfList         # list of all GradientVectorField objects
-
-#*#*#*#*#*#*#*#*#*#*# CLASS DEFINITION
-
-# A critical point is a topological object with a single vector member
-# This does not need to change.
-class CriticalPoint():
-
-    def __init__(self, type, rank, signature, position):
-        self.type = type
-        self.rank = rank
-        self.signature = signature
-        self.position = position
-
-#*#*#*#*#*#*#*#*#*#*# CLASS DEFINITION
-
-# A line is a set of vectors to be connected
-# NOTES - A line should be just a set of vectors. Topological objects are made of lines, such as AILs and GVF GPs.
-# The labelling should be done at a higher level, in an AIL or GP object.
-class Line():
-
-    def __init__(self, A, B, points):
-        self.A = A
-        self.B = B
-        #points is a list of Vector objects - one for each point on the line
-        self.points = points
-
-#*#*#*#*#*#*#*#*#*#*# CLASS DEFINITION
-
-# A surface is a set of points that is triangulated
-# This also needs to be abstracted one lower, as there are different kinds of surface (IAS, constant cap)
-# which may belong to multiple atoms (i.e. an IAS borders 2 nuclei)
-class Surface():
-
-    def __init__(self, A, points, edges, faces):
-        self.A = A
-        #points is a list of vector objects - one for each point on the surface
-        self.points = points
-        self.edges = edges
-        self.faces = faces
-
-#*#*#*#*#*#*#*#*#*#*# CLASS DEFINITION
-
-# A gradient vector field is a set of GPs and a label for the nucleus each originates at.
-# Might be better to have a GP class at the bottom of the hierarchy rather than a line?
-class GradientVectorField():
-
-    def __init__(self, A, lines):
-        self.A = A
-        self.lines = lines
+from TopologyClasses import *
 
 #*#*#*#*#*#*#*#*#*#*# CLASS DEFINITION (OPERATOR)
 
