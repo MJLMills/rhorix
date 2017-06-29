@@ -21,7 +21,7 @@ class Rhorix(bpy.types.Operator):
         print("QCT4B: Opening File " + self.filepath)
         # First create the object representation of the QCT in the .top file
         # by reading them from the selected topology file.
-        topology = pt.readTopology(self.filepath) # TODO - replace with function in ParseTopology.py
+        topology = pt.readTopology(self.filepath)
         # Create all default materials needed to render this particular topology
         createMaterials(topology.sphereList) # TODO - update to reflect new topology class
         # Create the blender data rep of the QCT and assign materials
