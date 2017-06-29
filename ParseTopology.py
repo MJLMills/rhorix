@@ -1,3 +1,5 @@
+# ParseTopology Python 3 Module
+# Dr. Matthew J L Mills - Rhorix 1.0 - June 2017
 
 # Rhorix uses the ElementTree API, a simple and lightweight XML parser included in Python 3.
 # Please be aware of XML vulnerabilities! https://docs.python.org/3/library/xml.html#xml-vulnerabilities
@@ -5,9 +7,9 @@ import xml.etree.ElementTree as ET
 from TopologyClasses import *
 
 # For Blender, points in space must be stored as mathutils Vector objects hence there is no Position Vector object in this implementation
-#import mathutils.Vector #Blender module
+import mathutils.Vector #Blender module
 
-# For debugging purposes you may want to write a Python topology object
+# For debugging purposes you may want to write a Python topology object to stdout
 def printTopology(topology):
 
 	for nucleus in topology.nuclei:

@@ -1,3 +1,6 @@
+# Materials Python 3 Module
+# Dr. Matthew J L Mills - Rhorix 1.0 - June 2017
+
 #This function creates a single material for each type of CP in the scene
 def createMaterials(sphereList):
 
