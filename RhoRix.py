@@ -5,6 +5,7 @@ import xml.etree.ElementTree as ET
 import bpy
 import mathutils
 import math
+import parseTopology as pt
 from TopologyClasses import *
 
 #*#*#*#*#*#*#*#*#*#*# CLASS DEFINITION (OPERATOR)
@@ -20,7 +21,7 @@ class QCTBlender(bpy.types.Operator):
         print("QCT4B: Opening File " + self.filepath)
         # First create the object representation of the QCT in the .top file
         # by reading them from the selected topology file.
-        topology = readTopology(self.filepath) # TODO - replace with function in ParseTopology.py
+        topology = pt.readTopology(self.filepath) # TODO - replace with function in ParseTopology.py
         # Create all default materials needed to render this particular topology
         createMaterials(topology.sphereList) # TODO - update to reflect new topology class
         # Create the blender data rep of the QCT and assign materials
