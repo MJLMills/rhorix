@@ -5,6 +5,7 @@ import xml.etree.ElementTree as ET
 import bpy
 import mathutils
 import math
+import resources
 import parseTopology as pt
 from TopologyClasses import *
 
