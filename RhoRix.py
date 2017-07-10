@@ -15,13 +15,13 @@ bl_info = \
 {
 "name"        : "Rhorix",
 "author"      : "Matthew J L Mills <mjohnmills@gmail.com>",
-"version"     : (0, 0, 0),
+"version"     : (1, 0, 0),
 "blender"     : (2, 75, 0),
 "location"    : "View 3D > Object Mode > Tool Shelf",
 "description" : "Import and manipulate a QCT .top File",
 "warning"     : "",
-"wiki_url"    : "",
-"tracker_url" : "",
+"wiki_url"    : "www.mjohnmills.com",
+"tracker_url" : "https://github.com/MJLMills/RhoRix",
 "category"    : "Add Mesh",
 }
 
@@ -30,6 +30,7 @@ bl_info = \
 # through the operator list. It offers the user a file select window,
 # attempts to read a topology from the selected file, maps that to a
 # set of 3D objects and sets up camera/lights and rendering options.
+
 class Rhorix(bpy.types.Operator):
 
     bl_idname = "qct.import_topology"
@@ -39,15 +40,19 @@ class Rhorix(bpy.types.Operator):
  
     def execute(self, context):
         print("QCT4B: Opening File " + self.filepath)
+
         # First create the object representation of the QCT in the .top file
         # by reading the selected topology file.
         topology = pt.readTopology(self.filepath)
+
         # Create all default materials needed to render this particular topology
         createMaterials(topology.critical_points) # TODO - update to reflect new topology class
+
         # Create the blender data rep of the QCT and assign materials
         # Anything created herein is persistent.
         # Anything not converted to blender data is lost on save/open of the .blend file
         mapping.drawTopology(topology) # TODO - update to reflect new topology class
+
         #Setup the environment in which the QCT resides (camera,lights,etc.)
         #setupWorld assumes the system is a sphere containing all of its critical points
         world.setup(topology.findCenter,topology.computeRadius)  # TODO - update to reflect new topology class
@@ -58,7 +63,8 @@ class Rhorix(bpy.types.Operator):
         context.window_manager.fileselect_add(self)
         return {'RUNNING_MODAL'}
 
-#*#*#*#*#*#*#*#*#*#*# CLASS DEFINITION (GUI OPERATOR)
+#*#*#*#*#*#*#*#*#*#*# HELPER CLASS DEFINITIONS (each a subclass of the Operator superclass)
+
 # This class should select all nuclear critical points of the topology
 class SelectNuclei(bpy.types.Operator):
 
@@ -66,11 +72,13 @@ class SelectNuclei(bpy.types.Operator):
     bl_label = "Select Nuclei"
 
     def invoke(self,context,event):
+        print("invoke function of SelectNuclei class reporting")
         for object in bpy.data.objects:
             object.select = False
         bpy.ops.object.select_pattern(pattern="*cp*")
         return {'FINISHED'}
 
+# This class should allow the bevel object of the AILs to be re-sized
 class ResizeAILs(bpy.types.Operator):
 
     bl_idname = "qct.resize_ails"
@@ -82,6 +90,7 @@ class ResizeAILs(bpy.types.Operator):
         bpy.ops.object.select_pattern(pattern="AIL-BevelCircle")
         return {'FINISHED'}
 
+# This class should decide on whether an interaction is a bond or not, and assign an appropriate bevel object
 class DifferentiateInteractions(bpy.types.Operator):
 
     bl_idname = "qct.differentiate_interactions"
@@ -92,8 +101,7 @@ class DifferentiateInteractions(bpy.types.Operator):
         # check the interatomic distances between AIL-connected nuclei
         # set the appropriate Bevel object for bond or NB interaction
 
-# This class changes options so that the current scene 
-# will be rendered stereographically
+# This class changes options so that the current scene will be rendered stereographically
 class RenderStereo(bpy.types.Operator):
 
     bl_idname = "qct.render_stereo"
