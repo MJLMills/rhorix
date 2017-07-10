@@ -10,7 +10,9 @@ import parseTopology as pt
 import mapping
 from TopologyClasses import *
 
-#Required information for installed Add-On
+# Required information for installed Add-On: https://wiki.blender.org/index.php/Dev:Py/Scripts/Guidelines/Addons
+# Blender version is newest tested version
+# Add Mesh category is for "scripts that create geometry or 3d objects with Python"
 bl_info = \
 {
 "name"        : "Rhorix",
@@ -24,6 +26,9 @@ bl_info = \
 "tracker_url" : "https://github.com/MJLMills/RhoRix",
 "category"    : "Add Mesh",
 }
+
+# Integrate with Blender by defining operators, by subclassing Operator
+# https://docs.blender.org/api/blender_python_api_current/bpy.types.Operator.html#bpy.types.Operator
 
 #*#*#*#*#*#*#*#*#*#*# CLASS DEFINITION (subclass of Operator superclass)
 # This is the main Rhorix class, invoked either from the File menu or
@@ -127,6 +132,9 @@ class RenderStereo(bpy.types.Operator):
 
         return {'FINISHED'}
 
+# Integrate with Blender by defining a panel, by sublassing Panel
+# https://docs.blender.org/api/blender_python_api_current/bpy.types.Panel.html#bpy.types.Panel
+
 #*#*#*#*#*#*#*#*#*#*# CLASS/FUNCTION DEFINITIONS (GUI)
 
 class QCTPanel(bpy.types.Panel):
@@ -146,10 +154,14 @@ class QCTPanel(bpy.types.Panel):
         uiColumn.operator("qct.differentiate_interactions",text="Differentiate Interactions")
         uiColumn.operator("qct.resize_ails",     text="Resize AILs")
 
+# Integrate with Blender by inserting new button into existing menu
+
 def menu_function(self, context):
     self.layout.operator(Rhorix.bl_idname, text="Quantum Chemical Topology (.top)")
 
 #*#*#*#*#*#*#*#*#*#* REQUIRED SCRIPT FUNCTION DEFINITIONS
+
+# https://docs.blender.org/api/blender_python_api_current/info_overview.html#class-registration
 
 def register():
 

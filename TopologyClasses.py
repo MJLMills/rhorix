@@ -35,11 +35,10 @@ class Topology():
 		return mathutils.Vector((float(x_origin),float(y_origin),float(z_origin)))
 
 	# Get the radius of a sphere containing all the critical point objects
-	def computeRadius():
+	def computeRadius(center):
 
-		max = -100000
+		max = float('-inf')
 
-		center = self.computeCenter()
 		for cp in critical_points:
 			position = cp.position - center
 			r = math.sqrt(position[0]*position[0] + position[1]*position[1] + position[2]*position[2])
