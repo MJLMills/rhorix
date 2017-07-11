@@ -65,15 +65,15 @@ class CriticalPoint(Point):
         self.rank      = rank
         self.signature = signature
 
-    def computeType():
+    def computeType(self):
         if self.rank == 3:
             if self.signature == -3:
-                return "" # element of nucleus
-            else if self.signature == 3:
+                return "nacp" # element of nucleus
+            elif self.signature == 3:
                 return "ccp"
-            else if self.signature == 1:
+            elif self.signature == 1:
                 return "rcp"
-            else if self.signature == -1:
+            elif self.signature == -1:
                 return "bcp"
             else:
                 return "unk" # should not be possible
