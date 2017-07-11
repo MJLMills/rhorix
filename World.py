@@ -1,40 +1,46 @@
 import bpy
+import mathutils
+import math
 
 # This function sets up default render options, lights, camera to match the Morphy GUI
 def setup(center,radius):
 
-    createCamera(center,radius)
-    createLights(center,radius)
+    # quick fix for zero radius (single CP) case
+    if radius == 0.0:
+        radius = 1.0
+
+    cam_ob = createCamera(center,radius)
+    createLights(cam_ob.location,center,radius)
     defaultRenderSettings()
 
 def createCamera(center,radius):
 
     cam = bpy.data.cameras.new("Cam")
     cam.clip_end = 1000.0
-    center[2] += (4.0 * radius)
+    #center[2] += (4.0 * radius)
     cam_ob = bpy.data.objects.new("Cam", cam)
-    cam_ob.location=center
+    print("radius", radius)
+    cam_ob.location=(center[0],center[1],(4.0 * radius))
     bpy.context.scene.objects.link(cam_ob)
+    return cam_ob
 
-def createLights(center,radius):
+def createLights(cam_location,center,radius):
 
     rad45 = 45.0*(3.141519265359/180.0)
     rad90 = 90.0*(3.141519265359/180.0)
     sin45 = math.sin(rad45)
 
-    createKeyLight()
-    createFillLight()
-    createRimLight()
-
-    def createKeyLight():
+    def createKeyLight(cam_location):
 
         # Must create spotlight for key light at camera position, pointing in camera direction
-        bpy.ops.object.lamp_add(type='SPOT',location=cam_ob.location)
+        bpy.ops.object.lamp_add(type='SPOT',location=cam_location)
+        print(center)
         # move to the left (-ve x-direction), +ve along z and +ve along y
         x = -center[2]*sin45
         y = radius
         z = center[2]*sin45
         bpy.context.active_object.location = (x, y, z)
+
 
         angle = rad90 - math.atan(abs(x)/abs(y)) 
         bpy.context.active_object.rotation_euler = mathutils.Euler((0.0,-rad45,-angle),'XYZ')
@@ -47,8 +53,7 @@ def createLights(center,radius):
     # and light should be weaker
     def createFillLight():
 
-        bpy.ops.object.lamp_add(type='SPOT',location=cam_ob.location)
-
+        bpy.ops.object.lamp_add(type='SPOT',location=cam_location)
         x = center[2]*sin45
         y = radius
         z = x
@@ -63,13 +68,17 @@ def createLights(center,radius):
 
     def createRimLight():
         # and now the rim light
-        bpy.ops.object.lamp_add(type='SPOT',location=cam_ob.location)
+        bpy.ops.object.lamp_add(type='SPOT',location=cam_location)
         bpy.context.active_object.location.z = -4.0*radius
         bpy.context.active_object.rotation_euler = mathutils.Euler((3.141519265359,0.0,0.0),'XYZ')
 
         bpy.context.active_object.data.distance = center[2]
         bpy.context.active_object.data.energy = 5
         bpy.context.active_object.data.spot_size = 1.0 # rads!
+
+    createKeyLight(cam_location)
+    createFillLight()
+    createRimLight()
 
 def defaultRenderSettings():
 
