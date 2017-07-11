@@ -41,7 +41,6 @@ bl_info = {
 
 # Function runs only when enabling the addon
 def register():
-    print("Hello from register function")
     bpy.utils.register_class(ImportTopology)
     bpy.utils.register_class(RhorixControlPanel)
     bpy.types.INFO_MT_file_import.append(menu_function)
@@ -49,7 +48,6 @@ def register():
 # Function runs only when disabling the addon
 # Must undo actions taken by register function in reverse order
 def unregister():
-    print("Hello from unregister function")
     bpy.types.INFO_MT_file_import.remove(menu_function)
     bpy.utiles.unregister_class(RhorixControlPanel)
     bpy.utils.unregister_class(ImportTopology)
@@ -65,7 +63,6 @@ class ImportTopology(bpy.types.Operator):
     filepath    = bpy.props.StringProperty(subtype="FILE_PATH")
 
     def execute(self,context):
-        print("Hello from ImportTopology execute function")
         #top = ParseTopology.parseTopology(self.filepath)
         #ParseTopology.printTopology(top)
         #Materials.createMaterials(top.critical_points)
