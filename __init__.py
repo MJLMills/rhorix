@@ -5,14 +5,14 @@
 # See https://wiki.blender.org/index.php/Dev:Py/Scripts/Cookbook/Code_snippets/Multi-File_packages
 if "bpy" in locals():
     import imp
-    imp.reload(Mapping)
-    imp.reload(Materials)
-    imp.reload(ParseTopology)
-    imp.reload(Resources)
+#    imp.reload(Mapping)
+#    imp.reload(Materials)
+#    imp.reload(ParseTopology)
+#    imp.reload(Resources)
     imp.reload(TopologyClasses)
-    imp.reload(World)
+#    imp.reload(World)
 else:
-    from . import Mapping, Materials, ParseTopology, Resources, TopologyClasses, World
+    from . import TopologyClasses
 
 import bpy
 
