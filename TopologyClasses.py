@@ -15,7 +15,8 @@ class Point():
 
 class Topology():
 	
-    def __init__(self,nuclei,critical_points,gradient_vector_field):
+    def __init__(self,name,nuclei,critical_points,gradient_vector_field):
+        self.name                  = name
         self.nuclei                = nuclei
         self.critical_points       = critical_points
         self.gradient_vector_field = gradient_vector_field

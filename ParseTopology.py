@@ -9,6 +9,7 @@ from . import TopologyClasses
 # For debugging purposes you may want to write a Python topology object to stdout
 def printTopology(topology):
 
+    print (topology.name)
     for nucleus in topology.nuclei:
         print (nucleus.element,nucleus.position_vector)
     for cp in topology.critical_points:
@@ -25,6 +26,7 @@ def parseTopology(filepath):
     # Get a reference to the root element
     topologyRoot = topologyTree.getroot() # Element object (has tag and dict 'attrib') - single node of tree
 
+    name = topologyRoot.find('SystemName').text
     # As some CPs carry references to nuclei, read these first
     nuclei = []
     for nucleus in topologyRoot.find('Nuclei').iter('Nucleus'):
@@ -37,7 +39,7 @@ def parseTopology(filepath):
 
     gradient_vector_field = parseGradientVectorField(topologyRoot.find('GradientVectorField'))
 
-    return TopologyClasses.Topology(nuclei,critical_points,gradient_vector_field)
+    return TopologyClasses.Topology(name,nuclei,critical_points,gradient_vector_field)
 
 def parseGradientVectorField(GradientVectorFieldElement):
     molecular_graph = parseMolecularGraph(GradientVectorFieldElement.find('MolecularGraph'))

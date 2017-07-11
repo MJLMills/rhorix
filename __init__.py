@@ -63,8 +63,8 @@ class ImportTopology(bpy.types.Operator):
     filepath    = bpy.props.StringProperty(subtype="FILE_PATH")
 
     def execute(self,context):
-        #top = ParseTopology.parseTopology(self.filepath)
-        #ParseTopology.printTopology(top)
+        top = ParseTopology.parseTopology(self.filepath)
+        ParseTopology.printTopology(top)
         #Materials.createMaterials(top.critical_points)
         return {'FINISHED'}
 
