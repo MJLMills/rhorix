@@ -65,7 +65,7 @@ class ImportTopology(bpy.types.Operator):
     def execute(self,context):
         top = ParseTopology.parseTopology(self.filepath)
         ParseTopology.printTopology(top)
-        Materials.createMaterials(top.critical_points)
+        Materials.createNuclearMaterials()
         return {'FINISHED'}
 
     def invoke(self,context,event):
