@@ -4,10 +4,7 @@
 # Rhorix uses the ElementTree API, a simple and lightweight XML parser included in Python 3.
 # Please be aware of XML vulnerabilities! https://docs.python.org/3/library/xml.html#xml-vulnerabilities
 import xml.etree.ElementTree as ET
-from TopologyClasses import *
-
-# For Blender, points in space must be stored as mathutils Vector objects hence there is no Position Vector object in this implementation
-import mathutils.Vector #Blender module
+from . import TopologyClasses
 
 # For debugging purposes you may want to write a Python topology object to stdout
 def printTopology(topology):
@@ -40,7 +37,7 @@ def parseTopology(filepath):
 
     gradient_vector_field = parseGradientVectorField(topologyRoot.find('GradientVectorField'))
 
-    return Topology(nuclei,critical_points,gradient_vector_field)
+    return TopologyClasses.Topology(nuclei,critical_points,gradient_vector_field)
 
 def parseGradientVectorField(GradientVectorFieldElement):
     molecular_graph = parseMolecularGraph(GradientVectorFieldElement.find('MolecularGraph'))
@@ -69,44 +66,44 @@ def parseGradientVectorField(GradientVectorFieldElement):
     for cage in GradientVectorFieldElement.findall('Cage'):
         cages.append(parseCage(cage))
 
-    return GradientVectorField(molecular_graph,atomic_basins,envelopes,atomic_surfaces,ring_surfaces,rings,cages)
+    return TopologyClasses.GradientVectorField(molecular_graph,atomic_basins,envelopes,atomic_surfaces,ring_surfaces,rings,cages)
 
 def parseRing(RingElement):
     atomic_interaction_lines = []
     for atomic_interaction_line in RingElement.findall('AtomicInteractionLine'):
         atomic_interaction_lines.append(parseAtomicInteractionLine(atomic_interaction_line))
-    return Ring(atomic_interaction_lines)
+    return TopologyClasses.Ring(atomic_interaction_lines)
 
 def parseCage(CageElement):
     rings = []
     for ring in CageElement.findall('Ring'):
         rings.append(parseRing(ring))
-    return Cage(rings)
+    return TopologyClasses.Cage(rings)
 
 def parseRingSurface(RingSurfaceElement):
     gradient_paths = []
     for gradient_path in RingSurfaceElement.findall('GradientPath'):
         gradient_paths.append(parseGradientPath(gradient_path))
-    return RingSurface(gradient_paths)
+    return TopologyClasses.RingSurface(gradient_paths)
 
 def parseAtomicSurface(AtomicSurfaceElement):
     interatomic_surfaces = []
     for interatomic_surface in AtomicSurfaceElement.findall('InteratomicSurface'):
         interatomic_surfaces.append(parseInteratomicSurface(interatomic_surface))
-    return AtomicSurface(interatomic_surfaces)
+    return TopologyClasses.AtomicSurface(interatomic_surfaces)
 
 def parseInteratomicSurfaces(InteratomicSurfaceElement):
     gradient_paths = []
     for gradient_path in InteratomicSurfaceElement.findall('GradientPath'):
         gradient_paths.append(parseGradientPath(gradient_path))
     triangulation= parseTriangulation(InteratomicSurfaceElement.find('Triangulation'))
-    return InteratomicSurface(gradient_paths,triangulation)
+    return TopologyClasses.InteratomicSurface(gradient_paths,triangulation)
 
 def parseAtomicBasin(AtomicBasinElement):
     gradient_paths = []
     for gradient_path in AtomicBasinElement.findall('GradientPath'):
         gradient_paths.append(parseGradientPath(gradient_path))
-    return AtomicBasin(gradient_paths)
+    return TopologyClasses.AtomicBasin(gradient_paths)
 
 def parseEnvelope(EnvelopeElement):
     isovalue = float(EnvelopeElement.find('isovalue').text)
@@ -114,7 +111,7 @@ def parseEnvelope(EnvelopeElement):
     for point in EnvelopeElement.findall('Point'):
         points.append(parsePoint(point))
     triangulation = parseTriangulation(EnvelopeElement.find('Triangulation'))
-    return Envelope(isovalue,points,triangulation)
+    return TopologyClasses.Envelope(isovalue,points,triangulation)
 
 def parseTriangulation(TriangulationElement):
 
@@ -130,42 +127,42 @@ def parseTriangulation(TriangulationElement):
     for face in TriangulationElement.findall('Face'):
         faces.append(parseFace(face))
 
-    return Triangulation(points,edges,faces)
+    return TopologyClasses.Triangulation(points,edges,faces)
 
 def parseEdge(EdgeElement):
     a = int(EdgeElement.find('edge_a').text)
     b = int(EdgeElement.find('edge_b').text)
-    return Edge(a,b)
+    return TopologyClasses.Edge(a,b)
 
 def parseFace(FaceElement):
     a = int(FaceElement.find('face_a').text)
     b = int(FaceElement.find('face_b').text)
     c = int(FaceElement.find('face_c').text)
-    return Face(a,b,c)
+    return TopologyClasses.Face(a,b,c)
 
 def parseMolecularGraph(MolecularGraphElement):
     ails = []
     for atomic_interaction_line in MolecularGraphElement.findall('AtomicInteractionLine'):
         ails.append(parseAtomicInteractionLine(atomic_interaction_line))
-    return MolecularGraph(ails)
+    return TopologyClasses.MolecularGraph(ails)
 
 def parseAtomicInteractionLine(AtomicInteractionLineElement):
     gradient_paths = []
     for gradient_path in AtomicInteractionLineElement.findall('GradientPath'):
         gradient_paths.append(parseGradientPath(gradient_path))
-    return AtomicInteractionLine(gradient_paths)
+    return TopologyClasses.AtomicInteractionLine(gradient_paths)
 
 def parseGradientPath(GradientPathElement):
     points = []
     for point in GradientPathElement.findall('Point'):
         points.append(parsePoint(point));
-    return GradientPath(points)
+    return TopologyClasses.GradientPath(points)
 
 def parseCriticalPoint(CriticalPointElement):
     rank      = int(CriticalPointElement.find('rank').text)
     signature = int(CriticalPointElement.find('signature').text)
     point = parsePoint(CriticalPointElement.find('Point'))
-    return CriticalPoint(point.position_vector,point.scalar_properties,rank,signature)
+    return TopologyClasses.CriticalPoint(point.position_vector,point.scalar_properties,rank,signature)
 
 def parseCriticalPointIndex(CriticalPointElement):
     return int(CriticalPointElement.find('cp_index').text)
@@ -173,7 +170,7 @@ def parseCriticalPointIndex(CriticalPointElement):
 def parsePoint(PointElement):
     position_vector   = parsePositionVector(PointElement.find('PositionVector'))
     scalar_properties = parseMap(PointElement.find('Map'))
-    return Point(position_vector,scalar_properties)
+    return TopologyClasses.Point(position_vector,scalar_properties)
 
 def parseMap(MapElement):
     scalar_properties = {}
@@ -186,7 +183,7 @@ def parseMap(MapElement):
 def parseNucleus(NucleusElement):
     element = NucleusElement.find('element').text
     position_vector = parsePositionVector(NucleusElement.find('PositionVector'))
-    return Nucleus(element,position_vector)
+    return TopologyClasses.Nucleus(element,position_vector)
 
 def parseNucleusIndex(NucleusElement):
     return int(NucleusElement.find('nucleus_index').text)
@@ -196,7 +193,6 @@ def parsePositionVector(position_vector):
     y = float(position_vector.find('y').text)
     z = float(position_vector.find('z').text)
     return [x,y,z]
-    #return mathutils.Vector((x,y,z))
 
 topology = parseTopology("/Users/mjmills/Dropbox/Work/Paper-RhoRix/Applications/NewVersion/NewVersion/DiHydrogen.xml")
 printTopology(topology)
