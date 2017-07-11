@@ -1,3 +1,5 @@
+import bpy
+
 # This function sets up default render options, lights, camera to match the Morphy GUI
 def setup(center,radius):
 
