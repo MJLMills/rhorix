@@ -14,6 +14,12 @@ def printTopology(topology):
         print (nucleus.element,nucleus.position_vector)
     for cp in topology.critical_points:
         print (cp.rank,cp.signature,cp.position_vector,cp.scalar_properties)
+    printGradientVectorField(topology.gradient_vector_field)
+
+def printGradientVectorField(gvf):
+    
+    for ail in gvf.molecular_graph.atomic_interaction_lines:
+        print(ail)
 
 # The following functions are all required for complete parsing of a Topology file
 
