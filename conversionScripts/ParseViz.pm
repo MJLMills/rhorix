@@ -86,7 +86,7 @@ sub parseCPsFromViz {
       my @positionVector = ($2,$3,$4);
       push(@cpCoordinates,\@positionVector);
 
-      if ($fileContents[$line+1] =~ m/Type\s+\=\s+\((-?\d+)\,(-?\d+)\)/) {
+      if ($fileContents[$line+1] =~ m/Type\s+\=\s+\((\d+)\,([-+]\d+)\)/) {
         push(@ranks,$1);
         push(@signatures,$2);
       } else {
