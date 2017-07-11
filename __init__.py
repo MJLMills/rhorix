@@ -16,7 +16,7 @@ else:
 
 import bpy
 
-# The following satisfy the requirements for contributed scripts
+# The following dict and 2 functions satisfy the requirements for contributed scripts
 # Be sure to also follow the PEP 8 Python conventions
 # See https://www.python.org/dev/peps/pep-0008/
 
@@ -43,6 +43,7 @@ bl_info = {
 def register():
     print("Hello from register function")
     bpy.utils.register_class(ImportTopology)
+    bpy.utils.register_class(RhorixControlPanel)
     bpy.types.INFO_MT_file_import.append(menu_function)
 
 # Function runs only when disabling the addon
@@ -50,6 +51,7 @@ def register():
 def unregister():
     print("Hello from unregister function")
     bpy.types.INFO_MT_file_import.remove(menu_function)
+    bpy.utiles.unregister_class(RhorixControlPanel)
     bpy.utils.unregister_class(ImportTopology)
 
 # Classes subclassing the Superclass bpy.types.Operator
@@ -64,11 +66,28 @@ class ImportTopology(bpy.types.Operator):
 
     def execute(self,context):
         print("Hello from ImportTopology execute function")
+        #top = ParseTopology.parseTopology(self.filepath)
+        #ParseTopology.printTopology(top)
+        #Materials.createMaterials(top.critical_points)
         return {'FINISHED'}
 
     def invoke(self,context,event):
         context.window_manager.fileselect_add(self)
         return {'RUNNING_MODAL'}
+
+# Classes subclassing the Superclass bpy.types.Panel
+
+class RhorixControlPanel(bpy.types.Panel):
+    
+    bl_region_type = "TOOLS"      # Appear in the toolshelf (T)
+    bl_space_type  = "VIEW_3D"    # when the 3D view
+    bl_context     = "objectmode" # is in object mode.
+    bl_category    = "Tools"      # Appear in the Create tab of the toolshelf.
+    bl_label = "RhoRix Controls"  # The title of the GUI panel
+
+    def draw(self,context):
+        uiColumn = self.layout.column(align=True)
+        uiColumn.operator("rhorix.import_topology", text="Import Topology")
 
 # Add a menu function for the main operator by defining a new draw function
 # and adding it to an existing class (in the register function)
