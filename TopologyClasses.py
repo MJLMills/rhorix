@@ -65,7 +65,7 @@ class CriticalPoint(Point):
         self.rank      = rank
         self.signature = signature
 
-    def getType():
+    def computeType():
         if self.rank == 3:
             if self.signature == -3:
                 return "" # element of nucleus
@@ -76,7 +76,7 @@ class CriticalPoint(Point):
             else if self.signature == -1:
                 return "bcp"
             else:
-                return "unk"
+                return "unk" # should not be possible
         else:
             return "dgn"
 
