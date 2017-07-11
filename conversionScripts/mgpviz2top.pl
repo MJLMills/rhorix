@@ -3,9 +3,9 @@
 # Script to convert plaintext mgpviz output files from AIMAll to XML files conformant to the document model in Topology.dtd.
 # Rhorix v1.0
 
-use Utilities qw(checkArgs getExt readFile stripExt);
-use VizUtils qw(checkMgpvizFile);
-use ParseViz qw(parseMgpviz);
+use Utilities     qw(checkArgs getExt readFile stripExt);
+use VizUtils      qw(checkMgpvizFile);
+use ParseViz      qw(parseMgpviz);
 use WriteTopology qw(writeTopologyXML);
 
 # This could be an argument
