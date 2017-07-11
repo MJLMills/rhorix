@@ -25,19 +25,20 @@ def createMaterials(critical_points):
     #create the necessary set of element colors for this topology
     createdList = [] #list of the nuclear types created so far
     for cp in critical_points:
+        type = cp.computeType()
         #check the material for this sphere hasn't been made already
         duplicate = False
         for element in createdList:
-            if cp.type == element:
+            if type == element:
                 duplicate = True
                 break
 
         #and if it has NOT then make it
         if duplicate == False:
             #create a new material
-            createAtomMaterial(elementColors[cp.type],cp.type)
-            createSurfaceMaterial(elementColors[cp.type],cp.type)
-            createdList.append(cp.type)
+            createAtomMaterial(elementColors[type],type)
+            createSurfaceMaterial(elementColors[type],type)
+            createdList.append(type)
 
     createAILMaterial()
 
