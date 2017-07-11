@@ -19,7 +19,7 @@
 # This function creates a single material for each type of CP in the scene
 # and should add them to a dict from each cp to its corresponding material
 def createMaterials(critical_points):
-r
+
     elementColors = defineColors()
     #create the necessary set of element colors for this topology
     createdList = [] #list of the nuclear types created so far
