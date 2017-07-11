@@ -65,6 +65,21 @@ class CriticalPoint(Point):
         self.rank      = rank
         self.signature = signature
 
+    def getType():
+        if self.rank == 3:
+            if self.signature == -3:
+                return "" # element of nucleus
+            else if self.signature == 3:
+                return "ccp"
+            else if self.signature == 1:
+                return "rcp"
+            else if self.signature == -1:
+                return "bcp"
+            else:
+                return "unk"
+        else:
+            return "dgn"
+
 class GradientVectorField():
     def __init__(self,molecular_graph,atomic_basins,envelopes,atomic_surfaces,ring_surfaces,rings,cages):
         self.molecular_graph = molecular_graph
