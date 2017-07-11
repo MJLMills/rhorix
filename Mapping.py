@@ -8,11 +8,12 @@
 
 import bpy
 import mathutils
+from . import Resources
 
 def drawTopology(topology):
 
     drawCriticalPoints(topology.critical_points)
-    drawGradientVectorField(topology.gradient_vector_field)
+    #drawGradientVectorField(topology.gradient_vector_field)
 
 def drawGradientVectorField(gradient_vector_field):
     drawMolecularGraph(gradient_vector_field.molecular_graph)
@@ -24,8 +25,11 @@ def drawGradientVectorField(gradient_vector_field):
     drawCages(gradient_vector_field.cages)
 
 def drawCriticalPoints(critical_points):
+
+    elementRadii = Resources.defineRadii()
     for cp in critical_points:
-        cpSphere = bpy.ops.mesh.primitive_uv_sphere_add(location=cp.position_vector,size=0.1*elementRadii[cp.type],segments=32,ringcount=16)
+        cpLocation = mathutils.Vector(cp.position_vector)
+        cpSphere = bpy.ops.mesh.primitive_uv_sphere_add(location=cpLocation,size=0.1*elementRadii[cp.computeType()],segments=32,ring_count=16)
         # now attach an appropriate material to the sphere
 
 def drawMolecularGraph(molecular_graph):
