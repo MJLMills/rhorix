@@ -200,4 +200,4 @@ def parsePositionVector(position_vector):
     x = float(position_vector.find('x').text)
     y = float(position_vector.find('y').text)
     z = float(position_vector.find('z').text)
-    return [x,y,z]
+    return (x,y,z)

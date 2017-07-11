@@ -22,31 +22,35 @@ class Topology():
         self.gradient_vector_field = gradient_vector_field
 
     # Find the center of the distribution of critical points
-    def computeCenter():
+    def computeCenter(self):
 
         x_total = 0.0
         y_total = 0.0
         z_total = 0.0
 
-        for cp in critical_points:
-            x_total += cp.position[0]
-            y_total += cp.position[1]
-            z_total += cp.position[2]
+        for cp in self.critical_points:
+            x_total += cp.position_vector[0]
+            y_total += cp.position_vector[1]
+            z_total += cp.position_vector[2]
 
-        N = len(critical_points)
+        N = len(self.critical_points)
         x_origin = x_total / N
         y_origin = y_total / N
         z_origin = z_total / N
 
-        return mathutils.Vector((float(x_origin),float(y_origin),float(z_origin)))
+        #return mathutils.Vector((float(x_origin),float(y_origin),float(z_origin)))
+        return (x_origin,y_origin,z_origin)
 
     # Get the radius of a sphere containing all the critical point objects
-    def computeRadius(center):
+    def computeRadius(self,center):
 
         max = float('-inf')
 
-        for cp in critical_points:
-            position = cp.position - center
+        position = [0.0, 0.0, 0.0]
+        for cp in self.critical_points:
+            position[0] = cp.position_vector[0] - center[0]
+            position[1] = cp.position_vector[1] - center[1]
+            position[2] = cp.position_vector[2] - center[2]
             r = math.sqrt(position[0]*position[0] + position[1]*position[1] + position[2]*position[2])
 
             if position[0] > max:

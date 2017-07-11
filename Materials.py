@@ -16,6 +16,7 @@
 # The goal is to be able to pass a CP to a dict/function and get back the corresponding material
 
 from . import Resources
+import bpy
 
 # This function creates a single material for each type of CP in the scene
 # and should add them to a dict from each cp to its corresponding material
@@ -36,61 +37,39 @@ def createMaterials(critical_points):
         #and if it has NOT then make it
         if duplicate == False:
             #create a new material
-            createAtomMaterial(elementColors[type],type)
-            createSurfaceMaterial(elementColors[type],type)
+            createMaterial(elementColors[element],'WIRE',   1.0,element,'critical_point')
+            createMaterial(elementColors[element],'SURFACE',0.5,element,'surface')
             createdList.append(type)
 
-    createAILMaterial()
+    # create generic materials for AILs
+    createMaterial((0.0,0.0,0.0),'SURFACE',1.0,'AIL','curve')
 
-def createNuclearMaterials():
+def createGenericMaterials():
+    createMaterial((0.0,0.0,0.0),'SURFACE',1.0,'AIL',     'curve')
+    createMaterial((0.0,0.0,0.0),'SURFACE',1.0,'Bond',    'curve')
+    createMaterial((0.0,0.0,0.0),'SURFACE',1.0,'Non-Bond','curve')
+
+# Produce a dict from which CP labels can be used to obtain materials
+def createAllMaterials(suffix):
+
+    materials = {}
 
     # make a copy of the colors dict - colors for each CP type and element
     elementColors = Resources.defineColors()
     # create a material for each CP type and element
     for element in elementColors:
-        createAtomMaterial(elementColors[element],element)
+        materials[element] = createMaterial(elementColors[element],'WIRE',1.0,element,suffix)
 
-# THE following only differ by the name they are given
+    return materials
 
-# This function creates a material for the given type of critical point 
-# called element-CritPointColor
-# This defines the default material for a CP other than its diffuse color
-def createAtomMaterial(color,element):
-
-    mat = bpy.data.materials.new(element + '-CriticalPointMaterial')
+def createMaterial(color,type,alpha,prefix,suffix):
+    mat = bpy.data.materials.new(prefix+'-'+suffix+'-material')
     mat.diffuse_color = color
     mat.diffuse_shader = 'LAMBERT'
     mat.diffuse_intensity = 1.0
     mat.specular_color = (1,1,1)
     mat.specular_shader = 'COOKTORR'
     mat.specular_intensity = 0.5
-    mat.alpha = 1
+    mat.alpha = alpha
     mat.ambient = 1
-    mat.type = 'WIRE'
-
-#Create a default material for the surfaces around a given element
-# and is different to the CP material for flexibility
-def createSurfaceMaterial(color,element):
-
-    mat = bpy.data.materials.new(element + '-Surface_Material')
-    mat.diffuse_color = color
-    mat.diffuse_shader = 'LAMBERT'
-    mat.diffuse_intensity = 1.0
-    mat.specular_color = (1,1,1)
-    mat.specular_shader = 'COOKTORR'
-    mat.specular_intensity = 0.5
-    mat.alpha = 1
-    mat.ambient = 1
-
-#Create a default material for rendering all AILs
-def createAILMaterial():
-
-    mat = bpy.data.materials.new('AIL_Material')
-    mat.diffuse_color = (0.0, 0.0, 0.0)
-    mat.diffuse_shader = 'LAMBERT'
-    mat.diffuse_intensity = 1.0
-    mat.specular_color = (1,1,1)
-    mat.specular_shader = 'COOKTORR'
-    mat.specular_intensity = 0.5
-    mat.alpha = 1
-    mat.ambient = 1
+    mat.type = type
