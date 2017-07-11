@@ -8,6 +8,11 @@
 import mathutils
 import math
 
+class Point():
+    def __init__(self,position_vector,scalar_properties):
+        self.position_vector   = position_vector
+        self.scalar_properties = scalar_properties
+
 class Topology():
 	
     def __init__(self,nuclei,critical_points,gradient_vector_field):
@@ -135,11 +140,6 @@ class Ring():
 class Cage():
     def __init__(self,rings):
         self.rings = rings
-
-class Point():
-    def __init__(self,position_vector,scalar_properties):
-        self.position_vector   = position_vector
-        self.scalar_properties = scalar_properties
 
 class Triangulation():
     def __init__(self,points,edges,faces):
