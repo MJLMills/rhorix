@@ -30,7 +30,7 @@ def createLights(cam_location,center,radius):
     rad90 = 90.0*(3.141519265359/180.0)
     sin45 = math.sin(rad45)
 
-    def createKeyLight(cam_location):
+    def createKeyLight():
 
         # Must create spotlight for key light at camera position, pointing in camera direction
         bpy.ops.object.lamp_add(type='SPOT',location=cam_location)
@@ -76,7 +76,7 @@ def createLights(cam_location,center,radius):
         bpy.context.active_object.data.energy = 5
         bpy.context.active_object.data.spot_size = 1.0 # rads!
 
-    createKeyLight(cam_location)
+    createKeyLight()
     createFillLight()
     createRimLight()
 
