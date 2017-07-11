@@ -15,12 +15,13 @@
 # degen  - all one material
 # The goal is to be able to pass a CP to a dict/function and get back the corresponding material
 
+from . import Resources
 
 # This function creates a single material for each type of CP in the scene
 # and should add them to a dict from each cp to its corresponding material
 def createMaterials(critical_points):
 
-    elementColors = defineColors()
+    elementColors = Resources.defineColors()
     #create the necessary set of element colors for this topology
     createdList = [] #list of the nuclear types created so far
     for cp in critical_points:
