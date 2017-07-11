@@ -42,6 +42,14 @@ def createMaterials(critical_points):
 
     createAILMaterial()
 
+def createNuclearMaterials():
+
+    # make a copy of the colors dict - colors for each CP type and element
+    elementColors = Resources.defineColors()
+    # create a material for each CP type and element
+    for element in elementColors:
+        createAtomMaterial(elementColors[element],element)
+
 # THE following only differ by the name they are given
 
 # This function creates a material for the given type of critical point 
