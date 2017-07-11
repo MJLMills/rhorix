@@ -65,7 +65,6 @@ class ImportTopology(bpy.types.Operator):
     def execute(self,context):
         top = ParseTopology.parseTopology(self.filepath)
         ParseTopology.printTopology(top)
-        cpMaterials = Materials.createAllMaterials('critical_point')
         World.setup(top.computeCenter(),top.computeRadius(top.computeCenter()))
         Mapping.drawTopology(top)
 
