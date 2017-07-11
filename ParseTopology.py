@@ -193,6 +193,3 @@ def parsePositionVector(position_vector):
     y = float(position_vector.find('y').text)
     z = float(position_vector.find('z').text)
     return [x,y,z]
-
-topology = parseTopology("/Users/mjmills/Dropbox/Work/Paper-RhoRix/Applications/NewVersion/NewVersion/DiHydrogen.xml")
-printTopology(topology)
