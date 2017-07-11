@@ -7,6 +7,7 @@
 # would be nice if each returned a dict mapping top objects to 3D objects.
 
 import bpy
+import mathutils
 
 def drawTopology(topology):
 
