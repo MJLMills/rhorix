@@ -7,12 +7,12 @@ if "bpy" in locals():
     import imp
 #    imp.reload(Mapping)
 #    imp.reload(Materials)
-#    imp.reload(ParseTopology)
+    imp.reload(ParseTopology)
 #    imp.reload(Resources)
     imp.reload(TopologyClasses)
 #    imp.reload(World)
 else:
-    from . import TopologyClasses
+    from . import TopologyClasses, ParseTopology
 
 import bpy
 
