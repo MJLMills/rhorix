@@ -50,6 +50,7 @@ def drawEnvelopes(envelopes):
     for envelope in envelopes:
         if (not envelope.triangulation):
             #draw point cloud
+            print("fix me")
         else:
             drawMesh(triangulation)
 
@@ -58,6 +59,7 @@ def drawAtomicSurfaces(atomic_surfaces):
         for interatomic_surface in atomic_surface.interatomic_surfaces:
             if (not interatomic_surface.triangulation):
                 # draw points
+                print("fix me")
             else:
                 drawMesh(triangulation)
 
@@ -95,10 +97,10 @@ def drawGradientPath(gradient_path,material,bevel):
     curveData.dimesions - '3D'
 
     objectData = bpy.data.objects.new('ObjCurve',curveData)
-       objectData.location = (0,0,0)
-       objectData.data.materials.append(material)
-       objectData.data.bevel_object = bevel
-       bpy.context.scene.objects.link(objectData)
+    objectData.location = (0,0,0)
+    objectData.data.materials.append(material)
+    objectData.data.bevel_object = bevel
+    bpy.context.scene.objects.link(objectData)
 
     polyLine = curveData.splines.new('POLY')
     polyLine.points.add(len(cList)-1)
