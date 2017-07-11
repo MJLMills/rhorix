@@ -49,7 +49,7 @@ def register():
 # Must undo actions taken by register function in reverse order
 def unregister():
     bpy.types.INFO_MT_file_import.remove(menu_function)
-    bpy.utiles.unregister_class(RhorixControlPanel)
+    bpy.utils.unregister_class(RhorixControlPanel)
     bpy.utils.unregister_class(ImportTopology)
 
 # Classes subclassing the Superclass bpy.types.Operator
