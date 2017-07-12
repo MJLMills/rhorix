@@ -48,6 +48,7 @@ def parseTopology(filepath):
     return TopologyClasses.Topology(name,nuclei,critical_points,gradient_vector_field)
 
 def parseGradientVectorField(GradientVectorFieldElement):
+
     molecular_graph = parseMolecularGraph(GradientVectorFieldElement.find('MolecularGraph'))
 
     atomic_basins = []
@@ -72,7 +73,7 @@ def parseGradientVectorField(GradientVectorFieldElement):
 
     cages = []
     for cage in GradientVectorFieldElement.findall('Cage'):
-        cages.append(parseCage(cage))
+       cages.append(parseCage(cage))
 
     return TopologyClasses.GradientVectorField(molecular_graph,atomic_basins,envelopes,atomic_surfaces,ring_surfaces,rings,cages)
 
