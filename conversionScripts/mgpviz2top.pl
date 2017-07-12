@@ -33,10 +33,12 @@ $cpIndices,
 $ranks,
 $signatures,
 $cpCoordinates,
-$scalarProperties) = parseMgpviz($mgpvizContents,$systemName);
+$scalarProperties,
+$ails,
+$indices,
+$props) = parseMgpviz($mgpvizContents,$systemName);
 
 # Write the data to the XML Topology file
-
 writeTopologyXML($dtdPath,
                  $systemName,
                  $elements,
@@ -46,5 +48,8 @@ writeTopologyXML($dtdPath,
                  $ranks,
                  $signatures,
                  $cpCoordinates,
-                 $scalarProperties);
+                 $scalarProperties,
+                 $ails,
+                 $indices,
+                 $props);
 

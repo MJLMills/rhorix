@@ -7,13 +7,12 @@ use Utilities qw(readFile);
 
 ### Module Settings ###
 
-our @ISA = qw(Exporter);
-our @EXPORT = ();
+our @ISA       = qw(Exporter);
+our @EXPORT    = ();
 our @EXPORT_OK = qw(parseMgpviz);
-our $VERSION = 1.0;
+our $VERSION   = 1.0;
 
 ### Subroutines ###
-
 
 sub parseMgpviz {
 
@@ -25,7 +24,9 @@ sub parseMgpviz {
 
   # then parse the gradient vector field from the file
   # Read the gradient paths associated with CPs
-#  ($paths,$index_a,$index_b) = parseGradientPathsFromViz($_[0]);
+  #($paths,$index_a,$index_b) = parseGradientPathsFromViz($_[0]);
+
+  ($ails, $indices, $props) = parseMolecularGraphFromViz($_[0]);
 
   ($IASs,$envelopes) = parseRelatedIasvizFiles($elements,$nuclearIndices,$_[1]);
 
@@ -36,7 +37,10 @@ sub parseMgpviz {
          $ranks,
          $signatures,
          $cpCoordinates,
-         $scalarProperties;
+         $scalarProperties,
+         $ails,
+         $indices,
+         $props;
 
 }
 
@@ -109,6 +113,96 @@ sub parseCPsFromViz {
 
 }
 
+sub parseMolecularGraphFromViz {
+
+  @fileContents = @{$_[0]};
+
+  my @ailList;  # list of pairs of gradient paths, each of which is a list of references to 3-arrays of Cartesians
+  my @props; # for each AIL, 2 lists of hashes, each of which maps the string 'rho' to the electron density at that point
+  my @cps;   # for each AIL, there are 2 lists of 2 integer critical point indices
+
+  $storeAILs = 0;
+  for ($line=0; $line<@fileContents; $line++) {
+    
+    if ($fileContents[$line] =~ m/CP\#\s+(\d+)/) {
+      $cpIndex = $1;
+      if ($fileContents[$line+1] =~ m/Type\s+\=\s+\(3,-1\)\s+BCP\s+(\w+\d+)\s+(\w+\d+)/) {
+        $storeAILs = 1;
+        @nuclei = ($1,$2);
+        $fileContents[$line+1] =~ m/Type\s+\=\s+\(3,-1\)\s+BCP\s+[a-zA-Z]+(\d+)\s+[a-zA-Z]+(\d+)/;
+        print "$fileContents[$line+1]\t$1\t$2\n";
+        my @a = ($cpIndex,$1); my @b = ($cpIndex,$2);
+        @cpIndices = (\@a,\@b);
+      } else {
+        $storeAILs = 0;
+      }
+
+    } elsif ($fileContents[$line] =~ m/(\d+)\s+sample points along path from BCP to atom\s+(\w+\d+)/) {
+
+      $nPoints = $1;
+      $atom    = $2;
+
+      @slice = @fileContents[$line+1 .. $line+$nPoints];
+
+      if ($atom eq $nuclei[0]) {
+        ($ail_a, $map_a) = parseGradientPath(\@slice);
+      } elsif ($atom eq $nuclei[1]) {
+        ($ail_b, $map_b) = parseGradientPath(\@slice);
+      }
+
+    } elsif ($fileContents[$line] =~ m/^$/ && $storeAILs == 1) {
+
+      # these are the point objects
+      my @position_vectors   = ($ail_a, $ail_b); # 2 lists of position vectors
+      my @property_maps      = ($map_a, $map_b); # 2 lists of hashes
+
+      push(@ails,\@position_vectors);
+      push(@props,\@property_maps);
+      my @indices = @cpIndices;
+      push(@cps,\@indices);
+
+    } elsif ($fileContents[$line] =~ m/Number\s+of\s+NACPs/) {
+        last;
+    }
+
+  }
+
+# print out everything
+#  for ($ail=0; $ail<@ails; $ail++) {
+#    print "AIL $ail\n";
+#    print "$ails[$ail]\t$props[$ail]\t$cps[$ail]\n";
+#    print "Critical Point Indices\n";
+#    foreach($cps[$ail]) {
+#      foreach(@{$_}) {
+#        print "@{$_}\n";
+#      }
+#    }
+#    print "Cartesian Coordinates\n";
+#    foreach($ails[$ail]) { # 24 of these
+#      foreach(@{$_}) {     # iterate over both gradient paths
+#        foreach(@{$_}) {
+#          print "@{$_}\n";
+#        } print "\n";
+#      }
+#    }
+#    print "Property Hashmaps\n";
+#    foreach($props[$ail]) { # each is an array ref
+#      foreach (@{$_}) { # 2 array references
+#        foreach(@{$_}) {
+#          print "$_\n"; # hash reference
+#          for $property (keys %{$_}) {
+#            print "$property ${$_}{$property}\n";
+#          }
+#
+#        } print "\n";
+#      }
+#    }
+#  }
+
+  return \@ails, \@cps, \@props;
+
+}
+
 sub parseGradientPathsFromViz {
 
   # BCPs:
@@ -141,7 +235,8 @@ sub parseGradientPathsFromViz {
       # The nuclear index can be used to get the index of the NACP coinciding with it
 
       $nPoints = $1;
-      $points = parseGradientPath(\@fileContents[$line+1..$line+1+$nPoints]);
+      @slice = @fileContents[$line+1 .. $line+$nPoints];
+      $points = parseGradientPath(\@slice);
       push(@paths,$points);
       push(@indices_a,$cpIndex);
       push(@indices_b,$2);
@@ -149,9 +244,9 @@ sub parseGradientPathsFromViz {
     } elsif ($fileContents[$line] =~ m/(\d+)\s+sample points along IAS\s+[+-]EV[12]\s+path from BCP/) {
 
       # the BCP is known from context, other CP is Inf
-
       $nPoints = $1;
-      $points = parseGradientPath(\@fileContents[$line+1..$line+1+$nPoints]);
+      @slice = @fileContents[$line+1..$line+$nPoints];
+      $points = parseGradientPath(\@slice);
       push(@paths,$points);
       push(@indices_a,$cpIndex);
       push(@indices_b,0);
@@ -163,7 +258,8 @@ sub parseGradientPathsFromViz {
       # the RCP is known from context - BCP can be inferred from the two nuclei
 
       $nPoints    = $1;
-      $points = parseGradientPath(\@fileContents[$line+1..$line+1+$nPoints]);
+      @slice = @fileContents[$line+1..$line+$nPoints];
+      $points = parseGradientPath(\@slice);
       push(@paths,$points);
       push(@indices_a,$cpIndex);
 
@@ -172,7 +268,8 @@ sub parseGradientPathsFromViz {
       # the RCP is known from context, other CP is Inf
 
       $nPoints = $1;
-      $points = parseGradientPath(\@fileContents[$line+1..$line+1+$nPoints]);
+      @slice = @fileContents[$line+1..$line+$nPoints];
+      $points = parseGradientPath(\@slice);
       push(@paths,$points);
       push(@indices_a,$cpIndex);
       push(@indices_b,0);
@@ -188,17 +285,22 @@ sub parseGradientPathsFromViz {
 sub parseGradientPath {
 
   my @points = ();
+  my @props  = ();
+
   foreach(@{$_[0]}) {
 
-    if ($fileContents[$point] =~ m/\s+(-?\d+\.\d+E[+-]\d+)\s+(-?\d+\.\d+E[+-]\d+)\s+(-?\d+\.\d+E[+-]\d+)\s+(-?\d+\.\d+E[+-]\d+)/) {
-      my @values = ($1,$2,$3,$4);
-      push(@points,\@values);
+    if ($_ =~ m/\s+(-?\d+\.\d+E[+-]\d+)\s+(-?\d+\.\d+E[+-]\d+)\s+(-?\d+\.\d+E[+-]\d+)\s+(-?\d+\.\d+E[+-]\d+)/) {
+      my @coords = ($1,$2,$3);
+      push(@points,\@coords);
+
+      my %map; $map{'rho'} = $4;
+      push(@props,\%map);
     } else {
-      die "Malformed line: $fileContents[$point]\n";
+      die "Malformed line: $_\n";
     }
 
   }
-  return \@points
+  return \@points, \@props;
 
 }
 

@@ -25,12 +25,51 @@ sub writeTopologyXML {
   writePCData("SystemName",$_[1]);
   writeNuclei($_[2],$_[3],$_[4]);
   writeCriticalPoints($_[5],$_[6],$_[7],$_[8],$_[9]);
-  #writeGradientVectorField(); WHICH SHOULD INCLUDE THE BELOW ROUTINES
+  writeGradientVectorField($_[10],$_[11],$_[12]);
 
   #writeGradientPaths;
   #writeSurfaces;
 
   closeTag("Topology");
+
+}
+
+sub writeGradientVectorField {
+
+  openTag("GradientVectorField");
+  writeMolecularGraph($_[0],$_[1],$_[2]);
+  closeTag("GradientVectorField");
+
+}
+
+# writeMolecularGraph - Write a MolecularGraph XML element (list of AILS)
+# Arguments: $_[0] - 
+sub writeMolecularGraph {
+
+  @ails       = @{$_[0]};
+  @indices    = @{$_[1]};
+  @properties = @{$_[2]};
+
+  openTag("MolecularGraph");
+
+    foreach(@ails) {
+      writeAtomicInteractionLine($_);
+    }
+
+  closeTag("MolecularGraph");
+
+}
+
+# writeAtomicInteractionLine - Writen an AtomicInteractionLine XML element
+sub writeAtomicInteractionLine {
+
+  openTag("AtomicInteractionLine");
+
+    foreach (@{$_[0]}) {
+      writeGradientPath(@{$_[1]}[0],@{$_[1]}[1],);
+    }
+
+  closeTag("AtomicInteractionLine");
 
 }
 
@@ -326,27 +365,6 @@ sub writeAtomicBasin {
       writeGradientPath($_);
     }
   closeTag("AtomicBasin");
-
-}
-
-# writeAtomicInteractionLine - Writen an AtomicInteractionLine XML element
-# Arguments: $_[0] - Reference to an array of 3-arrays of reals (Cartesians on GP 1)
-#            $_[1] - Reference to an array of 3-arrays of reals (Cartesians on GP 2)
-sub writeAtomicInteractionLine {
-
-  openTag("AtomicInteractionLine");
-    writeGradientPath($_[0]);
-    writeGradientPath($_[1]);
-  closeTag("AtomicInteractionLine");
-
-}
-
-# writeMolecularGraph - Write a MolecularGraph XML element (list of AILS)
-# Arguments: $_[0] - 
-sub writeMolecularGraph {
-
-  openTag("MolecularGraph");
-  closeTag("MolecularGraph");
 
 }
 
