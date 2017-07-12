@@ -130,7 +130,6 @@ sub parseMolecularGraphFromViz {
         $storeAILs = 1;
         @nuclei = ($1,$2);
         $fileContents[$line+1] =~ m/Type\s+\=\s+\(3,-1\)\s+BCP\s+[a-zA-Z]+(\d+)\s+[a-zA-Z]+(\d+)/;
-        print "$fileContents[$line+1]\t$1\t$2\n";
         my @a = ($cpIndex,$1); my @b = ($cpIndex,$2);
         @cpIndices = (\@a,\@b);
       } else {

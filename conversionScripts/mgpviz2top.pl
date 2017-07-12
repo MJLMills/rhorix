@@ -9,7 +9,7 @@ use ParseViz      qw(parseMgpviz);
 use WriteTopology qw(writeTopologyXML);
 
 # This could be an argument
-$dtdPath = "/Users/mjmills/RhoRix/RhoRix/Topology.dtd";
+$dtdPath = "/Users/mjmills/Downloads/blender-2.78c-OSX_10.6-x86_64/blender.app/Contents/Resources/2.78/scripts/addons/rhorix/Topology.dtd";
 
 # The single (mandatory) command line argument is the name of the file to convert.
 my $mgpvizFile = &checkArgs(\@ARGV,"mgpviz");
