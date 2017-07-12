@@ -33,7 +33,7 @@
 <!ELEMENT GradientPath (cp_index,cp_index,Point*)>
 
 <!-- ###### The root tag is the topology ###### -->
-<!ELEMENT Topology (SystemName,SourceInformation,Nuclei,CriticalPoint*,GradientVectorField?)>
+<!ELEMENT Topology (SystemName,SourceInformation?,Nuclei,CriticalPoint*,GradientVectorField?)>
 
   <!-- While not inherent, it is convenient to give the system a summarizing name. -->
   <!ELEMENT SystemName (#PCDATA)>
