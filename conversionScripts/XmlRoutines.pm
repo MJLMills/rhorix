@@ -2,6 +2,8 @@
 # Dr. Matthew J L Mills - Rhorix v1.0 - June 2017
 # Subroutines for tasks related to XML files in general.
 
+use XML::LibXML;
+
 package XmlRoutines;
 require Exporter;
 
@@ -9,7 +11,7 @@ require Exporter;
 
 our @ISA = qw(Exporter);
 our @EXPORT = ();
-our @EXPORT_OK = qw(writePCData openTag closeTag writeXMLHeader);
+our @EXPORT_OK = qw(writePCData openTag closeTag writeXMLHeader checkValidity);
 our $VERSION = 1.0;
 
 ### Subroutines ###
@@ -50,3 +52,17 @@ sub writeXMLHeader {
 
 }
 
+sub checkValidity {
+
+  my $xmlFile = $_[0]; print "Received $xmlFile\n";
+
+  my $parser = XML::LibXML->new(validation => 1,);
+
+  my $doc = eval { $parser->parse_file($xmlFile) };
+  if (! $doc) {
+    return 0;
+  } else {
+    return 1;
+  }
+
+}
