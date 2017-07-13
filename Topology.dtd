@@ -39,7 +39,7 @@
   <!ELEMENT SystemName (#PCDATA)>
 
   <!-- For the sake of reproducibility, list the QM program, level of theory and analysis code -->
-  <!ELEMENT SourceInformation (QuantumSoftware?,QuantumMethod?,BasisSet?,AnalysisSoftware?)>
+  <!ELEMENT SourceInformation (quantum_software,quantum_method,basis_set,analysis_software)>
 
     <!-- The electron density is computed under a level of theory - combination of a method and basis set -->
     <!-- using a quantum chemistry tool -->
