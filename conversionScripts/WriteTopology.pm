@@ -18,21 +18,22 @@ our $VERSION = 1.0;
 # writeTopologyXML - Write a Topology XML file
 # Arguments: $_[0] - String with path to DTD file
 #            $_[1] - Name of the chemical system
+#            $_[2] - Reference to array of source information data
 #            Nuclei Data
-#            $_[2] - Reference to array of String nuclear elements
-#            $_[3] - Reference to array of Integer nuclear indices
-#            $_[4] - Reference to array of references to 3-arrays of Reals (Nuclear Cartesian coordinates)
+#            $_[3] - Reference to array of String nuclear elements
+#            $_[4] - Reference to array of Integer nuclear indices
+#            $_[5] - Reference to array of references to 3-arrays of Reals (Nuclear Cartesian coordinates)
 #            Critical Point Data
-#            $_[5] - 
 #            $_[6] - 
 #            $_[7] - 
 #            $_[8] - 
 #            $_[9] - 
+#            $_[10] - 
 #            GradientVectorFieldData
 #            Molecular Graph Data
-#            $_[10]
 #            $_[11]
 #            $_[12]
+#            $_[13]
 #            AtomicSurfaceData
 #            EnvelopeData
 #            AtomicBasinData
@@ -45,10 +46,10 @@ sub writeTopologyXML {
 
   openTag("Topology");
   writePCData("SystemName",$_[1]);
-  #writeSourceInformation();
-  writeNuclei($_[2],$_[3],$_[4]);
-  writeCriticalPoints($_[5],$_[6],$_[7],$_[8],$_[9]);
-  writeGradientVectorField($_[10],$_[11],$_[12]);
+  writeSourceInformation($_[2]);
+  writeNuclei($_[3],$_[4],$_[5]);
+  writeCriticalPoints($_[6],$_[7],$_[8],$_[9],$_[10]);
+  writeGradientVectorField($_[11],$_[12],$_[13]);
 
   closeTag("Topology");
 
@@ -61,11 +62,13 @@ sub writeTopologyXML {
 #            $_[3] - name of QCT software used for topology calculation
 sub writeSourceInformation {
 
+  @info = @{$_[0]};
+
   openTag("SourceInformation");
-    writePCData("quantum_software" ,$_[0]);
-    writePCData("quantum_method"   ,$_[1]);
-    writePCData("basis_set"        ,$_[2]);
-    writePCData("analysis_software",$_[3]);
+    writePCData("quantum_software" ,$info[0]);
+    writePCData("quantum_method"   ,$info[1]);
+    writePCData("basis_set"        ,$info[2]);
+    writePCData("analysis_software",$info[3]);
   closeTag("SourceInformation");
 
 }

@@ -16,6 +16,7 @@ our $VERSION   = 1.0;
 
 sub parseMgpviz {
 
+  $sourceInformation = parseSourceInformationFromViz($_[0]);
   # First read the data about the nuclei - elements, unique indices and Cartesian coordinates of each nucleus
   ($elements,$nuclearIndices,$nuclearCoordinates) = parseNucleiFromViz($_[0]);
 
@@ -31,6 +32,7 @@ sub parseMgpviz {
   ($IASs,$envelopes) = parseRelatedIasvizFiles($elements,$nuclearIndices,$_[1]);
 
   return $elements,
+         $sourceInformation,
          $nuclearIndices,
          $nuclearCoordinates,
          $cpIndices,
@@ -41,6 +43,20 @@ sub parseMgpviz {
          $ails,
          $indices,
          $props;
+
+}
+
+sub parseSourceInformationFromViz {
+
+  foreach(@{$_[0]}) {
+    if ($_ =~ m/(AIMExt\s+\(.*\))/) {
+      $analysis_software = $1;
+      last;
+    }
+  }
+
+  my @source_information = ("unknown","unknown","unknown","$analysis_software");
+  return \@source_information;
 
 }
 

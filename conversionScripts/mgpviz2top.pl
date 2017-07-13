@@ -27,6 +27,7 @@ $systemName = stripExt($mgpvizFile,"mgpviz");
 # This subroutine also checks for and parses the corresponding iasviz files
 
 ($elements,
+$sourceInformation,
 $nuclearIndices,
 $nuclearCoordinates,
 $cpIndices,
@@ -41,6 +42,7 @@ $props) = parseMgpviz($mgpvizContents,$systemName);
 # Write the data to the XML Topology file
 writeTopologyXML($dtdPath,
                  $systemName,
+                 $sourceInformation,
                  $elements,
                  $nuclearIndices,
                  $nuclearCoordinates,
