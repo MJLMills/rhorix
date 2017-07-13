@@ -45,6 +45,14 @@ sub parseMgpviz {
 
 }
 
+sub determineRings {
+  print "to be implemented\n";
+}
+
+sub determineCages {
+  print "to be implemented\n";
+}
+
 sub parseRingSurfacesFromMgpviz {
 
   @fileContents = @{$_[0]};
