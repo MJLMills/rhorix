@@ -67,59 +67,6 @@ sub writeGradientVectorField {
 
 }
 
-sub writeRings {
-
-}
-
-sub writeRing {
-  openTag("Ring");
-  closeTag("Ring");
-}
-
-sub writeCages {
-
-}
-
-sub writeCage {
-  openTag("Cage");
-  closeTag("Cage");
-}
-
-sub writeRingSurfaces {
-
-}
-
-sub writeRingSurface {
-  openTag("RingSurface");
-  closeTag("RingSurface");
-}
-
-sub writeAtomicBasins {
-
-}
-
-sub writeAtomicBasin {
-  openTag("AtomicBasin");
-  closeTag("AtomicBasin");
-}
-
-sub writeAtomicSurfaces {
-
-}
-
-sub writeAtomicSurface {
-  openTag("AtomicSurface");
-  closeTag("AtomicSurface");
-}
-
-sub writeEnvelopes {
-
-}
-
-sub writeEnvelope {
-  openTag("Envelope");
-  closeTag("Envelope");
-}
 # writeMolecularGraph - Write a MolecularGraph XML element (list of AILS)
 # Arguments: $_[0] - 
 sub writeMolecularGraph {
