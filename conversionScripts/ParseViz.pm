@@ -19,15 +19,13 @@ sub parseMgpviz {
   $sourceInformation = parseSourceInformationFromViz($_[0]);
   # First read the data about the nuclei - elements, unique indices and Cartesian coordinates of each nucleus
   ($elements,$nuclearIndices,$nuclearCoordinates) = parseNucleiFromViz($_[0]);
-
   # With the nuclei known, read the critical point data (index, rank, signature, position vector and scalar properties at each CP)
   ($cpIndices,$ranks,$signatures,$cpCoordinates,$scalarProperties) = parseCPsFromViz($_[0]);
-
   # then parse the gradient vector field from the file
   # Read the gradient paths associated with CPs
   #($paths,$index_a,$index_b) = parseGradientPathsFromViz($_[0]);
-
   ($ails, $indices, $props) = parseMolecularGraphFromViz($_[0]);
+#  parseSurfacesFromMgpviz();
 
   ($IASs,$envelopes) = parseRelatedIasvizFiles($elements,$nuclearIndices,$_[1]);
 
@@ -43,6 +41,31 @@ sub parseMgpviz {
          $ails,
          $indices,
          $props;
+
+}
+
+# some GPs of the interatomic surfaces may be present in the mgpviz file in BCP records
+# parse the 4 GPs from each BCP and use each quartet to make an IAS
+sub parseSurfacesFromMgpviz {
+
+  @fileContents = @{$_[0]};
+
+  my @ail_coords;
+  my @ail_props;
+  my @ail_indices;
+
+  $parseSwitch = 0;
+  for($line=0; $line<@fileContents; $line++) {
+    if ($fileContents[$line] =~ m/Type\s+=\s+\(3,-1\)\s+BCP/) {
+      $parseSwitch = 1;
+    } elsif ($fileContents[$line] =~ m/^$/ && $parseSwitch == 1) {
+      $parseSwitch = 0;
+    } elsif ($fileContents[$line] =~ m/(\d+)\s+sample points along IAS\s+[+-]EV[12]\s+path from BCP/ && $parseSwitch == 1) {
+      # parse the line and push to AIL coords, indices and props
+    } elsif ($fileContents[$line] =~ m/CP\#\s+(\d+)\s+Coords\s+=/) {
+      $cpIndex = $1;
+    }
+  }
 
 }
 
