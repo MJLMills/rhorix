@@ -23,6 +23,7 @@ sub writeTopologyXML {
 
   openTag("Topology");
   writePCData("SystemName",$_[1]);
+  #writeSourceInformation
   writeNuclei($_[2],$_[3],$_[4]);
   writeCriticalPoints($_[5],$_[6],$_[7],$_[8],$_[9]);
   writeGradientVectorField($_[10],$_[11],$_[12]);

@@ -52,6 +52,8 @@ sub writeXMLHeader {
 
 }
 
+# CheckValidity - Use LibXML module to check validity of XML file
+# Arguments: $_[0] - XML file name
 sub checkValidity {
 
   my $xmlFile = $_[0]; print "Received $xmlFile\n";
