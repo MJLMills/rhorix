@@ -23,7 +23,7 @@ sub writeTopologyXML {
 
   openTag("Topology");
   writePCData("SystemName",$_[1]);
-  #writeSourceInformation
+  #writeSourceInformation();
   writeNuclei($_[2],$_[3],$_[4]);
   writeCriticalPoints($_[5],$_[6],$_[7],$_[8],$_[9]);
   writeGradientVectorField($_[10],$_[11],$_[12]);
@@ -32,14 +32,94 @@ sub writeTopologyXML {
 
 }
 
+# writeSourceInformation - Write a SourceInformation XML element (4 strings)
+# Arguments: $_[0] - name of QM code used for wavefunction
+#            $_[1] - name of QM method used for wavefunction
+#            $_[2] - name of basis set in which wavefunction is expanded
+#            $_[3] - name of QCT software used for topology calculation
+sub writeSourceInformation {
+
+  openTag("SourceInformation");
+    writePCData("quantum_software" ,$_[0]);
+    writePCData("quantum_method"   ,$_[1]);
+    writePCData("basis_set"        ,$_[2]);
+    writePCData("analysis_software",$_[3]);
+  closeTag("SourceInformation");
+
+}
+
+# writeGradientVectorField - Write a GradientVectorField XML element
+# Arguments: $_[0] - AILs of the Molecular Graph
+#            $_[1] - Indices of CPs of AILs of the Molecular Graph
+#            $_[2] - Properties of Points of AILs of the Molecular Graph
 sub writeGradientVectorField {
 
   openTag("GradientVectorField");
     writeMolecularGraph($_[0],$_[1],$_[2]);
   closeTag("GradientVectorField");
 
+  #writeRings()
+  #writeCages()
+  #writeRingSurfaces()
+  #writeAtomicBasins()
+  #writeAtomicSurfaces()
+  #writeEnvelopes()
+
 }
 
+sub writeRings {
+
+}
+
+sub writeRing {
+  openTag("Ring");
+  closeTag("Ring");
+}
+
+sub writeCages {
+
+}
+
+sub writeCage {
+  openTag("Cage");
+  closeTag("Cage");
+}
+
+sub writeRingSurfaces {
+
+}
+
+sub writeRingSurface {
+  openTag("RingSurface");
+  closeTag("RingSurface");
+}
+
+sub writeAtomicBasins {
+
+}
+
+sub writeAtomicBasin {
+  openTag("AtomicBasin");
+  closeTag("AtomicBasin");
+}
+
+sub writeAtomicSurfaces {
+
+}
+
+sub writeAtomicSurface {
+  openTag("AtomicSurface");
+  closeTag("AtomicSurface");
+}
+
+sub writeEnvelopes {
+
+}
+
+sub writeEnvelope {
+  openTag("Envelope");
+  closeTag("Envelope");
+}
 # writeMolecularGraph - Write a MolecularGraph XML element (list of AILS)
 # Arguments: $_[0] - 
 sub writeMolecularGraph {
