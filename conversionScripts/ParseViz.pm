@@ -318,6 +318,8 @@ sub parseRelatedIasvizFiles {
       $envelope = parseIsodensitySurfaceIntersections($iasvizContents);
       push(@envelopes,$envelope);
 
+    } else {
+      print STDERR "Warning\: No iasviz file found for $element$indices[$i]\n";
     }
 
   }
