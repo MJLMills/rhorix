@@ -61,7 +61,7 @@ sub parseRingSurfacesFromMgpviz {
 
   $parseSwitch = 0;
   for($line=0; $line<@fileContents; $line++) {
-    if ($fileContents[] =~ m/Type\s+\=\s+\(3,+1\)\s+RCP/) {
+    if ($fileContents[$line] =~ m/Type\s+\=\s+\(3,+1\)\s+RCP/) {
       $parseSwitch = 1;
     } elsif ($fileContents[$line] =~ m/^$/ && $parseSwitch == 1) {
       $parseSwitch = 0;
