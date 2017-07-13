@@ -27,6 +27,8 @@ sub parseMgpviz {
   ($ails, $indices, $props) = parseMolecularGraphFromViz($_[0]);
 #  parseSurfacesFromMgpviz();
 #  parseRingSurfacesFromMgpviz();
+#  determineRings();
+#  determineCages();
 
   ($IASs,$envelopes) = parseRelatedIasvizFiles($elements,$nuclearIndices,$_[1]);
 
