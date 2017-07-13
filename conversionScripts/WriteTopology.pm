@@ -16,7 +16,29 @@ our $VERSION = 1.0;
 ### Subroutines ###
 
 # writeTopologyXML - Write a Topology XML file
-# Arguments: $_[0] - 
+# Arguments: $_[0] - String with path to DTD file
+#            $_[1] - Name of the chemical system
+#            Nuclei Data
+#            $_[2] - Reference to array of String nuclear elements
+#            $_[3] - Reference to array of Integer nuclear indices
+#            $_[4] - Reference to array of references to 3-arrays of Reals (Nuclear Cartesian coordinates)
+#            Critical Point Data
+#            $_[5] - 
+#            $_[6] - 
+#            $_[7] - 
+#            $_[8] - 
+#            $_[9] - 
+#            GradientVectorFieldData
+#            Molecular Graph Data
+#            $_[10]
+#            $_[11]
+#            $_[12]
+#            AtomicSurfaceData
+#            EnvelopeData
+#            AtomicBasinData
+#            RingSurfaceData
+#            RingData
+#            CageData
 sub writeTopologyXML {
 
   writeXMLHeader("1.0","UTF-8","Topology",$_[0]);
@@ -45,162 +67,6 @@ sub writeSourceInformation {
     writePCData("basis_set"        ,$_[2]);
     writePCData("analysis_software",$_[3]);
   closeTag("SourceInformation");
-
-}
-
-# writeGradientVectorField - Write a GradientVectorField XML element
-# Arguments: $_[0] - AILs of the Molecular Graph
-#            $_[1] - Indices of CPs of AILs of the Molecular Graph
-#            $_[2] - Properties of Points of AILs of the Molecular Graph
-sub writeGradientVectorField {
-
-  openTag("GradientVectorField");
-    writeMolecularGraph($_[0],$_[1],$_[2]);
-  closeTag("GradientVectorField");
-
-  #writeRings()
-  #writeCages()
-  #writeRingSurfaces()
-  #writeAtomicBasins()
-  #writeAtomicSurfaces()
-  #writeEnvelopes()
-
-}
-
-# writeMolecularGraph - Write a MolecularGraph XML element (list of AILS)
-# Arguments: $_[0] - 
-sub writeMolecularGraph {
-
-  @ails       = @{$_[0]};
-  @cps        = @{$_[1]};
-  @props      = @{$_[2]};
-
-#  for ($ail=0; $ail<@ails; $ail++) {
-#    print "AIL $ail\n";
-#    print "$ails[$ail]\t$props[$ail]\t$cps[$ail]\n";
-#    print "Critical Point Indices\n";
-#    foreach($cps[$ail]) {
-#      foreach(@{$_}) {
-#        print "@{$_}\n";
-#      }
-#    }
-#    print "Cartesian Coordinates\n";
-#    foreach($ails[$ail]) { # 24 of these
-#      foreach(@{$_}) {     # iterate over both gradient paths
-#        foreach(@{$_}) {
-#          print "@{$_}\n";
-#        } print "\n";
-#      }
-#    }
-#    print "Property Hashmaps\n";
-#    foreach($props[$ail]) { # each is an array ref
-#      foreach (@{$_}) { # 2 array references
-#        foreach(@{$_}) {
-#          print "$_\n"; # hash reference
-#          for $property (keys %{$_}) {
-#            print "$property ${$_}{$property}\n";
-#          }
-#
-#        } print "\n";
-#      }
-#    }
-#  }
-
-  openTag("MolecularGraph");
-
-    for($ail=0; $ail<@ails; $ail++) {
-      writeAtomicInteractionLine($cps[$ail],$ails[$ail],$props[$ail]);
-    }
-
-  closeTag("MolecularGraph");
-
-}
-
-# writeAtomicInteractionLine - Writen an AtomicInteractionLine XML element
-sub writeAtomicInteractionLine {
-
-  openTag("AtomicInteractionLine");
-
-    @indices        = @{$_[0]};
-    @gradient_paths = @{$_[1]};
-    @properties     = @{$_[2]};
-
-    for ($gp=0; $gp<@indices; $gp++) {
-      $cp_a = @{$indices[$gp]}[0];
-      $cp_b = @{$indices[$gp]}[1];
-      writeGradientPath($cp_a,$cp_b,$gradient_paths[$gp],$properties[$gp]); # cp_a, cp_b, ref_coords, ref_maps
-    }
-
-  closeTag("AtomicInteractionLine");
-}
-
-# writeGradientPath - Write a GradientPath XML element
-# Arguments: $_[0] - Integer cp_index of first endpoint
-#            $_[1] - Integer cp_index of second endpoint
-#            $_[2] - Reference to array of references to 3-arrays of reals (Cartesian coordinates)
-#            $_[3] - Reference to map of String keys to Real values
-sub writeGradientPath {
-
-  $cp_a        = $_[0];
-  $cp_b        = $_[1];
-  @coordinates = @{$_[2]};
-  @maps        = @{$_[3]};
-
-  openTag("GradientPath");
-    writePCData("cp_index",$cp_a);
-    writePCData("cp_index",$cp_b);
-    for ($point=0; $point<@coordinates; $point++) {
-      writePoint($coordinates[$point],$maps[$point]);
-    }
-  closeTag("GradientPath");
-
-}
-
-# writePositionVector - Write a PositionVector XML element
-# Arguments: $_[0] - Reference to 3-array of reals (Cartesian coordinates)
-sub writePositionVector {
-
-  openTag("PositionVector");
-    writePCData("x",@{$_[0]}[0]);
-    writePCData("y",@{$_[0]}[1]);
-    writePCData("z",@{$_[0]}[2]);
-  closeTag("PositionVector");  
-
-}
-
-# writePair - Write a Pair XML element
-# Argument: $_[0] - String key of property
-#           $_[1] - Real value of property
-sub writePair {
-
-  openTag("Pair");
-    writePCData("key",$_[0]);
-    writePCData("value",$_[1]);
-  closeTag("Pair");
-
-}
-
-# writeMap - Write a Map XML element
-# Arguments: $_[0] - Reference to a Map from String names to Real values
-sub writeMap {
-
-  openTag("Map");
-  for $property (keys %{$_[0]}) {
-    writePair($property,${$_[0]}{$property});
-  }
-  closeTag("Map");
-
-}
-
-# writePoint - Write a Point XML element
-# Arguments: $_[0] - Reference to 3-array of reals (Cartesian coordinates)
-#            $_[1] - Reference to Map from String keys to Real values
-sub writePoint {
-
-  openTag("Point");
-    writePositionVector($_[0]);
-    writeMap($_[1]);
-  closeTag("Point");
 
 }
 
@@ -273,94 +139,40 @@ sub writeCP {
 
 }
 
-# writeGradientPaths - Write a set of GradientPath XML elements
-# Arguments: $_[0] - Reference to array with Integer indices of first endpoints
-#            $_[1] - Reference to array with Integer indices of second endpoints
-#            $_[2] - Reference to array of references to 3-arrays of Real values (Cartesian coordinates)
-#            $_[3] - Reference to array of references to Map from String keys to Real values
-sub writeGradientPaths {
+# writeGradientVectorField - Write a GradientVectorField XML element
+# Arguments: $_[0] - AILs of the Molecular Graph
+#            $_[1] - Indices of CPs of AILs of the Molecular Graph
+#            $_[2] - Properties of Points of AILs of the Molecular Graph
+sub writeGradientVectorField {
 
-  @a_indices = @{$_[0]};
-  @b_indices = @{$_[1]};
-  @coords    = @{$_[2]};
-  @maps      = @{$_[3]}; 
+  openTag("GradientVectorField");
+    writeMolecularGraph($_[0],$_[1],$_[2]);
+  closeTag("GradientVectorField");
 
-  for ($path=0; $path<@coords; $path++) {
-    writeGradientPath($a_indices[$path],$b_indices[$path],$coords[$path],$maps[$path]);
-  }
-
-}
-
-# writeIASs - Write a set of InteratomicSurface XML elements
-# Arguments: $_[0] - Reference to array of InteratomicSurfaces of the GradientVectorField
-sub writeIASs {
-
-  foreach(@{$_[0]}) {
-    writeIAS($_);
-  }
+  #writeAtomicSurfaces()
+  #writeEnvelopes()
+  #writeAtomicBasins()
+  #writeRingSurfaces()
+  #writeRings()
+  #writeCages()
 
 }
 
-# writeFace - Write a Face XML element
-# Arguments: $_[0] - Reference to a 3-vector of Integers
-sub writeFace {
+# writeMolecularGraph - Write a MolecularGraph XML element (list of AILS)
+# Arguments: $_[0] - 
+sub writeMolecularGraph {
 
-  @indices = @{$_[0]};
+  @ails       = @{$_[0]};
+  @cps        = @{$_[1]};
+  @props      = @{$_[2]};
 
-  openTag("Face");
-    writePCData("face_a",$indices[0]);
-    writePCData("face_b",$indices[1]);
-    writePCData("face_c",$indices[2]);
-  closeTag("Face");
+  openTag("MolecularGraph");
 
-}
-
-# writeEdge - Write an Edge XML element
-# Arguments: $_[0] - Reference to a 2-vector of Integers
-sub writeEdge {
-
-  @indices = @{$_[0]};
-
-  openTag("Edge");
-    writePCData("edge_a",$indices[0]);
-    writePCData("edge_b",$indices[1]);
-  cloeTag("Edge");
-
-}
-
-# writeTriangulation - Write a Triangulation XML element
-# Arguments: $_[0] - Reference to an array of 3-arrays of Reals (Cartesian coordinates)
-#            $_[1] - Reference to an array of 3-arrays of Integers (faces)
-#            $_[2] - Reference to an array of 2-arrays of Integers (edges)
-sub writeTriangulation {
-
-  openTag("Triangulation");
-    foreach(@{$_[0]}) {
-      writePositionVector($_);
+    for($ail=0; $ail<@ails; $ail++) {
+      writeAtomicInteractionLine($cps[$ail],$ails[$ail],$props[$ail]);
     }
-    foreach(@{$_[1]}) {
-      writeFace($_);
-    }
-    foreach(@{$_[2]}) {
-      writeEdge($_);
-    }
-  closeTag("Triangulation");
 
-}
-
-# writeIAS - Write an InteratomicSurface XML element
-# Arguments: $_[0] - Reference to array of GradientPaths in the IAS
-#            $_[1] - Reference to array of 3-vectors of triangulated reals
-#            $_[2] - Reference to array of 3-vectors of Integers (faces)
-#            $_[3] - Reference to array of 2-vectors of Integers (edges)
-sub writeIAS {
-
-  openTag("InteratomicSurface");
-    foreach(@{$_[0]}) {
-      writeGradientPath($_);
-    }
-    writeTriangulation($_[1],$_[2],$_[3]);
-  closeTag("InteratomicSurface");
+  closeTag("MolecularGraph");
 
 }
 
@@ -378,6 +190,32 @@ sub writeAtomicSurface {
       writeIAS($_[1],$_[2],$_[3],$_[4]);
     }
   closeTag("AtomicSurface");
+
+}
+
+# writeIASs - Write a set of InteratomicSurface XML elements
+# Arguments: $_[0] - Reference to array of InteratomicSurfaces of the GradientVectorField
+sub writeInteratomicSurfaces {
+
+  foreach(@{$_[0]}) {
+    writeIAS($_);
+  }
+
+}
+
+# writeIAS - Write an InteratomicSurface XML element
+# Arguments: $_[0] - Reference to array of GradientPaths in the IAS
+#            $_[1] - Reference to array of 3-vectors of triangulated reals
+#            $_[2] - Reference to array of 3-vectors of Integers (faces)
+#            $_[3] - Reference to array of 2-vectors of Integers (edges)
+sub writeIAS {
+
+  openTag("InteratomicSurface");
+    foreach(@{$_[0]}) {
+      writeGradientPath($_);
+    }
+    writeTriangulation($_[1],$_[2],$_[3]);
+  closeTag("InteratomicSurface");
 
 }
 
@@ -407,18 +245,6 @@ sub writeEnvelope {
 
 }
 
-# writeRingSurface - Write a RingSurface XML element
-# Arguments: $_[0] - Reference to array of reference to arrays of 3-arrays of Reals
-sub writeRingSurface {
-
-  openTag("RingSurface");
-  foreach(@{$_[0]}) {
-    writeGradientPath($_);
-  }
-  closeTag("RingSurface");
-
-}
-
 # writeAtomicBasin - Write an AtomicBasin XML element
 # Arguments: $_[0] - Reference to array of gradient paths in the basin
 sub writeAtomicBasin {
@@ -428,6 +254,18 @@ sub writeAtomicBasin {
       writeGradientPath($_);
     }
   closeTag("AtomicBasin");
+
+}
+
+# writeRingSurface - Write a RingSurface XML element
+# Arguments: $_[0] - Reference to array of reference to arrays of 3-arrays of Reals
+sub writeRingSurface {
+
+  openTag("RingSurface");
+  foreach(@{$_[0]}) {
+    writeGradientPath($_);
+  }
+  closeTag("RingSurface");
 
 }
 
@@ -444,5 +282,161 @@ sub writeCage {
 
   openTag("Cage");
   closeTag("Cage");
+
+}
+
+# writeTriangulation - Write a Triangulation XML element
+# Arguments: $_[0] - Reference to an array of 3-arrays of Reals (Cartesian coordinates)
+#            $_[1] - Reference to an array of 3-arrays of Integers (faces)
+#            $_[2] - Reference to an array of 2-arrays of Integers (edges)
+sub writeTriangulation {
+
+  openTag("Triangulation");
+    foreach(@{$_[0]}) {
+      writePositionVector($_);
+    }
+    foreach(@{$_[1]}) {
+      writeFace($_);
+    }
+    foreach(@{$_[2]}) {
+      writeEdge($_);
+    }
+  closeTag("Triangulation");
+
+}
+
+# writeEdge - Write an Edge XML element
+# Arguments: $_[0] - Reference to a 2-vector of Integers
+sub writeEdge {
+
+  @indices = @{$_[0]};
+
+  openTag("Edge");
+    writePCData("edge_a",$indices[0]);
+    writePCData("edge_b",$indices[1]);
+  cloeTag("Edge");
+
+}
+
+# writeFace - Write a Face XML element
+# Arguments: $_[0] - Reference to a 3-vector of Integers
+sub writeFace {
+
+  @indices = @{$_[0]};
+
+  openTag("Face");
+    writePCData("face_a",$indices[0]);
+    writePCData("face_b",$indices[1]);
+    writePCData("face_c",$indices[2]);
+  closeTag("Face");
+
+}
+
+# writeAtomicInteractionLine - Write an AtomicInteractionLine XML element
+sub writeAtomicInteractionLine {
+
+  openTag("AtomicInteractionLine");
+
+    @indices        = @{$_[0]};
+    @gradient_paths = @{$_[1]};
+    @properties     = @{$_[2]};
+
+    for ($gp=0; $gp<@indices; $gp++) {
+      $cp_a = @{$indices[$gp]}[0];
+      $cp_b = @{$indices[$gp]}[1];
+      writeGradientPath($cp_a,$cp_b,$gradient_paths[$gp],$properties[$gp]); # cp_a, cp_b, ref_coords, ref_maps
+    }
+
+  closeTag("AtomicInteractionLine");
+
+}
+
+# writeGradientPaths - Write a set of GradientPath XML elements
+# Arguments: $_[0] - Reference to array with Integer indices of first endpoints
+#            $_[1] - Reference to array with Integer indices of second endpoints
+#            $_[2] - Reference to array of references to 3-arrays of Real values (Cartesian coordinates)
+#            $_[3] - Reference to array of references to Map from String keys to Real values
+sub writeGradientPaths {
+
+  @a_indices = @{$_[0]};
+  @b_indices = @{$_[1]};
+  @coords    = @{$_[2]};
+  @maps      = @{$_[3]}; 
+
+  for ($path=0; $path<@coords; $path++) {
+    writeGradientPath($a_indices[$path],$b_indices[$path],$coords[$path],$maps[$path]);
+  }
+
+}
+
+# writeGradientPath - Write a GradientPath XML element
+# Arguments: $_[0] - Integer cp_index of first endpoint
+#            $_[1] - Integer cp_index of second endpoint
+#            $_[2] - Reference to array of references to 3-arrays of reals (Cartesian coordinates)
+#            $_[3] - Reference to map of String keys to Real values
+sub writeGradientPath {
+
+  $cp_a        = $_[0];
+  $cp_b        = $_[1];
+  @coordinates = @{$_[2]};
+  @maps        = @{$_[3]};
+
+  openTag("GradientPath");
+
+    writePCData("cp_index",$cp_a);
+    writePCData("cp_index",$cp_b);
+    for ($point=0; $point<@coordinates; $point++) {
+      writePoint($coordinates[$point],$maps[$point]);
+    }
+
+  closeTag("GradientPath");
+
+}
+
+# writePoint - Write a Point XML element
+# Arguments: $_[0] - Reference to 3-array of reals (Cartesian coordinates)
+#            $_[1] - Reference to Map from String keys to Real values
+sub writePoint {
+
+  openTag("Point");
+    writePositionVector($_[0]);
+    writeMap($_[1]);
+  closeTag("Point");
+
+}
+
+# writePositionVector - Write a PositionVector XML element
+# Arguments: $_[0] - Reference to 3-array of reals (Cartesian coordinates)
+sub writePositionVector {
+
+  openTag("PositionVector");
+    writePCData("x",@{$_[0]}[0]);
+    writePCData("y",@{$_[0]}[1]);
+    writePCData("z",@{$_[0]}[2]);
+  closeTag("PositionVector");  
+
+}
+
+# writeMap - Write a Map XML element
+# Arguments: $_[0] - Reference to a Map from String names to Real values
+sub writeMap {
+
+  openTag("Map");
+  for $property (keys %{$_[0]}) {
+    writePair($property,${$_[0]}{$property});
+  }
+  closeTag("Map");
+
+}
+
+# writePair - Write a Pair XML element
+# Argument: $_[0] - String key of property
+#           $_[1] - Real value of property
+sub writePair {
+
+  openTag("Pair");
+    writePCData("key",$_[0]);
+    writePCData("value",$_[1]);
+  closeTag("Pair");
 
 }
