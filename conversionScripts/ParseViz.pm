@@ -26,6 +26,7 @@ sub parseMgpviz {
   #($paths,$index_a,$index_b) = parseGradientPathsFromViz($_[0]);
   ($ails, $indices, $props) = parseMolecularGraphFromViz($_[0]);
 #  parseSurfacesFromMgpviz();
+#  parseRingSurfacesFromMgpviz();
 
   ($IASs,$envelopes) = parseRelatedIasvizFiles($elements,$nuclearIndices,$_[1]);
 
@@ -41,6 +42,25 @@ sub parseMgpviz {
          $ails,
          $indices,
          $props;
+
+}
+
+sub parseRingSurfacesFromMgpviz {
+
+  @fileContents = @{$_[0]};
+
+  $parseSwitch = 0;
+  for($line=0; $line<@fileContents; $line++) {
+    if ($fileContents[] =~ m/Type\s+\=\s+\(3,+1\)\s+RCP/) {
+      $parseSwitch = 1;
+    } elsif ($fileContents[$line] =~ m/^$/ && $parseSwitch == 1) {
+      $parseSwitch = 0;
+    } elsif ($fileContents[$line] =~ m/(\d+)\s+sample points along path from RCP to BCP between atoms\s+\w+(\d+)\s+and\s+\w+(\d+)/) {
+      # parse gradient path and add to array
+    } elsif ($fileContents[$line] =~ m/CP\#\s+(\d+)\s+Coords\s+=/) {
+      $cpIndex = $1;
+    }
+  }
 
 }
 
