@@ -13,7 +13,7 @@ from . import Resources, Materials
 def drawTopology(topology):
 
     drawCriticalPoints(topology.critical_points)
-    #drawGradientVectorField(topology.gradient_vector_field)
+    drawGradientVectorField(topology.gradient_vector_field)
 
 def drawGradientVectorField(gradient_vector_field):
     drawMolecularGraph(gradient_vector_field.molecular_graph)
@@ -43,12 +43,12 @@ def drawMolecularGraph(molecular_graph):
     bpy.context.object.name = 'AIL-BevelCircle'
     bpy.ops.transform.resize(value=(0.25,0.25,0.25))
 
-    for ail in molecular_graph:
-        drawAtomicInteractionLine(ail,material,bpy.data.objects['AIL-BevelCircle'])
+    for ail in molecular_graph.atomic_interaction_lines:
+        drawAtomicInteractionLine(ail,bpy.data.objects['AIL-BevelCircle'])
 
 def drawAtomicInteractionLine(atomic_interaction_line,bevel):
     for gradient_path in atomic_interaction_line.gradient_paths:
-        drawGradientPath(gradient_path,material,bevel)
+        drawGradientPath(gradient_path,bevel)
 
 def drawAtomicBasins(atomic_basins):
     for atomic_basin in atomic_basins:
@@ -98,16 +98,16 @@ def drawMesh(triangulation,material):
     newObj.data.materials.append(material)
     bpy.context.scene.objects.link(newObj)
 
-def drawGradientPath(gradient_path,material,bevel):
+def drawGradientPath(gradient_path,bevel):
 
     weight = 1
     cList = gradient_path.points
-    curveData = bpy.data.curves.new(type='CURVE')
-    curveData.dimesions - '3D'
+    curveData = bpy.data.curves.new(name='curve',type='CURVE')
+    curveData.dimensions = '3D'
 
     objectData = bpy.data.objects.new('ObjCurve',curveData)
     objectData.location = (0,0,0)
-    objectData.data.materials.append(material)
+    #objectData.data.materials.append(material)
     objectData.data.bevel_object = bevel
     bpy.context.scene.objects.link(objectData)
 

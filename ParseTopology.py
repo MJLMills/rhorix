@@ -162,10 +162,14 @@ def parseAtomicInteractionLine(AtomicInteractionLineElement):
     return TopologyClasses.AtomicInteractionLine(gradient_paths)
 
 def parseGradientPath(GradientPathElement):
+    # need to also parse the CPs
     points = []
     for point in GradientPathElement.findall('Point'):
         points.append(parsePoint(point));
-    return TopologyClasses.GradientPath(points)
+    indices = []
+    for index in GradientPathElement.findall('cp_index'):
+        indices.append(index.text)
+    return TopologyClasses.GradientPath(indices,points)
 
 def parseCriticalPoint(CriticalPointElement):
     rank      = int(CriticalPointElement.find('rank').text)
