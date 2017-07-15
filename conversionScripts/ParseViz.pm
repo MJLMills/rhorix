@@ -25,12 +25,12 @@ sub parseMgpviz {
   # Read the gradient paths associated with CPs
   #($paths,$index_a,$index_b) = parseGradientPathsFromViz($_[0]);
   ($ails, $indices, $props) = parseMolecularGraphFromViz($_[0]);
-#  parseSurfacesFromMgpviz();
+  parseInteratomicSurfacesFromMgpviz($_[0]);
 #  parseRingSurfacesFromMgpviz();
 #  determineRings();
 #  determineCages();
 
-  ($IASs,$envelopes) = parseRelatedIasvizFiles($elements,$nuclearIndices,$_[1]);
+  #($IASs,$envelopes) = parseRelatedIasvizFiles($elements,$nuclearIndices,$_[1]);
 
   return $elements,
          $sourceInformation,
@@ -76,13 +76,13 @@ sub parseRingSurfacesFromMgpviz {
 
 # some GPs of the interatomic surfaces may be present in the mgpviz file in BCP records
 # parse the 4 GPs from each BCP and use each quartet to make an IAS
-sub parseSurfacesFromMgpviz {
+sub parseInteratomicSurfacesFromMgpviz {
 
   @fileContents = @{$_[0]};
 
-  my @ail_coords;
-  my @ail_props;
-  my @ail_indices;
+  my @gp_coords;
+  my @gp_props;
+  my @gp_indices;
 
   $parseSwitch = 0;
   for($line=0; $line<@fileContents; $line++) {
@@ -92,10 +92,21 @@ sub parseSurfacesFromMgpviz {
       $parseSwitch = 0;
     } elsif ($fileContents[$line] =~ m/(\d+)\s+sample points along IAS\s+[+-]EV[12]\s+path from BCP/ && $parseSwitch == 1) {
       # parse the line and push to AIL coords, indices and props
+      $nPoints = $1;
+      @slice = @fileContents[$line+1 .. $line+$nPoints];
+      ($gp, $map) = parseGradientPath(\@slice);
+      print STDERR "$gp\t$map\n";
+      push(@gp_cooords,$gp);
+      push(@gp_props,$map);
+      my @inidices = ($cpIndex,0);
+      push(@gp_indices,\@indices);
+
     } elsif ($fileContents[$line] =~ m/CP\#\s+(\d+)\s+Coords\s+=/) {
       $cpIndex = $1;
     }
   }
+
+  return \@gp_coords, \@gp_props, \@gp_indices;
 
 }
 
