@@ -34,7 +34,7 @@ def drawCriticalPoints(critical_points):
         cpSphere = bpy.ops.mesh.primitive_uv_sphere_add(location=cpLocation,size=0.1*elementRadii[cp.computeType()],segments=32,ring_count=16)
         # now attach an appropriate material to the sphere
         bpy.context.scene.objects.active = bpy.context.object
-        bpy.context.object.data.materials.append(cpMaterials[cp.computeType()])
+        bpy.context.object.data.materials.append(bpy.data.materials[cp.computeType()+'-critical_point-material'])
 
 def drawMolecularGraph(molecular_graph):
 
@@ -77,10 +77,17 @@ def drawRingSurfaces(ring_surfaces):
         for gradient_path in ring_surface.gradient_paths:
             drawGradientPath(gradient_path)
 
+def drawRings(rings):
+    for ring in rings:
+        print("not implemented")
+
 def drawRing(ring):
     for atomic_interaction_line in ring.atomic_interaction_lines:
         drawAtomicInteractionLine(atomic_interaction_line)
 
+def drawCages(cages):
+    for cage in cages:
+        print("not implemented")
 def drawCage(cage):
     for ring in cage.rings:
         drawRing(ring)
