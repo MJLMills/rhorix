@@ -78,12 +78,12 @@ def drawMolecularGraph(molecular_graph,critical_points):
     bpy.ops.curve.primitive_bezier_circle_add()
     bpy.context.scene.objects.active = bpy.data.objects['BezierCircle']
     bpy.context.object.name = 'AIL-BevelCircle'
-    bpy.ops.transform.resize(value=(0.25,0.25,0.25))
+    bpy.ops.transform.resize(value=(0.2,0.2,0.2))
 
     bpy.ops.curve.primitive_bezier_circle_add()
     bpy.context.scene.objects.active = bpy.data.objects['BezierCircle']
     bpy.context.object.name = 'non_bond-BevelCircle'
-    bpy.ops.transform.resize(value=(0.1,0.1,0.1))
+    bpy.ops.transform.resize(value=(0.05,0.05,0.05))
 
     for ail in molecular_graph.atomic_interaction_lines:
         bcp = ail.getBCP(critical_points)
