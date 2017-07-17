@@ -43,6 +43,7 @@ bl_info = {
 # Function runs only when enabling the addon
 def register():
     bpy.utils.register_class(ImportTopology)
+    bpy.utils.register_class(RenderStereo)
     bpy.utils.register_class(RhorixControlPanel)
     bpy.types.INFO_MT_file_import.append(menu_function)
 
@@ -51,6 +52,7 @@ def register():
 def unregister():
     bpy.types.INFO_MT_file_import.remove(menu_function)
     bpy.utils.unregister_class(RhorixControlPanel)
+    bpy.utils.unregister_class(RenderStereo)
     bpy.utils.unregister_class(ImportTopology)
 
 # Classes subclassing the Superclass bpy.types.Operator
@@ -83,6 +85,16 @@ class ImportTopology(bpy.types.Operator):
         context.window_manager.fileselect_add(self)
         return {'RUNNING_MODAL'}
 
+class RenderStereo(bpy.types.Operator):
+
+    bl_idname = "rhorix.render_stereo"
+    bl_label = "Render Stereo"
+
+    def invoke(self,context,event):
+        print("Render Stereo Clicked")
+        return {'FINISHED'}
+
+
 # Classes subclassing the Superclass bpy.types.Panel
 
 class RhorixControlPanel(bpy.types.Panel):
@@ -96,6 +108,7 @@ class RhorixControlPanel(bpy.types.Panel):
     def draw(self,context):
         uiColumn = self.layout.column(align=True)
         uiColumn.operator("rhorix.import_topology", text="Import Topology")
+        uiColumn.operator("rhorix.render_stereo",   text="Render Stereo")
 
 # Add a menu function for the main operator by defining a new draw function
 # and adding it to an existing class (in the register function)
