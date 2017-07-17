@@ -37,7 +37,8 @@ $cpCoordinates,
 $scalarProperties,
 $ails,
 $indices,
-$props) = parseMgpviz($mgpvizContents,$systemName);
+$props,
+$interatomic_surfaces) = parseMgpviz($mgpvizContents,$systemName);
 
 # Write the data to the XML Topology file
 writeTopologyXML($dtdPath,
@@ -53,5 +54,6 @@ writeTopologyXML($dtdPath,
                  $scalarProperties,
                  $ails,
                  $indices,
-                 $props);
+                 $props,
+                 $interatomic_surfaces);
 

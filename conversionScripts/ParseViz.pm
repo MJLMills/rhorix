@@ -25,12 +25,12 @@ sub parseMgpviz {
   # Read the gradient paths associated with CPs
   #($paths,$index_a,$index_b) = parseGradientPathsFromViz($_[0]);
   ($ails, $indices, $props) = parseMolecularGraphFromViz($_[0]);
-  parseInteratomicSurfacesFromMgpviz($_[0]);
+#  parseInteratomicSurfacesFromMgpviz($_[0]);
 #  parseRingSurfacesFromMgpviz();
 #  determineRings();
 #  determineCages();
 
-  #($IASs,$envelopes) = parseRelatedIasvizFiles($elements,$nuclearIndices,$_[1]);
+  ($interatomic_surfaces,$envelopes) = parseRelatedIasvizFiles($elements,$nuclearIndices,$_[1]);
 
   return $elements,
          $sourceInformation,
@@ -43,7 +43,8 @@ sub parseMgpviz {
          $scalarProperties,
          $ails,
          $indices,
-         $props;
+         $props,
+         $interatomic_surfaces;
 
 }
 
@@ -310,7 +311,7 @@ sub parseRelatedIasvizFiles {
   @indices  = @{$_[1]};
   $sysName  = "$_[2]";
 
-  my @IASs = ();
+  my @atomic_surfaces = ();
   my @envelopes = ();
 
   $iasvizDir = "$sysName\_atomicfiles";
@@ -323,11 +324,11 @@ sub parseRelatedIasvizFiles {
       $iasvizContents = readFile($iasvizFile);
 
       $atom = parseAtomFromIasviz($iasvizContents);
-      $iasPaths = parseIAS($iasvizContents);
-      push(@IASs,$iasPaths);
+      $iasPaths = parseAtomicSurfaceFromIasviz($iasvizContents);
+      push(@atomic_surfaces,$iasPaths);
 
-      $envelope = parseIsodensitySurfaceIntersections($iasvizContents);
-      push(@envelopes,$envelope);
+      #$envelope = parseIntegrationRayIsodensitySurfaceIntersectionsFromIasviz($iasvizContents);
+      #push(@envelopes,$envelope);
 
     } else {
       print STDERR "Warning\: No iasviz file found for $element$indices[$i]\n";
@@ -353,31 +354,36 @@ sub parseAtomFromIasviz {
 
 }
 
-sub parseIAS {
+sub parseAtomicSurfaceFromIasviz {
+
+  # this will parse a complete iasviz file so must return an atomic surface
 
   my @fileContents = @{$_[0]};
 
-  my @iasPaths = ();
+  my @iasCoords = (); # list of references to arrays, each containing reference to the paths of 1 IAS
+  my @iasProps = ();
   for($line=0; $line<@fileContents; $line++) {
 
     if ($fileContents[$line] =~ m/\<IAS Path\>/) {
 
       if ($fileContents[$line+1] =~ m/(\d+)\s+(\d+)\s+(-?\d+\.\d+E[-+]\d+)/) {
+        $index   = $1;
         $nPoints = $2;
+        print STDERR "Found path with $nPoints points (atom $index)\n";
       } else {
         die "Malformed header of IAS Path\: $fileContents[$line+1]\n";
       }
 
-      my @path = ();
-      for ($point=$line+2; $point<$line+2+$nPoints; $point++) {
-        if ($fileContents[$point] =~ m/(-?\d+\.\d+E[-+]\d+)\s+(-?\d+\.\d+E[-+]\d+)\s+(-?\d+\.\d+E[-+]\d+)\s+(-?\d+\.\d+E[-+]\d+)/) {
-          my @values = ($1,$2,$3,$4);
-          push(@path,\@values);
-        } else {
-          die "Malformed line during IAS parsing\: $fileContents[$point]\n";
-        }
+      # make an array slice and pass to the parseGradientPath
+      my @slice = @fileContents[$line+2 .. $line+1+$nPoints];
+      foreach(@slice) {
+        print STDERR "$_\n";
       }
-      push(@iasPaths,\@path);
+      ($gp_coords, $gp_properties) = parseGradientPath(\@slice);
+      print STDERR "$gp_coords\t$gp_properties\n";
+      print STDERR "$iasCoords[$index]\n";
+      die;
+      push($iasCoords[$index],$gp_coords);
 
     }
   }
@@ -386,7 +392,7 @@ sub parseIAS {
 
 }
 
-sub parseIsodensitySurfaceIntersections {
+sub parseIntegrationRayIsodensitySurfaceIntersectionsFromIasviz {
 
   @vizContents = @{$_[0]};
 
