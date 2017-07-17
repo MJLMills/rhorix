@@ -15,6 +15,7 @@ else:
     from . import TopologyClasses, Mapping, ParseTopology, World, Resources, Materials
 
 import bpy
+import time
 
 # The following dict and 2 functions satisfy the requirements for contributed scripts
 # Be sure to also follow the PEP 8 Python conventions
@@ -63,10 +64,15 @@ class ImportTopology(bpy.types.Operator):
     filepath    = bpy.props.StringProperty(subtype="FILE_PATH")
 
     def execute(self,context):
+        start = time.time()
         top = ParseTopology.parseTopology(self.filepath)
-        ParseTopology.printTopology(top)
-        World.setup(top.computeCenter(),top.computeRadius(top.computeCenter()))
+        print('Parse Time ', time.time() - start)
+#        ParseTopology.printTopology(top)
+#        World.setup(top.computeCenter(),top.computeRadius(top.computeCenter()))
+        start = time.time()
         Mapping.drawTopology(top)
+        print('Mapping Time', time.time() - start)
+
 
         return {'FINISHED'}
 

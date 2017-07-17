@@ -8,6 +8,7 @@
 
 import bpy
 import mathutils
+import time
 from . import Resources, Materials
 
 def drawTopology(topology):
@@ -15,9 +16,17 @@ def drawTopology(topology):
     elementRadii = Resources.defineRadii()
     cpMaterials  = Materials.createAllMaterials('critical_point')
 
+    start = time.time()
     drawNuclei(topology.nuclei,elementRadii)
+    print('Nuclei Time ', time.time() - start)
+
+    start = time.time()
     drawCriticalPoints(topology.critical_points,elementRadii)
+    print('CP Time ', time.time() - start)
+
+    start = time.time()
     drawGradientVectorField(topology.gradient_vector_field)
+    print('GVF Time ', time.time() - start)
 
 def drawGradientVectorField(gradient_vector_field):
     drawMolecularGraph(gradient_vector_field.molecular_graph)
@@ -33,10 +42,11 @@ def drawCriticalPoints(critical_points,radii):
     for cp in critical_points:
 
         kind = cp.computeType()
-        location = mathutils.Vector(cp.position_vector)
-        radius = radii[kind]
-        material_name = kind+'-critical_point-material'
-        drawSphere(location,0.1*radius,material_name)
+        if (kind != 'nacp'):
+            location = mathutils.Vector(cp.position_vector)
+            radius = radii[kind]
+            material_name = kind+'-critical_point-material'
+            drawSphere(location,0.1*radius,material_name)
 
 def drawNuclei(nuclei,radii):
 
@@ -50,7 +60,7 @@ def drawNuclei(nuclei,radii):
 
 def drawSphere(location,size,material_name):
 
-    cpSphere = bpy.ops.mesh.primitive_uv_sphere_add(location=location,size=size,segments=32,ring_count=16)
+    cpSphere = bpy.ops.mesh.primitive_uv_sphere_add(location=location,size=size,segments=8,ring_count=4)
     bpy.context.scene.objects.active = bpy.context.object
     bpy.context.object.data.materials.append(bpy.data.materials[material_name])
 
@@ -62,6 +72,7 @@ def drawMolecularGraph(molecular_graph):
     bpy.ops.transform.resize(value=(0.25,0.25,0.25))
 
     for ail in molecular_graph.atomic_interaction_lines:
+        # check density at BCP and assign bevel appropriately
         drawAtomicInteractionLine(ail,bpy.data.objects['AIL-BevelCircle'])
 
 def drawAtomicInteractionLine(atomic_interaction_line,bevel):
