@@ -16,6 +16,7 @@ else:
 
 import bpy
 import time
+import fnmatch
 
 # The following dict and 2 functions satisfy the requirements for contributed scripts
 # Be sure to also follow the PEP 8 Python conventions
@@ -44,6 +45,8 @@ bl_info = {
 def register():
     bpy.utils.register_class(ImportTopology)
     bpy.utils.register_class(RenderStereo)
+    bpy.utils.register_class(ResizeAILs)
+    bpy.utils.register_class(ToggleRCPs)
     bpy.utils.register_class(RhorixControlPanel)
     bpy.types.INFO_MT_file_import.append(menu_function)
 
@@ -52,6 +55,8 @@ def register():
 def unregister():
     bpy.types.INFO_MT_file_import.remove(menu_function)
     bpy.utils.unregister_class(RhorixControlPanel)
+    bpy.utils.unregister_class(ToggleRCPs)
+    bpy.utils.unregister_class(ResizeAILs)
     bpy.utils.unregister_class(RenderStereo)
     bpy.utils.unregister_class(ImportTopology)
 
@@ -110,6 +115,36 @@ class RenderStereo(bpy.types.Operator):
 
         return {'FINISHED'}
 
+class ResizeAILs(bpy.types.Operator):
+
+    bl_idname = "rhorix.resize_ails"
+    bl_label = "Resize AILs"
+
+    def invoke(self,context,event):
+        for object in bpy.data.objects:
+            object.select = False
+        bpy.ops.object.select_pattern(pattern="AIL-BevelCircle")
+        return {'FINISHED'}
+
+class ToggleRCPs(bpy.types.Operator):
+
+    bl_idname = "rhorix.toggle_rcps"
+    bl_label = "Toggle RCPs"
+
+    def invoke(self,context,event):
+        for object in bpy.data.objects:
+            object.select = False
+        rcps = [obj for obj in bpy.context.scene.objects if fnmatch.fnmatchcase(obj.name, "*rcp*")]
+        for rcp in rcps:
+            if (rcp.hide == True):
+                rcp.hide = False
+                rcp.hide_render = False
+            else:
+                rcp.hide = True
+                rcp.hide_render = True
+
+        return {'FINISHED'}
+
 # Classes subclassing the Superclass bpy.types.Panel
 
 class RhorixControlPanel(bpy.types.Panel):
@@ -124,6 +159,8 @@ class RhorixControlPanel(bpy.types.Panel):
         uiColumn = self.layout.column(align=True)
         uiColumn.operator("rhorix.import_topology", text="Import Topology")
         uiColumn.operator("rhorix.render_stereo",   text="Render Stereo")
+        uiColumn.operator("rhorix.resize_ails", text="Resize AILs")
+        uiColumn.operator("rhorix.toggle_rcps", text="Toggle RCPs")
 
 # Add a menu function for the main operator by defining a new draw function
 # and adding it to an existing class (in the register function)
