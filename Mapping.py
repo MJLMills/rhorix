@@ -48,7 +48,7 @@ def drawCriticalPoints(critical_points,radii,drawNACP):
             location = mathutils.Vector(cp.position_vector)
             radius = radii[kind]
             material_name = kind+'-critical_point-material'
-            drawSphere(kind,location,0.1*radius,material_name)
+            drawSphere(kind,location,0.25*radius,material_name)
 
 def drawNuclei(nuclei,radii):
 
@@ -58,7 +58,7 @@ def drawNuclei(nuclei,radii):
         location = mathutils.Vector(nucleus.position_vector)
         radius = radii[element]
         material_name = element+'-critical_point-material'
-        drawSphere(element,location,0.1*radius,material_name)
+        drawSphere(element,location,0.25*radius,material_name)
 
 def drawSphere(name,location,size,material_name):
 

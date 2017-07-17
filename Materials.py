@@ -45,8 +45,8 @@ def createMaterials(critical_points):
     createMaterial((0.0,0.0,0.0),'SURFACE',1.0,'AIL','curve')
 
 def createGenericMaterials():
-    createMaterial((0.2,0.2,0.2),'SURFACE',1.0,'AIL',     'curve')
-    createMaterial((0.2,0.2,0.2),'SURFACE',1.0,'Bond',    'curve')
+    createMaterial((0.04,0.04,0.04),'SURFACE',1.0,'AIL',     'curve')
+    createMaterial((0.04,0.04,0.04),'SURFACE',1.0,'Bond',    'curve')
     createMaterial((0.4,0.4,0.4),'SURFACE',1.0,'Non-Bond','curve')
 
 # Produce a dict from which CP labels can be used to obtain materials
