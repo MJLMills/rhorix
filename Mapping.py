@@ -15,6 +15,7 @@ def drawTopology(topology):
 
     elementRadii = Resources.defineRadii()
     cpMaterials  = Materials.createAllMaterials('critical_point')
+    Materials.createGenericMaterials()
 
     start = time.time()
     drawNuclei(topology.nuclei,elementRadii)
@@ -72,12 +73,12 @@ def drawMolecularGraph(molecular_graph):
     bpy.ops.transform.resize(value=(0.25,0.25,0.25))
 
     for ail in molecular_graph.atomic_interaction_lines:
-        # check density at BCP and assign bevel appropriately
         drawAtomicInteractionLine(ail,bpy.data.objects['AIL-BevelCircle'])
 
 def drawAtomicInteractionLine(atomic_interaction_line,bevel):
     for gradient_path in atomic_interaction_line.gradient_paths:
-        drawGradientPath(gradient_path,bevel)
+        # check density at BCP and assign bevel appropriately
+        drawGradientPath(gradient_path,bevel,bpy.data.materials['AIL-curve-material'])
 
 def drawAtomicBasins(atomic_basins):
     for atomic_basin in atomic_basins:
@@ -134,7 +135,7 @@ def drawMesh(triangulation,material):
     newObj.data.materials.append(material)
     bpy.context.scene.objects.link(newObj)
 
-def drawGradientPath(gradient_path,bevel):
+def drawGradientPath(gradient_path,bevel,material_name):
 
     weight = 1
     cList = gradient_path.points
@@ -143,7 +144,7 @@ def drawGradientPath(gradient_path,bevel):
 
     objectData = bpy.data.objects.new('ObjCurve',curveData)
     objectData.location = (0,0,0)
-    #objectData.data.materials.append(material)
+    objectData.data.materials.append(material_name)
     objectData.data.bevel_object = bevel
     bpy.context.scene.objects.link(objectData)
 
@@ -153,5 +154,3 @@ def drawGradientPath(gradient_path,bevel):
         x,y,z = cList[num].position_vector
         polyLine.points[num].co = (x,y,z,weight)
 
-
-# need a dict that assigns materials based on element

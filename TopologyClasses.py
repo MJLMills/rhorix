@@ -101,6 +101,11 @@ class MolecularGraph():
 class AtomicInteractionLine():
     def __init__(self,gradient_paths):
         self.gradient_paths = gradient_paths
+    def getCPindices():
+        indices = set()
+        for gradient_path in self.gradient_paths:
+            for cp in gradient_path.critical_points:
+                set.add(cp)
 
 class AtomicBasin():
     def __init__(self,gradient_paths,critical_point):
