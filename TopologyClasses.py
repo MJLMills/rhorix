@@ -111,7 +111,6 @@ class AtomicInteractionLine():
         for gradient_path in self.gradient_paths:
             for index in gradient_path.cp_indices:
                 print('Index', index)
-                critical_points[index].toStdout()
                 print(critical_points[index].computeType())
                 if (critical_points[index].computeType() == 'bcp'):
                     return critical_points[index]

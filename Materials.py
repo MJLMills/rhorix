@@ -58,7 +58,7 @@ def createAllMaterials(suffix):
     elementColors = Resources.defineColors()
     # create a material for each CP type and element
     for element in elementColors:
-        materials[element] = createMaterial(elementColors[element],'WIRE',1.0,element,suffix)
+        materials[element] = createMaterial(elementColors[element],'SURFACE',1.0,element,suffix)
 
     return materials
 

@@ -30,6 +30,7 @@ def drawTopology(topology):
     print('GVF Time ', time.time() - start)
 
 def drawGradientVectorField(gradient_vector_field,critical_points):
+
     drawMolecularGraph(gradient_vector_field.molecular_graph,critical_points)
     drawAtomicBasins(gradient_vector_field.atomic_basins)
     drawEnvelopes(gradient_vector_field.envelopes)
@@ -47,7 +48,7 @@ def drawCriticalPoints(critical_points,radii,drawNACP):
             location = mathutils.Vector(cp.position_vector)
             radius = radii[kind]
             material_name = kind+'-critical_point-material'
-            drawSphere(location,0.1*radius,material_name)
+            drawSphere(kind,location,0.1*radius,material_name)
 
 def drawNuclei(nuclei,radii):
 
@@ -57,12 +58,19 @@ def drawNuclei(nuclei,radii):
         location = mathutils.Vector(nucleus.position_vector)
         radius = radii[element]
         material_name = element+'-critical_point-material'
-        drawSphere(location,0.1*radius,material_name)
+        drawSphere(element,location,0.1*radius,material_name)
 
-def drawSphere(location,size,material_name):
+def drawSphere(name,location,size,material_name):
 
     cpSphere = bpy.ops.mesh.primitive_uv_sphere_add(location=location,size=size,segments=8,ring_count=4)
+    bpy.context.object.name = name
+
+    #Create and apply the subsurface modifiers for smooth rendering
+    bpy.context.object.modifiers.new("subd", type='SUBSURF')
+    bpy.context.object.modifiers['subd'].levels=1
+    bpy.context.object.modifiers['subd'].render_levels=4
     bpy.context.scene.objects.active = bpy.context.object
+    bpy.ops.object.modifier_apply(apply_as='DATA', modifier='subd')
     bpy.context.object.data.materials.append(bpy.data.materials[material_name])
 
 def drawMolecularGraph(molecular_graph,critical_points):
@@ -78,10 +86,8 @@ def drawMolecularGraph(molecular_graph,critical_points):
     bpy.ops.transform.resize(value=(0.1,0.1,0.1))
 
     for ail in molecular_graph.atomic_interaction_lines:
-        # ail needs getBCP method
         bcp = ail.getBCP(critical_points)
-        print(bcp)
-        if (bcp.scalar_properties.get('rho') < 10.025): # make a property with a spinner to adjust it
+        if (bcp.scalar_properties.get('rho') < 0.025): # make a property with a spinner to adjust it
             drawAtomicInteractionLine(ail,bpy.data.objects['non_bond-BevelCircle'],'Non-Bond-curve-material')
         else:
             drawAtomicInteractionLine(ail,bpy.data.objects['AIL-BevelCircle'],'Bond-curve-material')
