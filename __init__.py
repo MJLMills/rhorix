@@ -46,6 +46,7 @@ def register():
     bpy.utils.register_class(ImportTopology)
     bpy.utils.register_class(RenderStereo)
     bpy.utils.register_class(ResizeAILs)
+    bpy.utils.register_class(ResizeNonbondedInteractions)
     bpy.utils.register_class(ToggleRCPs)
     bpy.utils.register_class(ToggleCCPs)
     bpy.utils.register_class(RhorixControlPanel)
@@ -58,6 +59,7 @@ def unregister():
     bpy.utils.unregister_class(RhorixControlPanel)
     bpy.utils.unregister_class(ToggleCCPs)
     bpy.utils.unregister_class(ToggleRCPs)
+    bpy.utils.unregister_class(ResizeNonbondedInteractions)
     bpy.utils.unregister_class(ResizeAILs)
     bpy.utils.unregister_class(RenderStereo)
     bpy.utils.unregister_class(ImportTopology)
@@ -128,6 +130,17 @@ class ResizeAILs(bpy.types.Operator):
         bpy.ops.object.select_pattern(pattern="AIL-BevelCircle")
         return {'FINISHED'}
 
+class ResizeNonbondedInteractions(bpy.types.Operator):
+
+    bl_idname = "rhorix.resize_nbs"
+    bl_label = "Resize NonbondedInteractions"
+
+    def invoke(self,context,event):
+        for object in bpy.data.objects:
+            object.select = False
+        bpy.ops.object.select_pattern(pattern="non_bond-BevelCircle")
+        return {'FINISHED'}
+
 class ToggleRCPs(bpy.types.Operator):
 
     bl_idname = "rhorix.toggle_rcps"
@@ -181,6 +194,7 @@ class RhorixControlPanel(bpy.types.Panel):
         uiColumn.operator("rhorix.import_topology", text="Import Topology")
         uiColumn.operator("rhorix.render_stereo",   text="Render Stereo")
         uiColumn.operator("rhorix.resize_ails", text="Resize AILs")
+        uiColumn.operator("rhorix.resize_nbs", text="Resize NBs")
         uiColumn.operator("rhorix.toggle_rcps", text="Toggle RCPs")
         uiColumn.operator("rhorix.toggle_ccps", text="Toggle CCPs")
 
