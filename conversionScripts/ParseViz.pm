@@ -137,7 +137,7 @@ sub parseNucleiFromViz {
   for($line=0;$line<@fileContents;$line++) {
     if ($fileContents[$line] =~ m/Nuclear Charges and Cartesian Coordinates\:/) {
       $parseNuclei = 1; $line += 3;
-    } elsif (($parseNuclei == 1) && ($fileContents[$line] =~ m/(\w+)(\d+)\s+\d+\.\d+\s+(-?\d+\.\d+E[+-]\d+)\s+(-?\d+\.\d+E[+-]\d+)\s+(-?\d+\.\d+E[+-]\d+)/)) {
+    } elsif (($parseNuclei == 1) && ($fileContents[$line] =~ m/([a-zA-Z]+)(\d+)\s+\d+\.\d+\s+(-?\d+\.\d+E[+-]\d+)\s+(-?\d+\.\d+E[+-]\d+)\s+(-?\d+\.\d+E[+-]\d+)/)) {
 
       push(@elements,$1);
       push(@indices,$2);

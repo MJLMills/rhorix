@@ -66,8 +66,8 @@ class Nucleus():
 class CriticalPoint(Point):
     def __init__(self,position_vector,scalar_properties,rank,signature):
         Point.__init__(self,position_vector,scalar_properties)
-        self.rank      = rank
-        self.signature = signature
+        self.rank          = rank
+        self.signature     = signature
 
     def computeType(self):
         if self.rank == 3:

@@ -12,7 +12,11 @@ from . import Resources, Materials
 
 def drawTopology(topology):
 
-    drawCriticalPoints(topology.critical_points)
+    elementRadii = Resources.defineRadii()
+    cpMaterials  = Materials.createAllMaterials('critical_point')
+
+    drawNuclei(topology.nuclei,elementRadii)
+    drawCriticalPoints(topology.critical_points,elementRadii)
     drawGradientVectorField(topology.gradient_vector_field)
 
 def drawGradientVectorField(gradient_vector_field):
@@ -24,17 +28,31 @@ def drawGradientVectorField(gradient_vector_field):
     drawRings(gradient_vector_field.rings)
     drawCages(gradient_vector_field.cages)
 
-def drawCriticalPoints(critical_points):
-
-    elementRadii = Resources.defineRadii()
-    cpMaterials  = Materials.createAllMaterials('critical_point')
+def drawCriticalPoints(critical_points,radii):
 
     for cp in critical_points:
-        cpLocation = mathutils.Vector(cp.position_vector)
-        cpSphere = bpy.ops.mesh.primitive_uv_sphere_add(location=cpLocation,size=0.1*elementRadii[cp.computeType()],segments=32,ring_count=16)
-        # now attach an appropriate material to the sphere
-        bpy.context.scene.objects.active = bpy.context.object
-        bpy.context.object.data.materials.append(bpy.data.materials[cp.computeType()+'-critical_point-material'])
+
+        kind = cp.computeType()
+        location = mathutils.Vector(cp.position_vector)
+        radius = radii[kind]
+        material_name = kind+'-critical_point-material'
+        drawSphere(location,0.1*radius,material_name)
+
+def drawNuclei(nuclei,radii):
+
+    for nucleus in nuclei:
+
+        element = nucleus.element.lower()
+        location = mathutils.Vector(nucleus.position_vector)
+        radius = radii[element]
+        material_name = element+'-critical_point-material'
+        drawSphere(location,0.1*radius,material_name)
+
+def drawSphere(location,size,material_name):
+
+    cpSphere = bpy.ops.mesh.primitive_uv_sphere_add(location=location,size=size,segments=32,ring_count=16)
+    bpy.context.scene.objects.active = bpy.context.object
+    bpy.context.object.data.materials.append(bpy.data.materials[material_name])
 
 def drawMolecularGraph(molecular_graph):
 
