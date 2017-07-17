@@ -22,15 +22,15 @@ def drawTopology(topology):
     print('Nuclei Time ', time.time() - start)
 
     start = time.time()
-    drawCriticalPoints(topology.critical_points,elementRadii)
+    drawCriticalPoints(topology.critical_points,elementRadii,0)
     print('CP Time ', time.time() - start)
 
     start = time.time()
-    drawGradientVectorField(topology.gradient_vector_field)
+    drawGradientVectorField(topology.gradient_vector_field,topology.critical_points)
     print('GVF Time ', time.time() - start)
 
-def drawGradientVectorField(gradient_vector_field):
-    drawMolecularGraph(gradient_vector_field.molecular_graph)
+def drawGradientVectorField(gradient_vector_field,critical_points):
+    drawMolecularGraph(gradient_vector_field.molecular_graph,critical_points)
     drawAtomicBasins(gradient_vector_field.atomic_basins)
     drawEnvelopes(gradient_vector_field.envelopes)
     drawAtomicSurfaces(gradient_vector_field.atomic_surfaces)
@@ -38,12 +38,12 @@ def drawGradientVectorField(gradient_vector_field):
     drawRings(gradient_vector_field.rings)
     drawCages(gradient_vector_field.cages)
 
-def drawCriticalPoints(critical_points,radii):
+def drawCriticalPoints(critical_points,radii,drawNACP):
 
     for cp in critical_points:
 
         kind = cp.computeType()
-        if (kind != 'nacp'):
+        if (kind != 'nacp' or drawNACP == 1):
             location = mathutils.Vector(cp.position_vector)
             radius = radii[kind]
             material_name = kind+'-critical_point-material'
@@ -65,20 +65,30 @@ def drawSphere(location,size,material_name):
     bpy.context.scene.objects.active = bpy.context.object
     bpy.context.object.data.materials.append(bpy.data.materials[material_name])
 
-def drawMolecularGraph(molecular_graph):
+def drawMolecularGraph(molecular_graph,critical_points):
 
     bpy.ops.curve.primitive_bezier_circle_add()
     bpy.context.scene.objects.active = bpy.data.objects['BezierCircle']
     bpy.context.object.name = 'AIL-BevelCircle'
     bpy.ops.transform.resize(value=(0.25,0.25,0.25))
 
-    for ail in molecular_graph.atomic_interaction_lines:
-        drawAtomicInteractionLine(ail,bpy.data.objects['AIL-BevelCircle'])
+    bpy.ops.curve.primitive_bezier_circle_add()
+    bpy.context.scene.objects.active = bpy.data.objects['BezierCircle']
+    bpy.context.object.name = 'non_bond-BevelCircle'
+    bpy.ops.transform.resize(value=(0.1,0.1,0.1))
 
-def drawAtomicInteractionLine(atomic_interaction_line,bevel):
+    for ail in molecular_graph.atomic_interaction_lines:
+        # ail needs getBCP method
+        bcp = ail.getBCP(critical_points)
+        print(bcp)
+        if (bcp.scalar_properties.get('rho') < 10.025): # make a property with a spinner to adjust it
+            drawAtomicInteractionLine(ail,bpy.data.objects['non_bond-BevelCircle'],'Non-Bond-curve-material')
+        else:
+            drawAtomicInteractionLine(ail,bpy.data.objects['AIL-BevelCircle'],'Bond-curve-material')
+
+def drawAtomicInteractionLine(atomic_interaction_line,bevel,material_name):
     for gradient_path in atomic_interaction_line.gradient_paths:
-        # check density at BCP and assign bevel appropriately
-        drawGradientPath(gradient_path,bevel,bpy.data.materials['AIL-curve-material'])
+        drawGradientPath(gradient_path,bevel,material_name) 
 
 def drawAtomicBasins(atomic_basins):
     for atomic_basin in atomic_basins:
@@ -144,7 +154,7 @@ def drawGradientPath(gradient_path,bevel,material_name):
 
     objectData = bpy.data.objects.new('ObjCurve',curveData)
     objectData.location = (0,0,0)
-    objectData.data.materials.append(material_name)
+    objectData.data.materials.append(bpy.data.materials[material_name])
     objectData.data.bevel_object = bevel
     bpy.context.scene.objects.link(objectData)
 

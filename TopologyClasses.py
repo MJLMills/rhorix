@@ -84,6 +84,11 @@ class CriticalPoint(Point):
         else:
             return "dgn"
 
+    def toStdout(self):
+        print("CriticalPoint")
+        print('rank = ', self.rank)
+        print('signature = ', self.signature)
+
 class GradientVectorField():
     def __init__(self,molecular_graph,atomic_basins,envelopes,atomic_surfaces,ring_surfaces,rings,cages):
         self.molecular_graph = molecular_graph
@@ -101,11 +106,15 @@ class MolecularGraph():
 class AtomicInteractionLine():
     def __init__(self,gradient_paths):
         self.gradient_paths = gradient_paths
-    def getCPindices():
-        indices = set()
+
+    def getBCP(self,critical_points):
         for gradient_path in self.gradient_paths:
-            for cp in gradient_path.critical_points:
-                set.add(cp)
+            for index in gradient_path.cp_indices:
+                print('Index', index)
+                critical_points[index].toStdout()
+                print(critical_points[index].computeType())
+                if (critical_points[index].computeType() == 'bcp'):
+                    return critical_points[index]
 
 class AtomicBasin():
     def __init__(self,gradient_paths,critical_point):
@@ -152,7 +161,7 @@ class RingSurface():
 
     def getRingCriticalPoint():
         for gradient_path in gradient_paths:
-            for cp in gradient_path.critical_points:
+            for cp in gradient_path.cp_indices:
                 if (cp.rank == 3 and cp.signature == +1):
                     return cp
 
@@ -184,7 +193,7 @@ class Face():
         self.c = c
 
 class GradientPath():
-    def __init__(self,critical_points,points):
-        self.critical_points = critical_points
+    def __init__(self,cp_indices,points):
+        self.cp_indices = cp_indices
         self.points = points
 		
