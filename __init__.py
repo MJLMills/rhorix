@@ -67,12 +67,15 @@ class ImportTopology(bpy.types.Operator):
         start = time.time()
         top = ParseTopology.parseTopology(self.filepath)
         print('Parse Time ', time.time() - start)
-#        ParseTopology.printTopology(top)
-#        World.setup(top.computeCenter(),top.computeRadius(top.computeCenter()))
         start = time.time()
         Mapping.drawTopology(top)
         print('Mapping Time', time.time() - start)
 
+        center = top.computeCenter()
+        radius = top.computeRadius(top.computeCenter())
+        print("CENTER: ", center)
+        print("RADIUS: ", radius)
+        World.setup(center,radius)
 
         return {'FINISHED'}
 

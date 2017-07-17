@@ -6,8 +6,8 @@ import math
 def setup(center,radius):
 
     # quick fix for zero radius (single CP) case
-    if radius == 0.0:
-        radius = 1.0
+    #if radius == 0.0:
+    #    radius = 1.0
 
     cam_ob = createCamera(center,radius)
     createLights(cam_ob.location,center,radius)
@@ -36,16 +36,16 @@ def createLights(cam_location,center,radius):
         bpy.ops.object.lamp_add(type='SPOT',location=cam_location)
         print(center)
         # move to the left (-ve x-direction), +ve along z and +ve along y
-        x = -center[2]*sin45
+        x = -cam_location[2]*sin45
         y = radius
-        z = center[2]*sin45
+        z = cam_location[2]*sin45
         bpy.context.active_object.location = (x, y, z)
 
 
         angle = rad90 - math.atan(abs(x)/abs(y)) 
         bpy.context.active_object.rotation_euler = mathutils.Euler((0.0,-rad45,-angle),'XYZ')
 
-        bpy.context.active_object.data.distance = center[2]
+        bpy.context.active_object.data.distance = cam_location[2]
         bpy.context.active_object.data.energy = 15
         bpy.context.active_object.data.spot_size = 1.0 # rads!
 
@@ -54,7 +54,7 @@ def createLights(cam_location,center,radius):
     def createFillLight():
 
         bpy.ops.object.lamp_add(type='SPOT',location=cam_location)
-        x = center[2]*sin45
+        x = cam_location[2]*sin45
         y = radius
         z = x
         bpy.context.active_object.location = (x, y, z)
@@ -62,7 +62,7 @@ def createLights(cam_location,center,radius):
         angle = rad90 - math.atan(abs(x)/abs(y)) 
         bpy.context.active_object.rotation_euler = mathutils.Euler((0.0,rad45,angle),'XYZ')
 
-        bpy.context.active_object.data.distance = center[2]
+        bpy.context.active_object.data.distance = cam_location[2]
         bpy.context.active_object.data.energy = 5
         bpy.context.active_object.data.spot_size = 1.0 # rads!
 
@@ -72,7 +72,7 @@ def createLights(cam_location,center,radius):
         bpy.context.active_object.location.z = -4.0*radius
         bpy.context.active_object.rotation_euler = mathutils.Euler((3.141519265359,0.0,0.0),'XYZ')
 
-        bpy.context.active_object.data.distance = center[2]
+        bpy.context.active_object.data.distance = cam_location[2]
         bpy.context.active_object.data.energy = 5
         bpy.context.active_object.data.spot_size = 1.0 # rads!
 
