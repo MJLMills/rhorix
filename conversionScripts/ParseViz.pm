@@ -23,10 +23,12 @@ sub parseMgpviz {
   ($cpIndices,$ranks,$signatures,$cpCoordinates,$scalarProperties) = parseCPsFromViz($_[0]);
   # then parse the gradient vector field from the file
   # Read the gradient paths associated with CPs
-  #($paths,$index_a,$index_b) = parseGradientPathsFromViz($_[0]);
   ($ails, $indices, $props) = parseMolecularGraphFromViz($_[0]);
+
 #  parseInteratomicSurfacesFromMgpviz($_[0]);
-#  parseRingSurfacesFromMgpviz();
+
+  ($ring_surface_gps, $ring_surface_indices, $ring_surface_props) = parseRingSurfacesFromMgpviz($_[0]);
+
 #  determineRings();
 #  determineCages();
 
@@ -44,7 +46,10 @@ sub parseMgpviz {
          $ails,
          $indices,
          $props,
-         $interatomic_surfaces;
+         $interatomic_surfaces,
+         $ring_surface_gps,
+         $ring_surface_indices,
+         $ring_surface_props;
 
 }
 
@@ -60,18 +65,60 @@ sub parseRingSurfacesFromMgpviz {
 
   @fileContents = @{$_[0]};
 
+  my @rs_gp_coords;
+  my @rs_gp_properties;
+  my @rs_gp_indices;
+
   $parseSwitch = 0;
   for($line=0; $line<@fileContents; $line++) {
-    if ($fileContents[$line] =~ m/Type\s+\=\s+\(3,+1\)\s+RCP/) {
+
+    if ($fileContents[$line] =~ m/Type\s+\=\s+\(3\,\+1\)\s+RCP/) {
+
       $parseSwitch = 1;
+      my @gp_coords;
+      my @gp_properties;
+      my @gp_indices;
+
     } elsif ($fileContents[$line] =~ m/^$/ && $parseSwitch == 1) {
+
       $parseSwitch = 0;
+      # save the ring surface and go to next one
+      push(@rs_gp_coords,    \@gp_coords);
+      push(@rs_gp_properties,\@gp_properties);
+      push(@rs_gp_indices,   \@gp_indices);
+
     } elsif ($fileContents[$line] =~ m/(\d+)\s+sample points along path from RCP to BCP between atoms\s+\w+(\d+)\s+and\s+\w+(\d+)/) {
-      # parse gradient path and add to array
+
+      $nPoints = $1;
+      @slice = @fileContents[$line+1 .. $line+$nPoints];
+
+      ($gp,$map) = parseGradientPath(\@slice);
+      my @indices = ($cpIndex,0); # todo - determine BCP index
+
+      push(@gp_coords,$gp);
+      push(@gp_properties,$map);
+      push(@gp_indices,\@indices);
+
     } elsif ($fileContents[$line] =~ m/CP\#\s+(\d+)\s+Coords\s+=/) {
+
       $cpIndex = $1;
+
     }
+
   }
+
+#  foreach(@rs_gp_properties) {
+#    print STDERR "Main Property Array\: $_\n";
+#    foreach(@{$_}) {
+#      print STDERR "Ring Path Array\: $_\n";
+#      foreach(@{$_}) {
+#        print STDERR "Map Array\: $_\n";
+#        print STDERR "%{$_}\n";
+#      }
+#    }
+#  }
+
+  return \@rs_gp_coords, \@rs_gp_indices, \@rs_gp_properties;
 
 }
 
@@ -96,7 +143,6 @@ sub parseInteratomicSurfacesFromMgpviz {
       $nPoints = $1;
       @slice = @fileContents[$line+1 .. $line+$nPoints];
       ($gp, $map) = parseGradientPath(\@slice);
-      print STDERR "$gp\t$map\n";
       push(@gp_cooords,$gp);
       push(@gp_props,$map);
       my @inidices = ($cpIndex,0);
@@ -369,7 +415,7 @@ sub parseAtomicSurfaceFromIasviz {
       if ($fileContents[$line+1] =~ m/(\d+)\s+(\d+)\s+(-?\d+\.\d+E[-+]\d+)/) {
         $index   = $1;
         $nPoints = $2;
-        print STDERR "Found path with $nPoints points (atom $index)\n";
+        #print STDERR "Found path with $nPoints points (atom $index)\n";
       } else {
         die "Malformed header of IAS Path\: $fileContents[$line+1]\n";
       }
@@ -377,11 +423,11 @@ sub parseAtomicSurfaceFromIasviz {
       # make an array slice and pass to the parseGradientPath
       my @slice = @fileContents[$line+2 .. $line+1+$nPoints];
       foreach(@slice) {
-        print STDERR "$_\n";
+        #print STDERR "$_\n";
       }
       ($gp_coords, $gp_properties) = parseGradientPath(\@slice);
-      print STDERR "$gp_coords\t$gp_properties\n";
-      print STDERR "$iasCoords[$index]\n";
+      #print STDERR "$gp_coords\t$gp_properties\n";
+      #print STDERR "$iasCoords[$index]\n";
       die;
       push($iasCoords[$index],$gp_coords);
 

@@ -39,6 +39,9 @@ our $VERSION = 1.0;
 #            EnvelopeData
 #            AtomicBasinData
 #            RingSurfaceData
+#            $_[15] - reference to array of arrays, each being an array of 3-length arrays of cartesians
+#            $_[16] - reference to array of arrays, each being an array of 2 indices
+#            $_[17] - reference to array of arrays, each being an array of dicts
 #            RingData
 #            CageData
 sub writeTopologyXML {
@@ -52,6 +55,7 @@ sub writeTopologyXML {
   writeCriticalPoints($_[6],$_[7],$_[8],$_[9],$_[10]);
   writeGradientVectorField($_[11],$_[12],$_[13]);
   writeInteratomicSurfaces($_[14]);
+  writeRingSurfaces($_[15],$_[16],$_[17]);
 
   closeTag("Topology");
 
@@ -262,14 +266,32 @@ sub writeAtomicBasin {
 
 }
 
+sub writeRingSurfaces {
+
+  my @coords     = @{$_[0]};
+  my @indices    = @{$_[1]};
+  my @properties = @{$_[2]};
+
+  for($ring_surface=0; $ring_surface<@coords; $ring_surface++) {
+    writeRingSurface($coords[$ring_surface],$indices[$ring_surface],$properties[$ring_surface]);
+  }
+
+}
+
 # writeRingSurface - Write a RingSurface XML element
 # Arguments: $_[0] - Reference to array of reference to arrays of 3-arrays of Reals
 sub writeRingSurface {
 
+  my @coords = @{$_[0]};
+  my @indices = @{$_[1]};
+  my @properties = @{$_[2]};
+
   openTag("RingSurface");
-  foreach(@{$_[0]}) {
-    writeGradientPath($_);
-  }
+    for ($gp=0; $gp<@coords; $gp++) {
+      $cp_a = @{$indices[$gp]}[0];
+      $cp_b = @{$indices[$gp]}[1];
+      writeGradientPath($cp_a,$cp_b,$coords[$gp],$properties[$gp]);
+    }
   closeTag("RingSurface");
 
 }
