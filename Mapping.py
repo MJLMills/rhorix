@@ -119,9 +119,15 @@ def drawAtomicSurfaces(atomic_surfaces):
                 drawMesh(triangulation)
 
 def drawRingSurfaces(ring_surfaces):
+
+    bpy.ops.curve.primitive_bezier_circle_add()
+    bpy.context.scene.objects.active = bpy.data.objects['BezierCircle']
+    bpy.context.object.name = 'RingSurfaces-BevelCircle'
+    bpy.ops.transform.resize(value=(0.2,0.2,0.2))
+
     for ring_surface in ring_surfaces:
         for gradient_path in ring_surface.gradient_paths:
-            drawGradientPath(gradient_path)
+            drawGradientPath(gradient_path,bpy.data.objects['RingSurfaces-BevelCircle'],'rcp-critical_point-material')
 
 def drawRings(rings):
     for ring in rings:
