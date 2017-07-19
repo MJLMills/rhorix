@@ -53,9 +53,8 @@ sub writeTopologyXML {
   writeSourceInformation($_[2]);
   writeNuclei($_[3],$_[4],$_[5]);
   writeCriticalPoints($_[6],$_[7],$_[8],$_[9],$_[10]);
-  writeGradientVectorField($_[11],$_[12],$_[13]);
+  writeGradientVectorField($_[11],$_[12],$_[13],$_[15],$_[16],$_[17]);
   writeInteratomicSurfaces($_[14]);
-  writeRingSurfaces($_[15],$_[16],$_[17]);
 
   closeTag("Topology");
 
@@ -156,12 +155,12 @@ sub writeGradientVectorField {
 
   openTag("GradientVectorField");
     writeMolecularGraph($_[0],$_[1],$_[2]);
+    writeRingSurfaces($_[3],$_[4],$_[5]);
   closeTag("GradientVectorField");
 
   #writeAtomicSurfaces()
   #writeEnvelopes()
   #writeAtomicBasins()
-  #writeRingSurfaces()
   #writeRings()
   #writeCages()
 
