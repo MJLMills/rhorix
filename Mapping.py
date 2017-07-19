@@ -62,7 +62,7 @@ def drawNuclei(nuclei,radii):
 
 def drawSphere(name,location,size,material_name):
 
-    cpSphere = bpy.ops.mesh.primitive_uv_sphere_add(location=location,size=size,segments=8,ring_count=4)
+    cpSphere = bpy.ops.mesh.primitive_uv_sphere_add(location=location,size=size,segments=32,ring_count=16)
     bpy.context.object.name = name
 
     #Create and apply the subsurface modifiers for smooth rendering
