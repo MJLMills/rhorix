@@ -105,7 +105,7 @@ def drawEnvelopes(envelopes):
     for envelope in envelopes:
         if (not envelope.triangulation):
             #draw point cloud
-            print("fix me")
+            print("drawEnvelopes: To be implemented")
         else:
             drawMesh(envelope.triangulation,'Bond-curve-material')
 
@@ -113,8 +113,10 @@ def drawAtomicSurfaces(atomic_surfaces):
     for atomic_surface in atomic_surfaces:
         for interatomic_surface in atomic_surface.interatomic_surfaces:
             if (not interatomic_surface.triangulation):
-                # draw points
-                print("fix me")
+                # draw AILs
+                print("drawAtomicSurfaces: To be implemented")
+                for gradient_path in interatomic_surface.gradient_paths:
+                    drawGradientPath(gradient_path,bpy.data.objects['non_bond-BevelCircle'],'Bond-curve-material')
             else:
                 drawMesh(triangulation,'Bond-curve-material')
 
@@ -131,7 +133,7 @@ def drawRingSurfaces(ring_surfaces):
 
 def drawRings(rings):
     for ring in rings:
-        print("not implemented")
+        print("drawRings: To be implemented")
 
 def drawRing(ring):
     for atomic_interaction_line in ring.atomic_interaction_lines:
@@ -139,7 +141,7 @@ def drawRing(ring):
 
 def drawCages(cages):
     for cage in cages:
-        print("not implemented")
+        print("drawCages: To be implemented")
 def drawCage(cage):
     for ring in cage.rings:
         drawRing(ring)
@@ -150,11 +152,7 @@ def drawMesh(triangulation,material_name):
     coords = []
     for point in triangulation.points:
         vec = mathutils.Vector(point.position_vector)
-        print(vec)
         coords.append(vec)
-
-    for point in coords:
-        print(point)
 
     if (not triangulation.faces):
         newMesh.from_pydata(coords,triangulation.edges,[])

@@ -19,7 +19,6 @@ def createCamera(center,radius):
     cam.clip_end = 1000.0
     #center[2] += (4.0 * radius)
     cam_ob = bpy.data.objects.new("Cam", cam)
-    print("radius", radius)
     cam_ob.location=(center[0],center[1],(4.0 * radius))
     bpy.context.scene.objects.link(cam_ob)
     return cam_ob
@@ -34,7 +33,6 @@ def createLights(cam_location,center,radius):
 
         # Must create spotlight for key light at camera position, pointing in camera direction
         bpy.ops.object.lamp_add(type='SPOT',location=cam_location)
-        print(center)
         # move to the left (-ve x-direction), +ve along z and +ve along y
         x = -cam_location[2]*sin45
         y = radius

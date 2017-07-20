@@ -84,8 +84,6 @@ class ImportTopology(bpy.types.Operator):
 
         center = top.computeCenter()
         radius = top.computeRadius(top.computeCenter())
-        print("CENTER: ", center)
-        print("RADIUS: ", radius)
         World.setup(center,radius)
 
         return {'FINISHED'}

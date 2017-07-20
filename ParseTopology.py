@@ -101,7 +101,7 @@ def parseAtomicSurface(AtomicSurfaceElement):
         interatomic_surfaces.append(parseInteratomicSurface(interatomic_surface))
     return TopologyClasses.AtomicSurface(interatomic_surfaces)
 
-def parseInteratomicSurfaces(InteratomicSurfaceElement):
+def parseInteratomicSurface(InteratomicSurfaceElement):
     gradient_paths = []
     for gradient_path in InteratomicSurfaceElement.findall('GradientPath'):
         gradient_paths.append(parseGradientPath(gradient_path))
@@ -123,6 +123,9 @@ def parseEnvelope(EnvelopeElement):
     return TopologyClasses.Envelope(isovalue,points,triangulation)
 
 def parseTriangulation(TriangulationElement):
+
+    if (TriangulationElement is None):
+        return None
 
     points = []
     for point in TriangulationElement.findall('Point'):
