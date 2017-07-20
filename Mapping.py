@@ -107,7 +107,7 @@ def drawEnvelopes(envelopes):
             #draw point cloud
             print("fix me")
         else:
-            drawMesh(triangulation)
+            drawMesh(envelope.triangulation,'Bond-curve-material')
 
 def drawAtomicSurfaces(atomic_surfaces):
     for atomic_surface in atomic_surfaces:
@@ -116,7 +116,7 @@ def drawAtomicSurfaces(atomic_surfaces):
                 # draw points
                 print("fix me")
             else:
-                drawMesh(triangulation)
+                drawMesh(triangulation,'Bond-curve-material')
 
 def drawRingSurfaces(ring_surfaces):
 
@@ -144,17 +144,26 @@ def drawCage(cage):
     for ring in cage.rings:
         drawRing(ring)
 
-def drawMesh(triangulation,material):
+def drawMesh(triangulation,material_name):
 
     newMesh = bpy.data.meshes.new('SURFACE')
+    coords = []
+    for point in triangulation.points:
+        vec = mathutils.Vector(point.position_vector)
+        print(vec)
+        coords.append(vec)
+
+    for point in coords:
+        print(point)
+
     if (not triangulation.faces):
-        newMesh.from_pydata(triangulation.points,triangulation.edges,[])
+        newMesh.from_pydata(coords,triangulation.edges,[])
     else:
-        newMesh.from_pydata(triangulation.points,[],triangulation.faces)
+        newMesh.from_pydata(coords,[],triangulation.faces)
 
     newMesh.update()
     newObj = bpy.data.objects.new('SURFACE',newMesh)
-    newObj.data.materials.append(material)
+    newObj.data.materials.append(bpy.data.materials[material_name])
     bpy.context.scene.objects.link(newObj)
 
 def drawGradientPath(gradient_path,bevel,material_name):
