@@ -158,8 +158,8 @@ sub writeGradientVectorField {
 
   openTag("GradientVectorField");
     writeMolecularGraph($_[0],$_[1],$_[2]);
-    writeRingSurfaces($_[3],$_[4],$_[5]);
     writeEnvelopes($_[6],$_[7]);
+    writeRingSurfaces($_[3],$_[4],$_[5]);
   closeTag("GradientVectorField");
 
   #writeAtomicSurfaces()

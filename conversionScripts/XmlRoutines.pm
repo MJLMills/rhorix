@@ -60,6 +60,8 @@ sub checkValidity {
 
   my $parser = XML::LibXML->new(validation => 1,);
 
+  $parser->parse_file($xmlFile);
+
   my $doc = eval { $parser->parse_file($xmlFile) };
   if (! $doc) {
     return 0;
