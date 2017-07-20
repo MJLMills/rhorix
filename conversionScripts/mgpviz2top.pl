@@ -41,7 +41,9 @@ $props,
 $interatomic_surfaces,
 $ring_surface_coords,
 $ring_surface_indices,
-$ring_surface_props) = parseMgpviz($mgpvizContents,$systemName);
+$ring_surface_props,
+$envelope_coords,
+$envlope_properties) = parseMgpviz($mgpvizContents,$systemName);
 
 # Write the data to the XML Topology file
 writeTopologyXML($dtdPath,
@@ -61,5 +63,7 @@ writeTopologyXML($dtdPath,
                  $interatomic_surfaces,
                  $ring_surface_coords,
                  $ring_surface_indices,
-                 $ring_surface_props);
+                 $ring_surface_props,
+                 $envelope_coords,
+                 $envlope_properties);
 

@@ -32,7 +32,7 @@ sub parseMgpviz {
 #  determineRings();
 #  determineCages();
 
-  ($interatomic_surfaces,$envelopes) = parseRelatedIasvizFiles($elements,$nuclearIndices,$_[1]);
+  ($atomic_surfaces,$envelope_coords,$envelope_properties) = parseRelatedIasvizFiles($elements,$nuclearIndices,$_[1]);
 
   return $elements,
          $sourceInformation,
@@ -46,10 +46,12 @@ sub parseMgpviz {
          $ails,
          $indices,
          $props,
-         $interatomic_surfaces,
+         $atomic_surfaces,
          $ring_surface_gps,
          $ring_surface_indices,
-         $ring_surface_props;
+         $ring_surface_props,
+         $envelope_coords,
+         $envelope_properties;
 
 }
 
@@ -358,7 +360,8 @@ sub parseRelatedIasvizFiles {
   $sysName  = "$_[2]";
 
   my @atomic_surfaces = ();
-  my @envelopes = ();
+  my @envelope_coords = ();
+  my @envelope_properties = ();
 
   $iasvizDir = "$sysName\_atomicfiles";
   for($i=0; $i<@indices; $i++) {
@@ -373,15 +376,16 @@ sub parseRelatedIasvizFiles {
       $iasPaths = parseAtomicSurfaceFromIasviz($iasvizContents);
       push(@atomic_surfaces,$iasPaths);
 
-      #$envelope = parseIntegrationRayIsodensitySurfaceIntersectionsFromIasviz($iasvizContents);
-      #push(@envelopes,$envelope);
+      ($coords, $properties) = parseIntegrationRayIsodensitySurfaceIntersectionsFromIasviz($iasvizContents);
+      push(@envelope_coords,$coords);
+      push(@envelope_properties,$properties);
 
     } else {
       print STDERR "Warning\: No iasviz file found for $element$indices[$i]\n";
     }
 
   }
-  return \@IASs, \@envelopes;
+  return \@IASs, \@envelope_coords, \@envelope_properties;
 
 }
 
@@ -422,13 +426,8 @@ sub parseAtomicSurfaceFromIasviz {
 
       # make an array slice and pass to the parseGradientPath
       my @slice = @fileContents[$line+2 .. $line+1+$nPoints];
-      foreach(@slice) {
-        #print STDERR "$_\n";
-      }
       ($gp_coords, $gp_properties) = parseGradientPath(\@slice);
-      #print STDERR "$gp_coords\t$gp_properties\n";
-      #print STDERR "$iasCoords[$index]\n";
-      die;
+
       push($iasCoords[$index],$gp_coords);
 
     }
@@ -442,6 +441,9 @@ sub parseIntegrationRayIsodensitySurfaceIntersectionsFromIasviz {
 
   @vizContents = @{$_[0]};
 
+  my @points;
+  my @props;
+
   for ($line=0; $line<@vizContents; $line++) {
 
     if ($vizContents[$line] =~ m/\<Intersections of Integration Rays With IsoDensity Surfaces\>/) {
@@ -449,16 +451,22 @@ sub parseIntegrationRayIsodensitySurfaceIntersectionsFromIasviz {
       if ($vizContents[$line+1] =~ m/(\d+)\s+(-?\d+\.\d+E[-+]\d+)\s+(-?\d+\.\d+E[-+]\d+)\s+(-?\d+\.\d+E[-+]\d+)\s+(\d+)/) {
         $isovalue = $3;
         $nLines = $5;
+      } else {
+        die "Malformed line in ray-isosurface intersection\n\: $vizContents[$line+1]\n";
       }
 
-      my @points = ();
       for ($point=$line+2;$point<$line+2+$nLines; $point++) {
         if ($vizContents[$point] =~ m/(-?\d+\.\d+E[-+]\d+)\s+(-?\d+\.\d+E[-+]\d+)\s+(-?\d+\.\d+E[-+]\d+)/) {
-          @coords = ($1, $2, $3);
+          my @coords = ($1, $2, $3);
+
           push(@points,\@coords);
+          my %map; $map{'rho'} = $isovalue;
+          push(@props,\%map);
+        } else {
+          die "Malformed line\: $vizContents[$point]\n";
         }
       }
-      return $isovalue,\@points;
+      return \@points, \@props;
     }
   }
 

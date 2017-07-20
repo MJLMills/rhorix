@@ -36,12 +36,14 @@ our $VERSION = 1.0;
 #            $_[13]
 #            AtomicSurfaceData
 #            $_[14]
-#            EnvelopeData
 #            AtomicBasinData
 #            RingSurfaceData
 #            $_[15] - reference to array of arrays, each being an array of 3-length arrays of cartesians
 #            $_[16] - reference to array of arrays, each being an array of 2 indices
 #            $_[17] - reference to array of arrays, each being an array of dicts
+#            EnvelopeData
+#            $_[18] - reference to an array of arrays, each being an array of 3-length arrays
+#            $_[19] - dicts as above
 #            RingData
 #            CageData
 sub writeTopologyXML {
@@ -53,8 +55,9 @@ sub writeTopologyXML {
   writeSourceInformation($_[2]);
   writeNuclei($_[3],$_[4],$_[5]);
   writeCriticalPoints($_[6],$_[7],$_[8],$_[9],$_[10]);
-  writeGradientVectorField($_[11],$_[12],$_[13],$_[15],$_[16],$_[17]);
+  writeGradientVectorField($_[11],$_[12],$_[13],$_[15],$_[16],$_[17],$_[18],$_[19]);
   writeInteratomicSurfaces($_[14]);
+
 
   closeTag("Topology");
 
@@ -156,10 +159,11 @@ sub writeGradientVectorField {
   openTag("GradientVectorField");
     writeMolecularGraph($_[0],$_[1],$_[2]);
     writeRingSurfaces($_[3],$_[4],$_[5]);
+    writeEnvelopes($_[6],$_[7]);
   closeTag("GradientVectorField");
 
   #writeAtomicSurfaces()
-  #writeEnvelopes()
+
   #writeAtomicBasins()
   #writeRings()
   #writeCages()
@@ -231,8 +235,11 @@ sub writeIAS {
 # Arguments: $_[0] - Reference to an array of Envelopes
 sub writeEnvelopes {
 
-  foreach(@{$_[0]}) {
-    writeEnvelope($_);
+  @coords = @{$_[0]};
+  @properties = @{$_[1]};
+
+  for ($envelope=0; $envelope<@coords; $envelope++) {
+    writeEnvelope(0.001,0,$coords[$envelope],$properties[$envelope]);
   }
 
 }
@@ -246,9 +253,7 @@ sub writeEnvelope {
   openTag("Envelope");
     writePCData("isovalue",$_[0]);
     writePCData("cp_index",$_[1]);
-    foreach(@{$_[2]}) {
-      writePoint($_);
-    }
+    writeTriangulation($_[2],$_[3]);
   closeTag("Envelope");
 
 }
@@ -317,14 +322,17 @@ sub writeCage {
 #            $_[2] - Reference to an array of 2-arrays of Integers (edges)
 sub writeTriangulation {
 
+  my @coords = @{$_[0]};
+  my @properties = @{$_[1]};
+
   openTag("Triangulation");
-    foreach(@{$_[0]}) {
-      writePositionVector($_);
-    }
-    foreach(@{$_[1]}) {
-      writeFace($_);
+    for($point=0; $point<@coords; $point++) {
+      writePoint($coords[$point],$properties[$point]);
     }
     foreach(@{$_[2]}) {
+      writeFace($_);
+    }
+    foreach(@{$_[3]}) {
       writeEdge($_);
     }
   closeTag("Triangulation");
