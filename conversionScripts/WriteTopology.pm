@@ -46,6 +46,7 @@ our $VERSION = 1.0;
 #            EnvelopeData
 #            $_[20] - reference to an array of arrays, each being an array of 3-length arrays
 #            $_[21] - dicts as above
+#            $_[22] - NACP indices for envelopes
 #            RingData
 #            CageData
 sub writeTopologyXML {
@@ -57,8 +58,7 @@ sub writeTopologyXML {
   writeSourceInformation($_[2]);
   writeNuclei($_[3],$_[4],$_[5]);
   writeCriticalPoints($_[6],$_[7],$_[8],$_[9],$_[10]);
-  writeGradientVectorField($_[11],$_[12],$_[13],$_[17],$_[18],$_[19],$_[20],$_[21]);
-  #writeAtomicSurfaces($_[14],$_[15],$_[16]);
+  writeGradientVectorField($_[11],$_[12],$_[13],$_[14],$_[15],$_[16],$_[17],$_[18],$_[19],$_[20],$_[21],$_[22]);
 
   closeTag("Topology");
 
@@ -159,8 +159,9 @@ sub writeGradientVectorField {
 
   openTag("GradientVectorField");
     writeMolecularGraph($_[0],$_[1],$_[2]);
-    writeEnvelopes($_[6],$_[7]);
-    writeRingSurfaces($_[3],$_[4],$_[5]);
+    writeEnvelopes($_[9],$_[10],$_[11]);
+    writeAtomicSurfaces($_[3],$_[4],$_[5]);
+    writeRingSurfaces($_[6],$_[7],$_[8]);
   closeTag("GradientVectorField");
 
   #writeAtomicSurfaces()
@@ -191,11 +192,19 @@ sub writeMolecularGraph {
 
 sub writeAtomicSurfaces {
 
-  @coords = @{$_[0]};
-  @properties = @{$_[1]};
-  @indices = @{$_[2]};
+  @as_coords     = @{$_[0]}; # for each atomic surface, contains the paths of each IAS
+  @as_properties = @{$_[1]};
+  @as_indices    = @{$_[2]};
 
-  writeAtomicSurface();
+  #print STDERR "\nWriting Atomic Surfaces\n";
+  #$nasCoords     = @as_coords;     print STDERR "Num. AS Coords\:     $nasCoords\n";
+  #$nasProperties = @as_properties; print STDERR "Num. AS Properties\: $nasProperties\n";
+  #$nasIndices    = @as_indices;    print STDERR "Num. AS Indices\:    $nasIndices\n\n";
+
+  for ($as=0; $as<@as_coords; $as++) {
+    #printf STDERR "Writing Atomic Surface %04d of %04d\n", $as+1, $nasCoords;
+    writeAtomicSurface($as_coords[$as],$as_properties[$as],$as_indices[$as]);
+  }
 
 }
 
@@ -207,10 +216,25 @@ sub writeAtomicSurfaces {
 #            $_[4] - Reference to array of 2-vectors of Integers (edges)
 sub writeAtomicSurface {
 
+  @ias_coords     = @{$_[0]};
+  @ias_properties = @{$_[1]};
+  $ias_cp_index   = $_[2];
+
+#  print STDERR "Critical Point Index\: $ias_cp_index\n";
+#  $niasCoords     = @ias_coords;     print STDERR "Num. IASs in Atomic Surface\: $niasCoords\n\n";
+#  $niasProperties = @ias_properties; #print STDERR "Num. IASs in Atomic Surface\(props\)\: $niasProperties\n";
+
+#  foreach(@ias_coords) {
+#    $n = @{$_};
+#    print STDERR "COORD ARRAY\: $_ $n\n";
+#  } print STDERR "\n";
+
   openTag("AtomicSurface");
-    writePCData("cp_index",$_[0]);
-    foreach(@{$_[1]}) {
-      writeInteratomicSurface($_[1],$_[2],$_[3],$_[4]);
+    for ($ias=0; $ias<@ias_coords; $ias++) {
+
+#      printf STDERR "Writing Interatomic Surface %04d of %04d\n", $ias+1, $niasCoords;
+      writeInteratomicSurface($ias_coords[$ias],$ias_properties[$ias],$ias_cp_index);
+
     }
   closeTag("AtomicSurface");
 
@@ -223,11 +247,21 @@ sub writeAtomicSurface {
 #            $_[3] - Reference to array of 2-vectors of Integers (edges)
 sub writeInteratomicSurface {
 
+  #print STDERR "IAS Array Ref\: $_[0]\n";
+  @gp_coords     = @{$_[0]};
+  @gp_properties = @{$_[1]};
+  $gp_cp_index   = $_[2];
+
+  #$nlfCoords     = @gp_coords;     print STDERR "Num. Paths in IAS \: $nlfCoords\n";
+  #$nProperties = @properties; print STDERR "Num. Paths in IAS \(props\)\: $nProperties\n";
+
   openTag("InteratomicSurface");
-    foreach(@{$_[0]}) {
-      writeGradientPath($_);
+    for ($gp=0; $gp<@coords; $gp++) {
+      writeGradientPath($gp_cp_index,0,$coords[$gp],$properties[$gp]);
     }
-    writeTriangulation($_[1],$_[2],$_[3]);
+    #for ($gp=0; $gp<@coords; $gp++) {
+    #  writeTriangulation($coords[$gp],$properties[$gp]);
+    #}
   closeTag("InteratomicSurface");
 
 }
@@ -238,9 +272,10 @@ sub writeEnvelopes {
 
   @coords = @{$_[0]};
   @properties = @{$_[1]};
+  @indices = @{$_[2]};
 
   for ($envelope=0; $envelope<@coords; $envelope++) {
-    writeEnvelope(0.001,0,$coords[$envelope],$properties[$envelope]);
+    writeEnvelope(0.001,$indices[$envelope],$coords[$envelope],$properties[$envelope]);
   }
 
 }

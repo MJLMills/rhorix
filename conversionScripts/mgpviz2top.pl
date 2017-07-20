@@ -26,8 +26,8 @@ $systemName = stripExt($mgpvizFile,"mgpviz");
 # Attempt to read all data from the mgpviz file
 # This subroutine also checks for and parses the corresponding iasviz files
 
-($elements,                 # 0
-$sourceInformation,         # 1
+($sourceInformation,        # 0
+$elements,                  # 1 
 $nuclearIndices,            # 2
 $nuclearCoordinates,        # 3
 $cpIndices,                 # 4
@@ -45,14 +45,15 @@ $ring_surface_coords,       # 15
 $ring_surface_indices,      # 16
 $ring_surface_props,        # 17
 $envelope_coords,           # 18
-$envelope_properties) = parseMgpviz($mgpvizContents,$systemName);
+$envelope_properties,       # 20
+$envelope_indices) = parseMgpviz($mgpvizContents,$systemName);
 
 # Write the data to the XML Topology file
 writeTopologyXML($dtdPath,                   #  0
                  $systemName,                #  1
                  $sourceInformation,         #  2
-                 $elements,                  #  3
-                 $nuclearIndices,            #  4 NUCLEI
+                 $elements,                  #  3 NUCLEI
+                 $nuclearIndices,            #  4
                  $nuclearCoordinates,        #  5
                  $cpIndices,                 #  6 CRITICAL POINTS
                  $ranks,                     #  7
@@ -69,5 +70,6 @@ writeTopologyXML($dtdPath,                   #  0
                  $ring_surface_indices,      # 18
                  $ring_surface_props,        # 19
                  $envelope_coords,           # 20 ENVELOPES
-                 $envelope_properties);      # 21
+                 $envelope_properties,       # 21
+                 $envelope_indices);         # 22
 

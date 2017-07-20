@@ -31,10 +31,11 @@ sub parseMgpviz {
    $atomic_surface_properties,
    $atomic_surface_indices,
    $envelope_coords,
-   $envelope_properties) = parseRelatedIasvizFiles($elements,$nuclearIndices,$_[1]);
+   $envelope_properties,
+   $envelope_indices) = parseRelatedIasvizFiles($elements,$nuclearIndices,$_[1]);
 
-  return $elements,
-         $sourceInformation,
+  return $sourceInformation,
+         $elements,
          $nuclearIndices,
          $nuclearCoordinates,
          $cpIndices,
@@ -52,16 +53,9 @@ sub parseMgpviz {
          $ring_surface_indices,
          $ring_surface_props,
          $envelope_coords,
-         $envelope_properties;
+         $envelope_properties,
+         $envelope_indices;
 
-}
-
-sub determineRings {
-  print "to be implemented\n";
-}
-
-sub determineCages {
-  print "to be implemented\n";
 }
 
 sub parseRingSurfacesFromMgpviz {
@@ -352,8 +346,10 @@ sub parseRelatedIasvizFiles {
   my @atomic_surface_coords;
   my @atomic_surface_properties;
   my @atomic_surface_indices;
+
   my @envelope_coords;
   my @envelope_properties;
+  my @envelope_indices;
 
   $iasvizDir = "$sysName\_atomicfiles";
   for($i=0; $i<@indices; $i++) {
@@ -365,14 +361,16 @@ sub parseRelatedIasvizFiles {
       $iasvizContents = readFile($iasvizFile);
 
       $atom = parseAtomFromIasviz($iasvizContents);
-      ($ias_coords, $ias_indices, $ias_properties) = parseAtomicSurfaceFromIasviz($iasvizContents);
-      push(@atomic_surface_coords,$ias_coords);
-      push(@atomic_surface_properties,$ias_properties);
-      push(@atomic_surface_indices,$ias_indices);
+      $atom =~ m/[a-zA-Z]+(\d+)/; $cp_index = $1;
+      ($as_coords, $as_properties) = parseAtomicSurfaceFromIasviz($iasvizContents);
+      push(@atomic_surface_coords,$as_coords);
+      push(@atomic_surface_properties,$as_properties);
+      push(@atomic_surface_indices,$cp_index);
 
       ($coords, $properties) = parseIntegrationRayIsodensitySurfaceIntersectionsFromIasviz($iasvizContents);
       push(@envelope_coords,$coords);
       push(@envelope_properties,$properties);
+      push(@envelope_indices,$cp_index);
 
     } else {
       print STDERR "Warning\: No iasviz file found for $element$indices[$i]\n";
@@ -381,11 +379,11 @@ sub parseRelatedIasvizFiles {
   }
 
   return \@atomic_surface_coords, 
-         \@atomic_surface_properties, 
+         \@atomic_surface_properties,
          \@atomic_surface_indices,
          \@envelope_coords, 
-         \@envelope_properties;
-
+         \@envelope_properties,
+         \@envelope_indices;
 }
 
 sub parseAtomFromIasviz {
@@ -410,17 +408,39 @@ sub parseAtomicSurfaceFromIasviz {
 
   my @fileContents = @{$_[0]};
 
-  my @ias_indices;
-  my @ias_coords;
-  my @ias_properties;
+  my @as_coords;
+  my @as_properties;
 
+  my @ias_coords     = ();
+  my @ias_properties = ();
+
+  $currentIndex = -1;
   for($line=0; $line<@fileContents; $line++) {
 
     if ($fileContents[$line] =~ m/\<IAS Path\>/) {
 
       if ($fileContents[$line+1] =~ m/(\d+)\s+(\d+)\s+(-?\d+\.\d+E[-+]\d+)/) {
-        push(@ias_indices,$1); # index of the IAS in this atomic surface
-        $nPoints = $2;         # points on this path
+        $ias_index = $1; # index of the IAS in this atomic surface - check if new
+        $nPoints   = $2; # number of points on this path
+
+        if ($ias_index != $currentIndex) {
+
+          if ($currentIndex != -1) {
+
+            my @keep_coords     = @ias_coords;
+            my @keep_properties = @ias_properties;
+             
+            push(@as_coords,\@keep_coords);
+            push(@as_properties,\@keep_properties);
+
+          }
+
+          @ias_coords     = ();
+          @ias_properties = ();
+          $currentIndex = $ias_index;
+
+        }
+
       } else {
         die "Malformed header of IAS Path\: $fileContents[$line+1]\n";
       }
@@ -432,10 +452,32 @@ sub parseAtomicSurfaceFromIasviz {
       push(@ias_coords,$gp_coords);
       push(@ias_properties,$gp_properties);
 
+    } elsif ($fileContents[$line] =~ m/\<\/IAS Path\>/) {
+
     }
   }
 
-  return \@ias_coords, \@ias_indices, \@ias_properties;
+  my @keep_coords = @ias_coords;
+  my @keep_properties = @ias_properties;
+  push(@as_coords,\@keep_coords);
+  push(@as_properties,\@keep_properties);
+
+#  $ref = \@as_coords;
+#  print STDERR "Atomic Surface Array\: $ref\n";
+#  foreach(@as_coords) {
+#    print STDERR "Interatomic Surface Array\: $_\t";
+#    $n = scalar(@{$_}); print STDERR "N = $n\n";
+#    foreach(@{$_}) {
+      #print STDERR "IAS Path Array\: $_\t";
+      #$n = scalar(@{$_}); print STDERR "N = $n\n";
+#      foreach(@{$_}) {
+        #print STDERR "Position Vector Array\: $_ @{$_}\n";
+#      }
+#    }
+#  }
+#  print STDERR "\n";
+
+  return \@as_coords, \@as_properties;
 
 }
 
@@ -472,5 +514,13 @@ sub parseIntegrationRayIsodensitySurfaceIntersectionsFromIasviz {
     }
   }
 
+}
+
+sub determineRings {
+  print "to be implemented\n";
+}
+
+sub determineCages {
+  print "to be implemented\n";
 }
 
