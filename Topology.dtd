@@ -83,11 +83,11 @@
     <!ELEMENT AtomicBasin (GradientPath*)>
 
     <!-- The atomic surface of an atom is the boundary of its basin; a union of interatomic surfaces -->
-    <!ELEMENT AtomicSurface (InterAtomicSurface*)>
+    <!ELEMENT AtomicSurface (InteratomicSurface*)>
 
       <!-- Interatomic Surfaces are objects separating neighbouring basins -->
       <!-- They are composed of gradient paths originating at a single BCP -->
-      <!ELEMENT InteratomicSurface (GradientPath*,Triangulation)>
+      <!ELEMENT InteratomicSurface (GradientPath*,Triangulation?)>
         <!-- Alternatively a surface can be represented as a set of connected points on that surface -->
         <!-- Either a set of edges or faces may be given -->
         <!ELEMENT Triangulation (Point*,Face*,Edge*)>
