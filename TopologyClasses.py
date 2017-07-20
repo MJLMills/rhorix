@@ -126,11 +126,10 @@ class AtomicBasin():
 # An envelope is a set of points with an optional triangulation thereof.
 # As it does not have gradient paths it must have an explicit critical point member.
 class Envelope():
-    def __init__(self,isovalue,points,triangulation,nacp):
+    def __init__(self,isovalue,points,triangulation):
         self.isovalue      = isovalue
         self.points        = points
         self.triangulation = triangulation
-        self.nacp          = nacp
 
 # An atomic surface is a set of interatomic surfaces sharing a common BCP
 class AtomicSurface():
