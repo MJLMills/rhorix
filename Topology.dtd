@@ -106,4 +106,4 @@
 
     <!-- A ring surface is a set of gradient paths beginning at a ring critical point and ending at -->
     <!-- either a ring nucleus or a BCP between the ring nuclei -->
-    <!ELEMENT RingSurface (cp_index,GradientPath*)>
+    <!ELEMENT RingSurface (GradientPath*)>
