@@ -25,8 +25,6 @@ sub parseMgpviz {
   # Read the gradient paths associated with CPs
   ($ails, $indices, $props) = parseMolecularGraphFromViz($_[0]);
 
-#  parseInteratomicSurfacesFromMgpviz($_[0]);
-
   ($ring_surface_gps, $ring_surface_indices, $ring_surface_props) = parseRingSurfacesFromMgpviz($_[0]);
 
   ($atomic_surface_coords,
@@ -381,7 +379,7 @@ sub parseRelatedIasvizFiles {
     }
 
   }
-  
+
   return \@atomic_surface_coords, 
          \@atomic_surface_properties, 
          \@atomic_surface_indices,

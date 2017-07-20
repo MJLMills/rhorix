@@ -58,8 +58,7 @@ sub writeTopologyXML {
   writeNuclei($_[3],$_[4],$_[5]);
   writeCriticalPoints($_[6],$_[7],$_[8],$_[9],$_[10]);
   writeGradientVectorField($_[11],$_[12],$_[13],$_[17],$_[18],$_[19],$_[20],$_[21]);
-#  writeInteratomicSurfaces($_[14],$_[15],$_[16]);
-
+  #writeAtomicSurfaces($_[14],$_[15],$_[16]);
 
   closeTag("Topology");
 
@@ -190,6 +189,16 @@ sub writeMolecularGraph {
 
 }
 
+sub writeAtomicSurfaces {
+
+  @coords = @{$_[0]};
+  @properties = @{$_[1]};
+  @indices = @{$_[2]};
+
+  writeAtomicSurface();
+
+}
+
 # writeAtomicSurface - Write an AtomicSurface XML element
 # Arguments: $_[0] - Integer index of corresponding NACP
 #            $_[1] - Reference to an array of GradientPaths in the IAS
@@ -201,19 +210,9 @@ sub writeAtomicSurface {
   openTag("AtomicSurface");
     writePCData("cp_index",$_[0]);
     foreach(@{$_[1]}) {
-      writeIAS($_[1],$_[2],$_[3],$_[4]);
+      writeInteratomicSurface($_[1],$_[2],$_[3],$_[4]);
     }
   closeTag("AtomicSurface");
-
-}
-
-# writeIASs - Write a set of InteratomicSurface XML elements
-# Arguments: $_[0] - Reference to array of InteratomicSurfaces of the GradientVectorField
-sub writeInteratomicSurfaces {
-
-  foreach(@{$_[0]}) {
-    writeIAS($_);
-  }
 
 }
 
@@ -222,7 +221,7 @@ sub writeInteratomicSurfaces {
 #            $_[1] - Reference to array of 3-vectors of triangulated reals
 #            $_[2] - Reference to array of 3-vectors of Integers (faces)
 #            $_[3] - Reference to array of 2-vectors of Integers (edges)
-sub writeIAS {
+sub writeInteratomicSurface {
 
   openTag("InteratomicSurface");
     foreach(@{$_[0]}) {
