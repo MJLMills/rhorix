@@ -26,44 +26,48 @@ $systemName = stripExt($mgpvizFile,"mgpviz");
 # Attempt to read all data from the mgpviz file
 # This subroutine also checks for and parses the corresponding iasviz files
 
-($elements,
-$sourceInformation,
-$nuclearIndices,
-$nuclearCoordinates,
-$cpIndices,
-$ranks,
-$signatures,
-$cpCoordinates,
-$scalarProperties,
-$ails,
-$indices,
-$props,
-$interatomic_surfaces,
-$ring_surface_coords,
-$ring_surface_indices,
-$ring_surface_props,
-$envelope_coords,
+($elements,                 # 0
+$sourceInformation,         # 1
+$nuclearIndices,            # 2
+$nuclearCoordinates,        # 3
+$cpIndices,                 # 4
+$ranks,                     # 5
+$signatures,                # 6
+$cpCoordinates,             # 7
+$scalarProperties,          # 8
+$ails,                      # 9
+$indices,                   # 10
+$props,                     # 11
+$atomic_surface_coords,     # 12
+$atomic_surface_properties, # 13
+$atomic_surface_indices,    # 14
+$ring_surface_coords,       # 15
+$ring_surface_indices,      # 16
+$ring_surface_props,        # 17
+$envelope_coords,           # 18
 $envelope_properties) = parseMgpviz($mgpvizContents,$systemName);
 
 # Write the data to the XML Topology file
-writeTopologyXML($dtdPath,
-                 $systemName,
-                 $sourceInformation,
-                 $elements,
-                 $nuclearIndices,
-                 $nuclearCoordinates,
-                 $cpIndices,
-                 $ranks,
-                 $signatures,
-                 $cpCoordinates,
-                 $scalarProperties,
-                 $ails,
-                 $indices,
-                 $props,
-                 $interatomic_surfaces,
-                 $ring_surface_coords,
-                 $ring_surface_indices,
-                 $ring_surface_props,
-                 $envelope_coords,
-                 $envelope_properties);
+writeTopologyXML($dtdPath,                   #  0
+                 $systemName,                #  1
+                 $sourceInformation,         #  2
+                 $elements,                  #  3
+                 $nuclearIndices,            #  4 NUCLEI
+                 $nuclearCoordinates,        #  5
+                 $cpIndices,                 #  6 CRITICAL POINTS
+                 $ranks,                     #  7
+                 $signatures,                #  8
+                 $cpCoordinates,             #  9
+                 $scalarProperties,          # 10
+                 $ails,                      # 11 MOLECULAR GRAPH
+                 $indices,                   # 12
+                 $props,                     # 13
+                 $atomic_surface_coords,     # 14 ATOMIC SURFACES
+                 $atomic_surface_properties, # 15
+                 $atomic_surface_indices,    # 16
+                 $ring_surface_coords,       # 17 RING SURFACES
+                 $ring_surface_indices,      # 18
+                 $ring_surface_props,        # 19
+                 $envelope_coords,           # 20 ENVELOPES
+                 $envelope_properties);      # 21
 

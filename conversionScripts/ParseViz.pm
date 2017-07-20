@@ -29,10 +29,11 @@ sub parseMgpviz {
 
   ($ring_surface_gps, $ring_surface_indices, $ring_surface_props) = parseRingSurfacesFromMgpviz($_[0]);
 
-#  determineRings();
-#  determineCages();
-
-  ($atomic_surfaces,$envelope_coords,$envelope_properties) = parseRelatedIasvizFiles($elements,$nuclearIndices,$_[1]);
+  ($atomic_surface_coords,
+   $atomic_surface_properties,
+   $atomic_surface_indices,
+   $envelope_coords,
+   $envelope_properties) = parseRelatedIasvizFiles($elements,$nuclearIndices,$_[1]);
 
   return $elements,
          $sourceInformation,
@@ -46,7 +47,9 @@ sub parseMgpviz {
          $ails,
          $indices,
          $props,
-         $atomic_surfaces,
+         $atomic_surface_coords,
+         $atomic_surface_properties,
+         $atomic_surface_indices,
          $ring_surface_gps,
          $ring_surface_indices,
          $ring_surface_props,
@@ -108,17 +111,6 @@ sub parseRingSurfacesFromMgpviz {
     }
 
   }
-
-#  foreach(@rs_gp_properties) {
-#    print STDERR "Main Property Array\: $_\n";
-#    foreach(@{$_}) {
-#      print STDERR "Ring Path Array\: $_\n";
-#      foreach(@{$_}) {
-#        print STDERR "Map Array\: $_\n";
-#        print STDERR "%{$_}\n";
-#      }
-#    }
-#  }
 
   return \@rs_gp_coords, \@rs_gp_indices, \@rs_gp_properties;
 
@@ -359,9 +351,11 @@ sub parseRelatedIasvizFiles {
   @indices  = @{$_[1]};
   $sysName  = "$_[2]";
 
-  my @atomic_surfaces = ();
-  my @envelope_coords = ();
-  my @envelope_properties = ();
+  my @atomic_surface_coords;
+  my @atomic_surface_properties;
+  my @atomic_surface_indices;
+  my @envelope_coords;
+  my @envelope_properties;
 
   $iasvizDir = "$sysName\_atomicfiles";
   for($i=0; $i<@indices; $i++) {
@@ -373,8 +367,10 @@ sub parseRelatedIasvizFiles {
       $iasvizContents = readFile($iasvizFile);
 
       $atom = parseAtomFromIasviz($iasvizContents);
-      $iasPaths = parseAtomicSurfaceFromIasviz($iasvizContents);
-      push(@atomic_surfaces,$iasPaths);
+      ($ias_coords, $ias_indices, $ias_properties) = parseAtomicSurfaceFromIasviz($iasvizContents);
+      push(@atomic_surface_coords,$ias_coords);
+      push(@atomic_surface_properties,$ias_properties);
+      push(@atomic_surface_indices,$ias_indices);
 
       ($coords, $properties) = parseIntegrationRayIsodensitySurfaceIntersectionsFromIasviz($iasvizContents);
       push(@envelope_coords,$coords);
@@ -385,7 +381,12 @@ sub parseRelatedIasvizFiles {
     }
 
   }
-  return \@IASs, \@envelope_coords, \@envelope_properties;
+  
+  return \@atomic_surface_coords, 
+         \@atomic_surface_properties, 
+         \@atomic_surface_indices,
+         \@envelope_coords, 
+         \@envelope_properties;
 
 }
 
@@ -407,19 +408,21 @@ sub parseAtomFromIasviz {
 sub parseAtomicSurfaceFromIasviz {
 
   # this will parse a complete iasviz file so must return an atomic surface
+  # made up of one or more interatomic surfaces
 
   my @fileContents = @{$_[0]};
 
-  my @iasCoords = (); # list of references to arrays, each containing reference to the paths of 1 IAS
-  my @iasProps = ();
+  my @ias_indices;
+  my @ias_coords;
+  my @ias_properties;
+
   for($line=0; $line<@fileContents; $line++) {
 
     if ($fileContents[$line] =~ m/\<IAS Path\>/) {
 
       if ($fileContents[$line+1] =~ m/(\d+)\s+(\d+)\s+(-?\d+\.\d+E[-+]\d+)/) {
-        $index   = $1;
-        $nPoints = $2;
-        #print STDERR "Found path with $nPoints points (atom $index)\n";
+        push(@ias_indices,$1); # index of the IAS in this atomic surface
+        $nPoints = $2;         # points on this path
       } else {
         die "Malformed header of IAS Path\: $fileContents[$line+1]\n";
       }
@@ -428,12 +431,13 @@ sub parseAtomicSurfaceFromIasviz {
       my @slice = @fileContents[$line+2 .. $line+1+$nPoints];
       ($gp_coords, $gp_properties) = parseGradientPath(\@slice);
 
-      push($iasCoords[$index],$gp_coords);
+      push(@ias_coords,$gp_coords);
+      push(@ias_properties,$gp_properties);
 
     }
   }
 
-  return \@iasPaths;
+  return \@ias_coords, \@ias_indices, \@ias_properties;
 
 }
 

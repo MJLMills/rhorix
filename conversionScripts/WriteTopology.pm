@@ -36,14 +36,16 @@ our $VERSION = 1.0;
 #            $_[13]
 #            AtomicSurfaceData
 #            $_[14]
-#            AtomicBasinData
+#            $_[15]
+#            $_[16]
+#            AtomicBasinData - need to generate basviz files
 #            RingSurfaceData
-#            $_[15] - reference to array of arrays, each being an array of 3-length arrays of cartesians
-#            $_[16] - reference to array of arrays, each being an array of 2 indices
-#            $_[17] - reference to array of arrays, each being an array of dicts
+#            $_[17] - reference to array of arrays, each being an array of 3-length arrays of cartesians
+#            $_[18] - reference to array of arrays, each being an array of 2 indices
+#            $_[19] - reference to array of arrays, each being an array of dicts
 #            EnvelopeData
-#            $_[18] - reference to an array of arrays, each being an array of 3-length arrays
-#            $_[19] - dicts as above
+#            $_[20] - reference to an array of arrays, each being an array of 3-length arrays
+#            $_[21] - dicts as above
 #            RingData
 #            CageData
 sub writeTopologyXML {
@@ -55,8 +57,8 @@ sub writeTopologyXML {
   writeSourceInformation($_[2]);
   writeNuclei($_[3],$_[4],$_[5]);
   writeCriticalPoints($_[6],$_[7],$_[8],$_[9],$_[10]);
-  writeGradientVectorField($_[11],$_[12],$_[13],$_[15],$_[16],$_[17],$_[18],$_[19]);
-  writeInteratomicSurfaces($_[14]);
+  writeGradientVectorField($_[11],$_[12],$_[13],$_[17],$_[18],$_[19],$_[20],$_[21]);
+#  writeInteratomicSurfaces($_[14],$_[15],$_[16]);
 
 
   closeTag("Topology");
