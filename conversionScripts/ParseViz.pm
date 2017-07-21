@@ -379,12 +379,19 @@ sub parseRelatedIasvizFiles {
 
     if (-e $basvizFile) {
       print STDERR "Found basviz file for $element$indices[$i]\n";
-      $basvizContents = readFile($basvizFile);
-      foreach($basvizContents) {
-        if ($_ =~ m/\<Basin Path\>/) {
-          print STDERR "Found basin path\n";
+
+      @basvizContents = @{readFile($basvizFile)};
+      foreach($line=0; $line<@basvizContents; $line++) {
+        if ($basvizContents[$line] =~ m/\<Basin\s+Path\>/) {
+          print STDERR "Found basin path\: $basvizContents[$line]\n";
+          if ($basvizContents[$line+1] =~ m/(\d+)\s+\d+\s+\d+\s+-?\d+\.\d+E[+-]\d+\s+-?\d+\.\d+E[+-]\d+\s+-?\d+\.\d+E[+-]\d+/) {
+            print STDERR "Num Lines\: $1\n";
+          } else {
+            die "Malformed header of Basin Path\: $basvizContents[$line+1]\n\n";
+          }
         }
       }
+
     } else {
       print STDERR "Warning\: No basviz file found for $element$indices[$i]\n";
     }
