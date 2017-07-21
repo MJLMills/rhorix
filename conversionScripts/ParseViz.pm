@@ -379,9 +379,14 @@ sub parseRelatedIasvizFiles {
 
     if (-e $basvizFile) {
       print STDERR "Found basviz file for $element$indices[$i]\n";
+      $basvizContents = readFile($basvizFile);
+      foreach($basvizContents) {
+        if ($_ =~ m/\<Basin Path\>/) {
+          print STDERR "Found basin path\n";
+        }
+      }
     } else {
       print STDERR "Warning\: No basviz file found for $element$indices[$i]\n";
-      print STDERR "$basvizFile\n";
     }
 
   }
