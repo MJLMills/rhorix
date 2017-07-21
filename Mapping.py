@@ -112,9 +112,9 @@ def drawEnvelopes(envelopes):
 def drawAtomicSurfaces(atomic_surfaces):
     for atomic_surface in atomic_surfaces:
         for interatomic_surface in atomic_surface.interatomic_surfaces:
+            print(interatomic_surface)
             if (not interatomic_surface.triangulation):
                 # draw AILs
-                print("drawAtomicSurfaces: To be implemented")
                 for gradient_path in interatomic_surface.gradient_paths:
                     drawGradientPath(gradient_path,bpy.data.objects['non_bond-BevelCircle'],'Bond-curve-material')
             else:
