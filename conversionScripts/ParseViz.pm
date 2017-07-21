@@ -378,24 +378,10 @@ sub parseRelatedIasvizFiles {
     }
 
     if (-e $basvizFile) {
-      print STDERR "Found basviz file for $element$indices[$i]\n";
 
       @basvizContents = @{readFile($basvizFile)};
-      foreach($line=0; $line<@basvizContents; $line++) {
-        if ($basvizContents[$line] =~ m/\<Basin\s+Path\>/) {
-          print STDERR "Found basin path\: $basvizContents[$line]\n";
-          if ($basvizContents[$line+1] =~ m/(\d+)\s+\d+\s+\d+\s+-?\d+\.\d+E[+-]\d+\s+-?\d+\.\d+E[+-]\d+\s+-?\d+\.\d+E[+-]\d+/) {
-            $nPoints = $1;
-            print STDERR "Num Lines\: $1\n";
-          } else {
-            die "Malformed header of Basin Path\: $basvizContents[$line+1]\n\n";
-          }
-
-          @slice = @basvizContents[$line+2..$line+1+$nPoints];
-          ($gp_coords, $gp_properties) = parseGradientPath(\@slice);
-
-        }
-      }
+      ($basin_coords,$basin_properties) = parseBasinFromBasviz(\@basvizContents);
+      # add the basin array references to an array for all atoms
 
     } else {
       print STDERR "Warning\: No basviz file found for $element$indices[$i]\n";
@@ -403,13 +389,43 @@ sub parseRelatedIasvizFiles {
 
   }
 
-
   return \@atomic_surface_coords, 
          \@atomic_surface_properties,
          \@atomic_surface_indices,
          \@envelope_coords, 
          \@envelope_properties,
          \@envelope_indices;
+         # return the basin data
+}
+
+sub parseBasinFromBasviz {
+
+  my @basvizContents = @{$_[0]};
+  print STDERR "Found basviz file for $element$indices[$i]\n";
+
+  my @basin_coords;
+  my @basin_properties;
+
+  foreach($line=0; $line<@basvizContents; $line++) {
+    if ($basvizContents[$line] =~ m/\<Basin\s+Path\>/) {
+      print STDERR "Found basin path\: $basvizContents[$line]\n";
+      if ($basvizContents[$line+1] =~ m/(\d+)\s+\d+\s+\d+\s+-?\d+\.\d+E[+-]\d+\s+-?\d+\.\d+E[+-]\d+\s+-?\d+\.\d+E[+-]\d+/) {
+        $nPoints = $1;
+        print STDERR "Num Points\: $1\n";
+      } else {
+        die "Malformed header of Basin Path\: $basvizContents[$line+1]\n\n";
+      }
+
+      @slice = @basvizContents[$line+2..$line+1+$nPoints];
+      ($gp_coords, $gp_properties) = parseGradientPath(\@slice);
+      push(@basin_coords,$gp_coords);
+      push(@basin_properties,$gp_properties);
+
+    }
+  }
+
+  return \@basin_coords, \@basin_properties;
+
 }
 
 sub parseAtomFromIasviz {
