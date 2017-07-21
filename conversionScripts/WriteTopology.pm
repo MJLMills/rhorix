@@ -220,9 +220,9 @@ sub writeAtomicSurface {
   @ias_properties = @{$_[1]};
   $ias_cp_index   = $_[2];
 
-#  print STDERR "Critical Point Index\: $ias_cp_index\n";
-#  $niasCoords     = @ias_coords;     print STDERR "Num. IASs in Atomic Surface\: $niasCoords\n\n";
-#  $niasProperties = @ias_properties; #print STDERR "Num. IASs in Atomic Surface\(props\)\: $niasProperties\n";
+  #print STDERR "Critical Point Index\: $ias_cp_index\n";
+  #$niasCoords     = @ias_coords;     print STDERR "Num. IASs in Atomic Surface\: $niasCoords\n\n";
+  #$niasProperties = @ias_properties; #print STDERR "Num. IASs in Atomic Surface\(props\)\: $niasProperties\n";
 
 #  foreach(@ias_coords) {
 #    $n = @{$_};
@@ -253,11 +253,12 @@ sub writeInteratomicSurface {
   $gp_cp_index   = $_[2];
 
   #$nlfCoords     = @gp_coords;     print STDERR "Num. Paths in IAS \: $nlfCoords\n";
-  #$nProperties = @properties; print STDERR "Num. Paths in IAS \(props\)\: $nProperties\n";
+  #$nProperties   = @gp_properties; print STDERR "Num. Paths in IAS \(props\)\: $nProperties\n";
 
   openTag("InteratomicSurface");
-    for ($gp=0; $gp<@coords; $gp++) {
-      writeGradientPath($gp_cp_index,0,$coords[$gp],$properties[$gp]);
+    for ($gp=0; $gp<@gp_coords; $gp++) {
+      #print STDERR "GP\: $gp\n";
+      writeGradientPath($gp_cp_index,0,$gp_coords[$gp],$gp_properties[$gp]);
     }
     #for ($gp=0; $gp<@coords; $gp++) {
     #  writeTriangulation($coords[$gp],$properties[$gp]);
