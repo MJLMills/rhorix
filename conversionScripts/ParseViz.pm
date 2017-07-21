@@ -356,6 +356,7 @@ sub parseRelatedIasvizFiles {
     
     $element = lc($elements[$i]);
     $iasvizFile = "$iasvizDir\/$element$indices[$i]\.iasviz";
+    $basvizFile = "$iasvizDir\/$element$indices[$i]\.basviz";
     if (-e $iasvizFile) {
 
       $iasvizContents = readFile($iasvizFile);
@@ -376,7 +377,15 @@ sub parseRelatedIasvizFiles {
       print STDERR "Warning\: No iasviz file found for $element$indices[$i]\n";
     }
 
+    if (-e $basvizFile) {
+      print STDERR "Found basviz file for $element$indices[$i]\n";
+    } else {
+      print STDERR "Warning\: No basviz file found for $element$indices[$i]\n";
+      print STDERR "$basvizFile\n";
+    }
+
   }
+
 
   return \@atomic_surface_coords, 
          \@atomic_surface_properties,
