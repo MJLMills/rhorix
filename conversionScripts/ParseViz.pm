@@ -385,10 +385,15 @@ sub parseRelatedIasvizFiles {
         if ($basvizContents[$line] =~ m/\<Basin\s+Path\>/) {
           print STDERR "Found basin path\: $basvizContents[$line]\n";
           if ($basvizContents[$line+1] =~ m/(\d+)\s+\d+\s+\d+\s+-?\d+\.\d+E[+-]\d+\s+-?\d+\.\d+E[+-]\d+\s+-?\d+\.\d+E[+-]\d+/) {
+            $nPoints = $1;
             print STDERR "Num Lines\: $1\n";
           } else {
             die "Malformed header of Basin Path\: $basvizContents[$line+1]\n\n";
           }
+
+          @slice = @basvizContents[$line+2..$line+1+$nPoints];
+          ($gp_coords, $gp_properties) = parseGradientPath(\@slice);
+
         }
       }
 
