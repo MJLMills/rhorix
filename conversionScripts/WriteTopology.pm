@@ -316,7 +316,7 @@ sub writeAtomicBasin {
   $cp_index      = $_[2];
 
   openTag("AtomicBasin");
-    for ($gp=0; $gp<@ab_coords; $gp++) {
+    for ($gp=0; $gp<@gp_coords; $gp++) {
       writeGradientPath($cp_index,0,$gp_coords[$gp],$gp_properties[$gp]);
     }
   closeTag("AtomicBasin");
