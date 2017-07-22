@@ -38,7 +38,6 @@ our $VERSION = 1.0;
 #            $_[14]
 #            $_[15]
 #            $_[16]
-#            AtomicBasinData - need to generate basviz files
 #            RingSurfaceData
 #            $_[17] - reference to array of arrays, each being an array of 3-length arrays of cartesians
 #            $_[18] - reference to array of arrays, each being an array of 2 indices
@@ -47,6 +46,10 @@ our $VERSION = 1.0;
 #            $_[20] - reference to an array of arrays, each being an array of 3-length arrays
 #            $_[21] - dicts as above
 #            $_[22] - NACP indices for envelopes
+#            AtomicBasinData - need to generate basviz files
+#            $_[23]
+#            $_[24]
+#            $_[25]
 #            RingData
 #            CageData
 sub writeTopologyXML {
@@ -58,7 +61,7 @@ sub writeTopologyXML {
   writeSourceInformation($_[2]);
   writeNuclei($_[3],$_[4],$_[5]);
   writeCriticalPoints($_[6],$_[7],$_[8],$_[9],$_[10]);
-  writeGradientVectorField($_[11],$_[12],$_[13],$_[14],$_[15],$_[16],$_[17],$_[18],$_[19],$_[20],$_[21],$_[22]);
+  writeGradientVectorField($_[11],$_[12],$_[13],$_[14],$_[15],$_[16],$_[17],$_[18],$_[19],$_[20],$_[21],$_[22],$_[23],$_[24],$_[25]);
 
   closeTag("Topology");
 
@@ -159,16 +162,13 @@ sub writeGradientVectorField {
 
   openTag("GradientVectorField");
     writeMolecularGraph($_[0],$_[1],$_[2]);
+    writeAtomicBasins($_[12],$_[13],$_[14]);
     writeEnvelopes($_[9],$_[10],$_[11]);
     writeAtomicSurfaces($_[3],$_[4],$_[5]);
     writeRingSurfaces($_[6],$_[7],$_[8]);
+    #writeRings()
+    #writeCages()
   closeTag("GradientVectorField");
-
-  #writeAtomicSurfaces()
-
-  #writeAtomicBasins()
-  #writeRings()
-  #writeCages()
 
 }
 
@@ -295,13 +295,29 @@ sub writeEnvelope {
 
 }
 
+sub writeAtomicBasins {
+
+  @ab_coords     = @{$_[0]};
+  @ab_properties = @{$_[1]};
+  @ab_indices    = @{$_[2]};
+
+  for ($ab=0; $ab<@ab_coords; $ab++) {
+    writeAtomicBasin($ab_coords[$ab],$ab_properties[$ab],$ab_indices[$ab]);
+  }
+
+}
+
 # writeAtomicBasin - Write an AtomicBasin XML element
 # Arguments: $_[0] - Reference to array of gradient paths in the basin
 sub writeAtomicBasin {
 
+  @gp_coords     = @{$_[0]};
+  @gp_properties = @{$_[1]};
+  $cp_index      = $_[2];
+
   openTag("AtomicBasin");
-    foreach(@{$_[0]}) {
-      writeGradientPath($_);
+    for ($gp=0; $gp<@ab_coords; $gp++) {
+      writeGradientPath($cp_index,0,$gp_coords[$gp],$gp_properties[$gp]);
     }
   closeTag("AtomicBasin");
 

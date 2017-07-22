@@ -32,7 +32,10 @@ sub parseMgpviz {
    $atomic_surface_indices,
    $envelope_coords,
    $envelope_properties,
-   $envelope_indices) = parseRelatedIasvizFiles($elements,$nuclearIndices,$_[1]);
+   $envelope_indices,
+   $atomic_basin_coords,
+   $atomic_basin_properties,
+   $atomic_basin_indices) = parseRelatedIasvizFiles($elements,$nuclearIndices,$_[1]);
 
   return $sourceInformation,
          $elements,
@@ -54,7 +57,10 @@ sub parseMgpviz {
          $ring_surface_props,
          $envelope_coords,
          $envelope_properties,
-         $envelope_indices;
+         $envelope_indices,
+         $atomic_basin_coords,
+         $atomic_basin_properties,
+         $atomic_basin_indices;
 
 }
 
@@ -351,6 +357,10 @@ sub parseRelatedIasvizFiles {
   my @envelope_properties;
   my @envelope_indices;
 
+  my @atomic_basin_coords;
+  my @atomic_basin_properties;
+  my @atomic_basin_indices;
+
   $iasvizDir = "$sysName\_atomicfiles";
   for($i=0; $i<@indices; $i++) {
     
@@ -379,9 +389,14 @@ sub parseRelatedIasvizFiles {
 
     if (-e $basvizFile) {
 
-      @basvizContents = @{readFile($basvizFile)};
-      ($basin_coords,$basin_properties) = parseBasinFromBasviz(\@basvizContents);
-      # add the basin array references to an array for all atoms
+      $basvizContents = readFile($basvizFile);
+
+      $atom = parseAtomFromIasviz($basvizContents);
+      $atom =~ m/[a-zA-Z]+(\d+)/; $cp_index = $1;
+      ($basin_coords,$basin_properties) = parseBasinFromBasviz($basvizContents);
+      push(@atomic_basin_coords,$basin_coords);
+      push(@atomic_basin_properties,$basin_properties);
+      push(@atomic_basin_indices,$cp_index);
 
     } else {
       print STDERR "Warning\: No basviz file found for $element$indices[$i]\n";
@@ -394,24 +409,23 @@ sub parseRelatedIasvizFiles {
          \@atomic_surface_indices,
          \@envelope_coords, 
          \@envelope_properties,
-         \@envelope_indices;
-         # return the basin data
+         \@envelope_indices,
+         \@atomic_basin_coords,
+         \@atomic_basin_properties,
+         \@atomic_basin_indices;
 }
 
 sub parseBasinFromBasviz {
 
   my @basvizContents = @{$_[0]};
-  print STDERR "Found basviz file for $element$indices[$i]\n";
 
   my @basin_coords;
   my @basin_properties;
 
   foreach($line=0; $line<@basvizContents; $line++) {
     if ($basvizContents[$line] =~ m/\<Basin\s+Path\>/) {
-      print STDERR "Found basin path\: $basvizContents[$line]\n";
       if ($basvizContents[$line+1] =~ m/(\d+)\s+\d+\s+\d+\s+-?\d+\.\d+E[+-]\d+\s+-?\d+\.\d+E[+-]\d+\s+-?\d+\.\d+E[+-]\d+/) {
         $nPoints = $1;
-        print STDERR "Num Points\: $1\n";
       } else {
         die "Malformed header of Basin Path\: $basvizContents[$line+1]\n\n";
       }
