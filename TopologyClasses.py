@@ -114,7 +114,7 @@ class AtomicInteractionLine():
                     return critical_points[index]
 
 class AtomicBasin():
-    def __init__(self,gradient_paths,critical_point):
+    def __init__(self,gradient_paths):
         self.gradient_paths = gradient_paths
 
     def getNuclearAttractorCriticalPoint():

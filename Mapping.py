@@ -99,7 +99,8 @@ def drawAtomicInteractionLine(atomic_interaction_line,bevel,material_name):
 def drawAtomicBasins(atomic_basins):
     for atomic_basin in atomic_basins:
         for gradient_path in atomic_basin.gradient_paths:
-            drawGradientPath(gradient_path,material,bevel)
+            print(gradient_path)
+            drawGradientPath(gradient_path,bpy.data.objects['non_bond-BevelCircle'],'Bond-curve-material')
 
 def drawEnvelopes(envelopes):
     for envelope in envelopes:
