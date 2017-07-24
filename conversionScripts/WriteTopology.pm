@@ -356,16 +356,18 @@ sub writeRingSurface {
 # writeRing - Write a Ring XML Element (list of AILs)
 sub writeRing {
 
-  openTag("Ring");
-  closeTag("Ring");
+  print STDERR "writeRing: To be implemented\n");
+  #openTag("Ring");
+  #closeTag("Ring");
 
 }
 
 # writeCage - Write a Cage XML Element (list of Rings)
 sub writeCage {
 
-  openTag("Cage");
-  closeTag("Cage");
+  print STDERR ("writeCage: To be implemented\n");
+  #openTag("Cage");
+  #closeTag("Cage");
 
 }
 
