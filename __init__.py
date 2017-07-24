@@ -23,7 +23,7 @@ import fnmatch
 # See https://www.python.org/dev/peps/pep-0008/
 
 # Script Meta-info: this Python dictionary is required by all Addon files
-# All possible keys are present in this dict - fill in wiki/tracker URLs later
+# All possible keys are present in this dict - fill in wiki/tracker URLs later if needed
 # See https://wiki.blender.org/index.php/Dev:Py/Scripts/Guidelines/Addons/metainfo
 
 bl_info = {
@@ -33,7 +33,7 @@ bl_info = {
     "version"     : (1, 0, 0),
     "blender"     : (2, 78, 0),
     "location"    : "View 3D > Object Mode > Tool Shelf",
-    "warning"     : "Be aware of XML vulnerabilities!",
+    "warning"     : "Be aware of XML vulnerabilities when opening external .top files",
     # link to the wiki page of the script
     "wiki_url"    : "",
     # specify a non-default bug tracker
