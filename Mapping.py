@@ -31,7 +31,7 @@ def drawTopology(topology):
 
 def drawGradientVectorField(gradient_vector_field,critical_points,nuclei):
 
-    drawMolecularGraph(gradient_vector_field.molecular_graph,critical_points)
+    drawMolecularGraph(gradient_vector_field.molecular_graph,critical_points,nuclei)
     drawAtomicBasins(gradient_vector_field.atomic_basins,critical_points,nuclei)
     drawEnvelopes(gradient_vector_field.envelopes)
     drawAtomicSurfaces(gradient_vector_field.atomic_surfaces)
@@ -89,11 +89,11 @@ def createBevelCircle(name,scale):
     bpy.context.object.hide_render = True
     bpy.ops.transform.resize(value=(scale,scale,scale))
 
-def drawMolecularGraph(molecular_graph,critical_points):
+def drawMolecularGraph(molecular_graph,critical_points,nuclei,color_bonds=True,color_nonbonds=True):
 
     weak_limit = 0.025
     bond_scale = 0.200
-    nonbond_scale = 0.05
+    nonbond_scale = 0.050
 
     createBevelCircle('non_bond-BevelCircle',nonbond_scale)
     createBevelCircle('bond-BevelCircle',bond_scale)
@@ -101,9 +101,23 @@ def drawMolecularGraph(molecular_graph,critical_points):
     for ail in molecular_graph.atomic_interaction_lines:
         bcp = ail.getBCP(critical_points)
         if (bcp.scalar_properties.get('rho') < weak_limit):
-            drawAtomicInteractionLine(ail,bpy.data.objects['non_bond-BevelCircle'],'Non-Bond-curve-material')
+            if (color_nonbonds == True):
+                for gradient_path in ail.gradient_paths:
+                    nacp_index = gradient_path.getNuclearIndex(critical_points)
+                    element = nuclei[nacp_index].element.lower()
+                    material_name = element+'-critical_point-material'
+                    drawGradientPath(gradient_path,bpy.data.objects['bond-BevelCircle'],material_name)
+            else:
+                drawAtomicInteractionLine(ail,bpy.data.objects['non_bond-BevelCircle'],'Non-Bond-curve-material')
         else:
-            drawAtomicInteractionLine(ail,bpy.data.objects['bond-BevelCircle'],'Bond-curve-material')
+            if (color_bonds == True):
+                for gradient_path in ail.gradient_paths:
+                    nacp_index = gradient_path.getNuclearIndex(critical_points)
+                    element = nuclei[nacp_index].element.lower()
+                    material_name = element+'-critical_point-material'
+                    drawGradientPath(gradient_path,bpy.data.objects['bond-BevelCircle'],material_name)
+            else:
+                drawAtomicInteractionLine(ail,bpy.data.objects['bond-BevelCircle'],'Bond-curve-material')
 
 def drawAtomicInteractionLine(atomic_interaction_line,bevel,material_name):
 

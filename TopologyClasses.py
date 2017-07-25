@@ -149,6 +149,14 @@ class AtomicInteractionLine():
                 if (critical_points[index].computeType() == 'bcp'):
                     return critical_points[index]
 
+    def getNuclearIndices(self,critical_points):
+        indices = []
+        for gradient_path in self.gradient_paths:
+            for index in gradient_path.cp_indices:
+                if (critical_points[index].computeType() == 'nacp'):
+                    indices.append(index)
+        return indices
+
 # The gradient paths of an interatomic surface share a single BCP
 class InteratomicSurface():
     def __init__(self,gradient_paths,triangulation):
@@ -182,6 +190,11 @@ class GradientPath():
     def __init__(self,cp_indices,points):
         self.cp_indices = cp_indices
         self.points = points
+
+    def getNuclearIndex(self,critical_points):
+        for index in self.cp_indices:
+            if (critical_points[index].computeType() == 'nacp'):
+                return index
 
 # A ring is the set of AILs bounding a RCP
 class Ring():
