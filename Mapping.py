@@ -42,6 +42,7 @@ def drawGradientVectorField(gradient_vector_field,critical_points,nuclei):
 def drawCriticalPoints(critical_points,radii,drawNACP=0):
 
     critical_point_radius_coeff = 0.25
+
     for cp in critical_points:
 
         kind = cp.computeType()
@@ -94,15 +95,15 @@ def drawMolecularGraph(molecular_graph,critical_points):
     bond_scale = 0.200
     nonbond_scale = 0.05
 
-    createBevelCircle('AIL-BevelCircle',bond_scale)
     createBevelCircle('non_bond-BevelCircle',nonbond_scale)
+    createBevelCircle('bond-BevelCircle',bond_scale)
 
     for ail in molecular_graph.atomic_interaction_lines:
         bcp = ail.getBCP(critical_points)
         if (bcp.scalar_properties.get('rho') < weak_limit): # make a property with a spinner to adjust it
             drawAtomicInteractionLine(ail,bpy.data.objects['non_bond-BevelCircle'],'Non-Bond-curve-material')
         else:
-            drawAtomicInteractionLine(ail,bpy.data.objects['AIL-BevelCircle'],'Bond-curve-material')
+            drawAtomicInteractionLine(ail,bpy.data.objects['bond-BevelCircle'],'Bond-curve-material')
 
 def drawAtomicInteractionLine(atomic_interaction_line,bevel,material_name):
 
