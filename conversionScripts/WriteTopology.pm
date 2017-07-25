@@ -356,7 +356,7 @@ sub writeRingSurface {
 # writeRing - Write a Ring XML Element (list of AILs)
 sub writeRing {
 
-  print STDERR "writeRing: To be implemented\n");
+  print STDERR "writeRing: To be implemented\n";
   #openTag("Ring");
   #closeTag("Ring");
 
