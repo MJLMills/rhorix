@@ -100,7 +100,7 @@ def drawMolecularGraph(molecular_graph,critical_points):
 
     for ail in molecular_graph.atomic_interaction_lines:
         bcp = ail.getBCP(critical_points)
-        if (bcp.scalar_properties.get('rho') < weak_limit): # make a property with a spinner to adjust it
+        if (bcp.scalar_properties.get('rho') < weak_limit):
             drawAtomicInteractionLine(ail,bpy.data.objects['non_bond-BevelCircle'],'Non-Bond-curve-material')
         else:
             drawAtomicInteractionLine(ail,bpy.data.objects['bond-BevelCircle'],'Bond-curve-material')
