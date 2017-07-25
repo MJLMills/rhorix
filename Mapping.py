@@ -195,7 +195,7 @@ def drawAtomicSurfaces(atomic_surfaces,critical_points,nuclei,triangulate=True,m
                                 surface_edges.append(new_edge)
 
                             # make connections between neighbouring gradient paths
-                            if (i > 0 and j < 1): #anum_paths-1):
+                            if (i > 0 and j < num_paths-1):
                                 if (i < n_points_on_next_path-1):
                                     new_cross = [index,index+num_points_on_path]
                                     surface_edges.append(new_cross)                                   
