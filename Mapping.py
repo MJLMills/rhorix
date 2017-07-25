@@ -149,7 +149,7 @@ def drawEnvelopes(envelopes):
         else:
             drawMesh(envelope.triangulation,'Bond-curve-material')
 
-def drawAtomicSurfaces(atomic_surfaces,critical_points,nuclei,triangulate=True,max_rho=0.001):
+def drawAtomicSurfaces(atomic_surfaces,critical_points,nuclei,triangulate=True,max_rho=0.0000):
 
     for atomic_surface in atomic_surfaces:
         for interatomic_surface in atomic_surface.interatomic_surfaces:
@@ -160,6 +160,7 @@ def drawAtomicSurfaces(atomic_surfaces,critical_points,nuclei,triangulate=True,m
                     surface_edges = []
                     surface_faces = []
                     surface_points = []
+
                     for gradient_path in interatomic_surface.gradient_paths:
                         nacp_index = gradient_path.getNuclearIndex(critical_points)
                         element = nuclei[nacp_index].element.lower()
@@ -167,6 +168,44 @@ def drawAtomicSurfaces(atomic_surfaces,critical_points,nuclei,triangulate=True,m
                         for point in gradient_path.points:
                             if (point.scalar_properties.get('rho') > max_rho):
                                 surface_points.append(point)
+
+                    index = 0
+                    num_paths = len(interatomic_surface.gradient_paths)
+                    for j, gradient_path in enumerate(interatomic_surface.gradient_paths):
+
+                        num_points_on_path = len(gradient_path.points)
+
+                        if (j < num_paths-1):
+                            n_points_on_next_path = len(interatomic_surface.gradient_paths[j+1].points)
+                            new_edge = [index+num_points_on_path-1,index+num_points_on_path+n_points_on_next_path-1]
+                            surface_edges.append(new_edge)
+                        else:
+                            n_points_on_next_path = len(interatomic_surface.gradient_paths[0].points)
+                            new_edge = [index+num_points_on_path-1,n_points_on_next_path-1]
+                            surface_edges.append(new_edge)
+
+                        print("Path ", j, " points = ", num_points_on_path, " points on adj = ", n_points_on_next_path)
+
+                        # walk along the path point by point
+                        for i, point in enumerate(gradient_path.points): # [:-1]
+
+                            # make all connections along each gradient path
+                            if (i < num_points_on_path-1): # ignore last point
+                                new_edge = [index,index+1]
+                                surface_edges.append(new_edge)
+
+                            # make connections between neighbouring gradient paths
+                            if (i > 0 and j < 1): #anum_paths-1):
+                                if (i < n_points_on_next_path-1):
+                                    new_cross = [index,index+num_points_on_path]
+                                    surface_edges.append(new_cross)                                   
+                                
+                            elif (i > 0 and j == num_paths-1):
+                                if (i < num_points_on_path-1):
+                                    new_cross = [index,i]
+                                    surface_edges.append(new_cross)
+
+                            index += 1
 
                     surface_triangulation = TopologyClasses.Triangulation(surface_points,surface_edges,surface_faces)
                     drawMesh(surface_triangulation,material_name)
