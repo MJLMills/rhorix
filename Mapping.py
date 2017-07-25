@@ -149,7 +149,7 @@ def drawEnvelopes(envelopes):
         else:
             drawMesh(envelope.triangulation,'Bond-curve-material')
 
-def drawAtomicSurfaces(atomic_surfaces,critical_points,nuclei,triangulate=True):
+def drawAtomicSurfaces(atomic_surfaces,critical_points,nuclei,triangulate=True,max_rho=0.001):
 
     for atomic_surface in atomic_surfaces:
         for interatomic_surface in atomic_surface.interatomic_surfaces:
@@ -161,14 +161,18 @@ def drawAtomicSurfaces(atomic_surfaces,critical_points,nuclei,triangulate=True):
                     surface_faces = []
                     surface_points = []
                     for gradient_path in interatomic_surface.gradient_paths:
+                        nacp_index = gradient_path.getNuclearIndex(critical_points)
+                        element = nuclei[nacp_index].element.lower()
+                        material_name = element+'-interatomic_surface-material'
                         for point in gradient_path.points:
-                            surface_points.append(point)
+                            if (point.scalar_properties.get('rho') > max_rho):
+                                surface_points.append(point)
 
                     surface_triangulation = TopologyClasses.Triangulation(surface_points,surface_edges,surface_faces)
-                    drawMesh(surface_triangulation,'Bond-curve-material')
+                    drawMesh(surface_triangulation,material_name)
 
                 else:
-                    
+
                     for gradient_path in interatomic_surface.gradient_paths:
                         nacp_index = gradient_path.getNuclearIndex(critical_points)
                         element = nuclei[nacp_index].element.lower()
