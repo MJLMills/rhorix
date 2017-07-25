@@ -10,7 +10,7 @@ import mathutils
 import time
 from . import Resources, Materials
 
-def drawTopology(topology,drawNACP=False):
+def drawTopology(topology,drawNACP=False,color_bonds=True,color_nonbonds=False):
 
     elementRadii = Resources.defineRadii()
     cpMaterials = Materials.createAllMaterials('critical_point')
@@ -26,15 +26,15 @@ def drawTopology(topology,drawNACP=False):
     print('CP Time ', time.time() - start)
 
     start = time.time()
-    drawGradientVectorField(topology.gradient_vector_field,topology.critical_points,topology.nuclei)
+    drawGradientVectorField(topology.gradient_vector_field,topology.critical_points,topology.nuclei,color_bonds,color_nonbonds)
     print('GVF Time ', time.time() - start)
 
-def drawGradientVectorField(gradient_vector_field,critical_points,nuclei):
+def drawGradientVectorField(gradient_vector_field,critical_points,nuclei,color_bonds,color_nonbonds):
 
-    drawMolecularGraph(gradient_vector_field.molecular_graph,critical_points,nuclei)
+    drawMolecularGraph(gradient_vector_field.molecular_graph,critical_points,nuclei,color_bonds=color_bonds,color_nonbonds=color_nonbonds)
     drawAtomicBasins(gradient_vector_field.atomic_basins,critical_points,nuclei)
-    drawEnvelopes(gradient_vector_field.envelopes)
-    drawAtomicSurfaces(gradient_vector_field.atomic_surfaces)
+    #drawEnvelopes(gradient_vector_field.envelopes)
+    drawAtomicSurfaces(gradient_vector_field.atomic_surfaces,critical_points,nuclei)
     drawRingSurfaces(gradient_vector_field.ring_surfaces)
     drawRings(gradient_vector_field.rings)
     drawCages(gradient_vector_field.cages)
@@ -146,14 +146,16 @@ def drawEnvelopes(envelopes):
         else:
             drawMesh(envelope.triangulation,'Bond-curve-material')
 
-def drawAtomicSurfaces(atomic_surfaces):
+def drawAtomicSurfaces(atomic_surfaces,critical_points,nuclei):
     for atomic_surface in atomic_surfaces:
         for interatomic_surface in atomic_surface.interatomic_surfaces:
             print(interatomic_surface)
-            if (not interatomic_surface.triangulation):
-                # draw AILs
+            if (interatomic_surface.triangulation is None):
                 for gradient_path in interatomic_surface.gradient_paths:
-                    drawGradientPath(gradient_path,bpy.data.objects['non_bond-BevelCircle'],'Bond-curve-material')
+                    nacp_index = gradient_path.getNuclearIndex(critical_points)
+                    element = nuclei[nacp_index].element.lower()
+                    material_name = element+'-interatomic_surface-material'
+                    drawGradientPath(gradient_path,bpy.data.objects['non_bond-BevelCircle'],material_name)
             else:
                 drawMesh(triangulation,'Bond-curve-material')
 
