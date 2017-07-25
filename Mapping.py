@@ -4,7 +4,6 @@
 # Really there are only 3 objects being drawn - spheres for points, curves for gradient paths
 # and meshes for surfaces. The remaining functions ultimately call one of these
 # 3 functions. All settings should therefore be arguments to the draw routines.
-# would be nice if each returned a dict mapping top objects to 3D objects.
 
 import bpy
 import mathutils

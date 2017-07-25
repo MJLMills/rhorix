@@ -103,16 +103,6 @@ class MolecularGraph():
     def __init__(self,atomic_interaction_lines):
         self.atomic_interaction_lines = atomic_interaction_lines
 
-class AtomicInteractionLine():
-    def __init__(self,gradient_paths):
-        self.gradient_paths = gradient_paths
-
-    def getBCP(self,critical_points):
-        for gradient_path in self.gradient_paths:
-            for index in gradient_path.cp_indices:
-                if (critical_points[index].computeType() == 'bcp'):
-                    return critical_points[index]
-
 class AtomicBasin():
     def __init__(self,gradient_paths):
         self.gradient_paths = gradient_paths
@@ -136,18 +126,6 @@ class AtomicSurface():
     def __init__(self,interatomic_surfaces):
         self.interatomic_surfaces = interatomic_surfaces
 
-# The gradient paths of an interatomic surface share a single BCP
-class InteratomicSurface():
-    def __init__(self,gradient_paths,triangulation):
-        self.gradient_paths = gradient_paths
-        self.triangulation  = triangulation
-
-    def getBondCriticalPoint():
-        for gradient_path in gradient_paths:
-            for cp in gradient_path.critical_points:
-                if (cp.rank == 3 and cp.signature == -1):
-                    return cp
-
 # A ring surface is a set of gradient paths sharing a single RCP
 # There are a set of ring paths - GPs from the RCP to BCPs
 # and the remainder connect the RCP to nuclei connected by the BCPs
@@ -161,15 +139,27 @@ class RingSurface():
                 if (cp.rank == 3 and cp.signature == +1):
                     return cp
 
-# A ring is the set of AILs bounding a RCP
-class Ring():
-    def __init__(self,atomic_interaction_lines):
-        self.atomic_interaction_lines = atomic_interaction_lines
+class AtomicInteractionLine():
+    def __init__(self,gradient_paths):
+        self.gradient_paths = gradient_paths
 
-# A cage is the set of rings bounding a CCP
-class Cage():
-    def __init__(self,rings):
-        self.rings = rings
+    def getBCP(self,critical_points):
+        for gradient_path in self.gradient_paths:
+            for index in gradient_path.cp_indices:
+                if (critical_points[index].computeType() == 'bcp'):
+                    return critical_points[index]
+
+# The gradient paths of an interatomic surface share a single BCP
+class InteratomicSurface():
+    def __init__(self,gradient_paths,triangulation):
+        self.gradient_paths = gradient_paths
+        self.triangulation  = triangulation
+
+    def getBondCriticalPoint():
+        for gradient_path in gradient_paths:
+            for cp in gradient_path.critical_points:
+                if (cp.rank == 3 and cp.signature == -1):
+                    return cp
 
 class Triangulation():
     def __init__(self,points,edges,faces):
@@ -192,4 +182,14 @@ class GradientPath():
     def __init__(self,cp_indices,points):
         self.cp_indices = cp_indices
         self.points = points
+
+# A ring is the set of AILs bounding a RCP
+class Ring():
+    def __init__(self,atomic_interaction_lines):
+        self.atomic_interaction_lines = atomic_interaction_lines
+
+# A cage is the set of rings bounding a CCP
+class Cage():
+    def __init__(self,rings):
+        self.rings = rings
 		
