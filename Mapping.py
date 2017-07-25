@@ -10,7 +10,7 @@ import mathutils
 import time
 from . import Resources, Materials
 
-def drawTopology(topology):
+def drawTopology(topology,drawNACP=False):
 
     elementRadii = Resources.defineRadii()
     cpMaterials = Materials.createAllMaterials('critical_point')
@@ -22,7 +22,7 @@ def drawTopology(topology):
     print('Nuclei Time ', time.time() - start)
 
     start = time.time()
-    drawCriticalPoints(topology.critical_points,elementRadii,0)
+    drawCriticalPoints(topology.critical_points,elementRadii,drawNACP)
     print('CP Time ', time.time() - start)
 
     start = time.time()
@@ -39,14 +39,14 @@ def drawGradientVectorField(gradient_vector_field,critical_points,nuclei):
     drawRings(gradient_vector_field.rings)
     drawCages(gradient_vector_field.cages)
 
-def drawCriticalPoints(critical_points,radii,drawNACP=0):
+def drawCriticalPoints(critical_points,radii,drawNACP=False):
 
     critical_point_radius_coeff = 0.25
 
     for cp in critical_points:
 
         kind = cp.computeType()
-        if (kind != 'nacp' or drawNACP == 1):
+        if (kind != 'nacp' or drawNACP == True):
             location = mathutils.Vector(cp.position_vector)
             radius = critical_point_radius_coeff * radii[kind]
             material_name = kind+'-critical_point-material'
@@ -164,7 +164,7 @@ def drawRingSurfaces(ring_surfaces):
 
     for ring_surface in ring_surfaces:
         for gradient_path in ring_surface.gradient_paths:
-            drawGradientPath(gradient_path,bpy.data.objects['RingSurfaces-BevelCircle'],'rcp-critical_point-material')
+            drawGradientPath(gradient_path,bpy.data.objects['RingSurfaces-BevelCircle'],'Ring-Path-curve-material')
 
 def drawMesh(triangulation,material_name):
 
