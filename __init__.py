@@ -47,6 +47,7 @@ def register():
     bpy.utils.register_class(RenderStereo)
     bpy.utils.register_class(ResizeAILs)
     bpy.utils.register_class(ResizeNonbondedInteractions)
+    bpy.utils.register_class(ToggleBCPs)
     bpy.utils.register_class(ToggleRCPs)
     bpy.utils.register_class(ToggleCCPs)
     bpy.utils.register_class(RhorixControlPanel)
@@ -59,6 +60,7 @@ def unregister():
     bpy.utils.unregister_class(RhorixControlPanel)
     bpy.utils.unregister_class(ToggleCCPs)
     bpy.utils.unregister_class(ToggleRCPs)
+    bpy.utils.unregister_class(ToggleBCPs)
     bpy.utils.unregister_class(ResizeNonbondedInteractions)
     bpy.utils.unregister_class(ResizeAILs)
     bpy.utils.unregister_class(RenderStereo)
@@ -125,7 +127,7 @@ class ResizeAILs(bpy.types.Operator):
     def invoke(self,context,event):
         for object in bpy.data.objects:
             object.select = False
-        bpy.ops.object.select_pattern(pattern="AIL-BevelCircle")
+        bpy.ops.object.select_pattern(pattern="bond-BevelCircle")
         return {'FINISHED'}
 
 class ResizeNonbondedInteractions(bpy.types.Operator):
@@ -137,6 +139,25 @@ class ResizeNonbondedInteractions(bpy.types.Operator):
         for object in bpy.data.objects:
             object.select = False
         bpy.ops.object.select_pattern(pattern="non_bond-BevelCircle")
+        return {'FINISHED'}
+
+class ToggleBCPs(bpy.types.Operator):
+
+    bl_idname = "rhorix.toggle_bcps"
+    bl_label = "Toggle BCPs"
+
+    def invoke(self,context,event):
+        for object in bpy.data.objects:
+            object.select = False
+        bcps = [obj for obj in bpy.context.scene.objects if fnmatch.fnmatchcase(obj.name, "*bcp*")]
+        for bcp in bcps:
+            if (bcp.hide == True):
+                bcp.hide = False
+                bcp.hide_render = False
+            else:
+                bcp.hide = True
+                bcp.hide_render = True
+
         return {'FINISHED'}
 
 class ToggleRCPs(bpy.types.Operator):
@@ -193,6 +214,7 @@ class RhorixControlPanel(bpy.types.Panel):
         uiColumn.operator("rhorix.render_stereo",   text="Render Stereo")
         uiColumn.operator("rhorix.resize_ails", text="Resize AILs")
         uiColumn.operator("rhorix.resize_nbs", text="Resize NBs")
+        uiColumn.operator("rhorix.toggle_bcps", text="Toggle BCPs") 
         uiColumn.operator("rhorix.toggle_rcps", text="Toggle RCPs")
         uiColumn.operator("rhorix.toggle_ccps", text="Toggle CCPs")
 
