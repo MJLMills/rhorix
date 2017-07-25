@@ -13,7 +13,7 @@ from . import Resources, Materials
 def drawTopology(topology):
 
     elementRadii = Resources.defineRadii()
-    cpMaterials  = Materials.createAllMaterials('critical_point')
+    cpMaterials = Materials.createAllMaterials('critical_point')
     Materials.createGenericMaterials()
 
     start = time.time()
@@ -38,73 +38,90 @@ def drawGradientVectorField(gradient_vector_field,critical_points):
     drawRings(gradient_vector_field.rings)
     drawCages(gradient_vector_field.cages)
 
-def drawCriticalPoints(critical_points,radii,drawNACP):
+def drawCriticalPoints(critical_points,radii,drawNACP=0):
 
+    critical_point_radius_coeff = 0.25
     for cp in critical_points:
 
         kind = cp.computeType()
         if (kind != 'nacp' or drawNACP == 1):
             location = mathutils.Vector(cp.position_vector)
-            radius = radii[kind]
+            radius = critical_point_radius_coeff * radii[kind]
             material_name = kind+'-critical_point-material'
-            drawSphere(kind,location,0.25*radius,material_name)
+            drawSphere(kind,location,radius,material_name)
 
 def drawNuclei(nuclei,radii):
 
+    nuclear_radius_coeff = 0.25
     for nucleus in nuclei:
 
         element = nucleus.element.lower()
         location = mathutils.Vector(nucleus.position_vector)
-        radius = radii[element]
+        radius = nuclear_radius_coeff * radii[element]
         material_name = element+'-critical_point-material'
-        drawSphere(element,location,0.25*radius,material_name)
+        drawSphere(element,location,radius,material_name)
 
 def drawSphere(name,location,size,material_name):
+    """ Draw a sphere """
 
-    cpSphere = bpy.ops.mesh.primitive_uv_sphere_add(location=location,size=size,segments=32,ring_count=16)
+    sphere_segments = 32
+    sphere_ring_count = 16
+    cpSphere = bpy.ops.mesh.primitive_uv_sphere_add(segments=sphere_segments,ring_count=sphere_ring_count,size=size,location=location)
     bpy.context.object.name = name
 
     #Create and apply the subsurface modifiers for smooth rendering
-    bpy.context.object.modifiers.new("subd", type='SUBSURF')
-    bpy.context.object.modifiers['subd'].levels=1
-    bpy.context.object.modifiers['subd'].render_levels=4
-    bpy.context.scene.objects.active = bpy.context.object
-    bpy.ops.object.modifier_apply(apply_as='DATA', modifier='subd')
-    bpy.context.object.data.materials.append(bpy.data.materials[material_name])
+    subsurf_render_levels = 4
+    if (subsurf_render_levels > 1):
+        bpy.context.object.modifiers.new("subd", type='SUBSURF')
+        bpy.context.object.modifiers['subd'].levels=1
+        bpy.context.object.modifiers['subd'].render_levels=subsurf_render_levels
+        bpy.context.scene.objects.active = bpy.context.object
+        bpy.ops.object.modifier_apply(apply_as='DATA', modifier='subd')
+        bpy.context.object.data.materials.append(bpy.data.materials[material_name])
+
+def createBevelCircle(name,scale):
+
+    bpy.ops.curve.primitive_bezier_circle_add()
+    bpy.context.scene.objects.active = bpy.data.objects['BezierCircle']
+    bpy.context.object.name = name
+    bpy.context.object.hide_render = True
+    bpy.ops.transform.resize(value=(scale,scale,scale))
 
 def drawMolecularGraph(molecular_graph,critical_points):
 
-    bpy.ops.curve.primitive_bezier_circle_add()
-    bpy.context.scene.objects.active = bpy.data.objects['BezierCircle']
-    bpy.context.object.name = 'AIL-BevelCircle'
-    bpy.ops.transform.resize(value=(0.2,0.2,0.2))
+    weak_limit = 0.025
+    bond_scale = 0.200
+    nonbond_scale = 0.05
 
-    bpy.ops.curve.primitive_bezier_circle_add()
-    bpy.context.scene.objects.active = bpy.data.objects['BezierCircle']
-    bpy.context.object.name = 'non_bond-BevelCircle'
-    bpy.ops.transform.resize(value=(0.05,0.05,0.05))
+    createBevelCircle('AIL-BevelCircle',bond_scale)
+    createBevelCircle('non_bond-BevelCircle',nonbond_scale)
 
     for ail in molecular_graph.atomic_interaction_lines:
         bcp = ail.getBCP(critical_points)
-        if (bcp.scalar_properties.get('rho') < 0.025): # make a property with a spinner to adjust it
+        if (bcp.scalar_properties.get('rho') < weak_limit): # make a property with a spinner to adjust it
             drawAtomicInteractionLine(ail,bpy.data.objects['non_bond-BevelCircle'],'Non-Bond-curve-material')
         else:
             drawAtomicInteractionLine(ail,bpy.data.objects['AIL-BevelCircle'],'Bond-curve-material')
 
 def drawAtomicInteractionLine(atomic_interaction_line,bevel,material_name):
+
     for gradient_path in atomic_interaction_line.gradient_paths:
         drawGradientPath(gradient_path,bevel,material_name) 
 
 def drawAtomicBasins(atomic_basins):
+
+    basin_path_scale = 0.01
+
+    bevel_name = 'Basin-BevelCircle'
+    createBevelCircle(bevel_name,basin_path_scale)
+
     for atomic_basin in atomic_basins:
         for gradient_path in atomic_basin.gradient_paths:
-            print(gradient_path)
-            drawGradientPath(gradient_path,bpy.data.objects['non_bond-BevelCircle'],'Bond-curve-material')
+            drawGradientPath(gradient_path,bpy.data.objects[bevel_name],'Bond-curve-material')
 
 def drawEnvelopes(envelopes):
     for envelope in envelopes:
         if (not envelope.triangulation):
-            #draw point cloud
             print("drawEnvelopes: To be implemented")
         else:
             drawMesh(envelope.triangulation,'Bond-curve-material')
@@ -122,29 +139,12 @@ def drawAtomicSurfaces(atomic_surfaces):
 
 def drawRingSurfaces(ring_surfaces):
 
-    bpy.ops.curve.primitive_bezier_circle_add()
-    bpy.context.scene.objects.active = bpy.data.objects['BezierCircle']
-    bpy.context.object.name = 'RingSurfaces-BevelCircle'
-    bpy.ops.transform.resize(value=(0.2,0.2,0.2))
+    ring_path_scale = 0.1
+    createBevelCircle('RingSurfaces-BevelCircle',ring_path_scale)
 
     for ring_surface in ring_surfaces:
         for gradient_path in ring_surface.gradient_paths:
             drawGradientPath(gradient_path,bpy.data.objects['RingSurfaces-BevelCircle'],'rcp-critical_point-material')
-
-def drawRings(rings):
-    for ring in rings:
-        print("drawRings: To be implemented")
-
-def drawRing(ring):
-    for atomic_interaction_line in ring.atomic_interaction_lines:
-        drawAtomicInteractionLine(atomic_interaction_line)
-
-def drawCages(cages):
-    for cage in cages:
-        print("drawCages: To be implemented")
-def drawCage(cage):
-    for ring in cage.rings:
-        drawRing(ring)
 
 def drawMesh(triangulation,material_name):
 
@@ -183,3 +183,18 @@ def drawGradientPath(gradient_path,bevel,material_name):
         x,y,z = cList[num].position_vector
         polyLine.points[num].co = (x,y,z,weight)
 
+def drawRings(rings):
+    print("drawRings: To be implemented")
+    #for ring in rings:
+
+def drawRing(ring):
+    for atomic_interaction_line in ring.atomic_interaction_lines:
+        drawAtomicInteractionLine(atomic_interaction_line)
+
+def drawCages(cages):
+    print("drawCages: To be implemented")
+    #for cage in cages:
+
+def drawCage(cage):
+    for ring in cage.rings:
+        drawRing(ring)
