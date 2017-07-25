@@ -8,13 +8,14 @@
 import bpy
 import mathutils
 import time
-from . import Resources, Materials
+from . import Resources, Materials, TopologyClasses
 
 def drawTopology(topology,drawNACP=False,color_bonds=True,color_nonbonds=False):
 
     elementRadii = Resources.defineRadii()
     cpMaterials = Materials.createAllMaterials('critical_point')
     surfaceMaterials = Materials.createAllMaterials('interatomic_surface')
+    basinMaterials = Materials.createAllMaterials('atomic_basin')
     Materials.createGenericMaterials()
 
     start = time.time()
@@ -55,6 +56,7 @@ def drawCriticalPoints(critical_points,radii,drawNACP=False):
 def drawNuclei(nuclei,radii):
 
     nuclear_radius_coeff = 0.25
+
     for nucleus in nuclei:
 
         element = nucleus.element.lower()
@@ -68,11 +70,12 @@ def drawSphere(name,location,size,material_name):
 
     sphere_segments = 32
     sphere_ring_count = 16
+    subsurf_render_levels = 4
+
     cpSphere = bpy.ops.mesh.primitive_uv_sphere_add(segments=sphere_segments,ring_count=sphere_ring_count,size=size,location=location)
     bpy.context.object.name = name
 
     #Create and apply the subsurface modifiers for smooth rendering
-    subsurf_render_levels = 4
     if (subsurf_render_levels > 1):
         bpy.context.object.modifiers.new("subd", type='SUBSURF')
         bpy.context.object.modifiers['subd'].levels=1
@@ -134,7 +137,7 @@ def drawAtomicBasins(atomic_basins,critical_points,nuclei):
     for atomic_basin in atomic_basins:
         nacp_index = atomic_basin.getNuclearAttractorCriticalPointIndex(critical_points)
         element = nuclei[nacp_index].element.lower()
-        material_name = element+'-critical_point-material'
+        material_name = element+'-atomic_basin-material'
 
         for gradient_path in atomic_basin.gradient_paths:
             drawGradientPath(gradient_path,bpy.data.objects[bevel_name],material_name)
@@ -146,16 +149,32 @@ def drawEnvelopes(envelopes):
         else:
             drawMesh(envelope.triangulation,'Bond-curve-material')
 
-def drawAtomicSurfaces(atomic_surfaces,critical_points,nuclei):
+def drawAtomicSurfaces(atomic_surfaces,critical_points,nuclei,triangulate=True):
+
     for atomic_surface in atomic_surfaces:
         for interatomic_surface in atomic_surface.interatomic_surfaces:
-            print(interatomic_surface)
             if (interatomic_surface.triangulation is None):
-                for gradient_path in interatomic_surface.gradient_paths:
-                    nacp_index = gradient_path.getNuclearIndex(critical_points)
-                    element = nuclei[nacp_index].element.lower()
-                    material_name = element+'-interatomic_surface-material'
-                    drawGradientPath(gradient_path,bpy.data.objects['non_bond-BevelCircle'],material_name)
+
+                if (triangulate == True):
+
+                    surface_edges = []
+                    surface_faces = []
+                    surface_points = []
+                    for gradient_path in interatomic_surface.gradient_paths:
+                        for point in gradient_path.points:
+                            surface_points.append(point)
+
+                    surface_triangulation = TopologyClasses.Triangulation(surface_points,surface_edges,surface_faces)
+                    drawMesh(surface_triangulation,'Bond-curve-material')
+
+                else:
+                    
+                    for gradient_path in interatomic_surface.gradient_paths:
+                        nacp_index = gradient_path.getNuclearIndex(critical_points)
+                        element = nuclei[nacp_index].element.lower()
+                        material_name = element+'-interatomic_surface-material'
+                        drawGradientPath(gradient_path,bpy.data.objects['non_bond-BevelCircle'],material_name)
+
             else:
                 drawMesh(triangulation,'Bond-curve-material')
 
