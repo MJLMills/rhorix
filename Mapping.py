@@ -14,6 +14,7 @@ def drawTopology(topology):
 
     elementRadii = Resources.defineRadii()
     cpMaterials = Materials.createAllMaterials('critical_point')
+    surfaceMaterials = Materials.createAllMaterials('interatomic_surface')
     Materials.createGenericMaterials()
 
     start = time.time()
@@ -25,13 +26,13 @@ def drawTopology(topology):
     print('CP Time ', time.time() - start)
 
     start = time.time()
-    drawGradientVectorField(topology.gradient_vector_field,topology.critical_points)
+    drawGradientVectorField(topology.gradient_vector_field,topology.critical_points,topology.nuclei)
     print('GVF Time ', time.time() - start)
 
-def drawGradientVectorField(gradient_vector_field,critical_points):
+def drawGradientVectorField(gradient_vector_field,critical_points,nuclei):
 
     drawMolecularGraph(gradient_vector_field.molecular_graph,critical_points)
-    drawAtomicBasins(gradient_vector_field.atomic_basins)
+    drawAtomicBasins(gradient_vector_field.atomic_basins,critical_points,nuclei)
     drawEnvelopes(gradient_vector_field.envelopes)
     drawAtomicSurfaces(gradient_vector_field.atomic_surfaces)
     drawRingSurfaces(gradient_vector_field.ring_surfaces)
@@ -108,7 +109,7 @@ def drawAtomicInteractionLine(atomic_interaction_line,bevel,material_name):
     for gradient_path in atomic_interaction_line.gradient_paths:
         drawGradientPath(gradient_path,bevel,material_name) 
 
-def drawAtomicBasins(atomic_basins):
+def drawAtomicBasins(atomic_basins,critical_points,nuclei):
 
     basin_path_scale = 0.01
 
@@ -116,8 +117,12 @@ def drawAtomicBasins(atomic_basins):
     createBevelCircle(bevel_name,basin_path_scale)
 
     for atomic_basin in atomic_basins:
+        nacp_index = atomic_basin.getNuclearAttractorCriticalPointIndex(critical_points)
+        element = nuclei[nacp_index].element.lower()
+        material_name = element+'-critical_point-material'
+
         for gradient_path in atomic_basin.gradient_paths:
-            drawGradientPath(gradient_path,bpy.data.objects[bevel_name],'Bond-curve-material')
+            drawGradientPath(gradient_path,bpy.data.objects[bevel_name],material_name)
 
 def drawEnvelopes(envelopes):
     for envelope in envelopes:

@@ -107,11 +107,11 @@ class AtomicBasin():
     def __init__(self,gradient_paths):
         self.gradient_paths = gradient_paths
 
-    def getNuclearAttractorCriticalPoint():
-        for gradient_path in gradient_paths:
-            for cp in gradient_path.critical_points:
-                if (cp.rank == 3 and cp.signature == -3):
-                    return cp
+    def getNuclearAttractorCriticalPointIndex(self,critical_points):
+        for gradient_path in self.gradient_paths:
+            for index in gradient_path.cp_indices:
+                if (critical_points[index].computeType() == 'nacp'):
+                    return index
 
 # An envelope is a set of points with an optional triangulation thereof.
 # As it does not have gradient paths it must have an explicit critical point member.
