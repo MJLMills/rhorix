@@ -127,7 +127,7 @@ def drawAtomicInteractionLine(atomic_interaction_line,bevel,material_name):
     for gradient_path in atomic_interaction_line.gradient_paths:
         drawGradientPath(gradient_path,bevel,material_name) 
 
-def drawAtomicBasins(atomic_basins,critical_points,nuclei):
+def drawAtomicBasins(atomic_basins,critical_points,nuclei,triangulate=True):
 
     basin_path_scale = 0.01
 
@@ -139,8 +139,26 @@ def drawAtomicBasins(atomic_basins,critical_points,nuclei):
         element = nuclei[nacp_index].element.lower()
         material_name = element+'-atomic_basin-material'
 
-        for gradient_path in atomic_basin.gradient_paths:
-            drawGradientPath(gradient_path,bpy.data.objects[bevel_name],material_name)
+        if (triangulate == True):
+            surface_edges = []
+            surface_faces = []
+            surface_points = []
+
+            index = 0
+            for gradient_path in atomic_basin.gradient_paths:
+                for i, point in enumerate(gradient_path.points):
+                    surface_points.append(point)
+                    if (i < len(gradient_path.points)-1): # ignore last point
+                        new_edge = [index,index+1]
+                        surface_edges.append(new_edge)
+                    index += 1
+
+            surface_triangulation = TopologyClasses.Triangulation(surface_points,surface_edges,surface_faces)
+            drawMesh(surface_triangulation,material_name)
+
+        else:
+            for gradient_path in atomic_basin.gradient_paths:
+                drawGradientPath(gradient_path,bpy.data.objects[bevel_name],material_name)
 
 def drawEnvelopes(envelopes):
     for envelope in envelopes:
