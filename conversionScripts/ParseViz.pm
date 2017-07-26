@@ -329,11 +329,13 @@ sub parseGradientPath {
   foreach(@{$_[0]}) {
 
     if ($_ =~ m/\s+(-?\d+\.\d+E[+-]\d+)\s+(-?\d+\.\d+E[+-]\d+)\s+(-?\d+\.\d+E[+-]\d+)\s+(-?\d+\.\d+E[+-]\d+)/) {
-      my @coords = ($1,$2,$3);
-      push(@points,\@coords);
+      if ($4 >= 0.001) {
+        my @coords = ($1,$2,$3);
+        push(@points,\@coords);
 
-      my %map; $map{'rho'} = $4;
-      push(@props,\%map);
+        my %map; $map{'rho'} = $4;
+        push(@props,\%map);
+      }
     } else {
       die "Malformed line: $_\n";
     }
