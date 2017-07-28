@@ -68,6 +68,8 @@ def drawNuclei(nuclei,radii):
 def drawSphere(name,location,size,material_name):
     """ Draw a sphere """
 
+    print("Sphere Material Name:", material_name)
+
     sphere_segments = 32
     sphere_ring_count = 16
     subsurf_render_levels = 4
@@ -75,14 +77,16 @@ def drawSphere(name,location,size,material_name):
     cpSphere = bpy.ops.mesh.primitive_uv_sphere_add(segments=sphere_segments,ring_count=sphere_ring_count,size=size,location=location)
     bpy.context.object.name = name
 
+    bpy.context.scene.objects.active = bpy.context.object
+    bpy.context.object.data.materials.append(bpy.data.materials[material_name])
+
     #Create and apply the subsurface modifiers for smooth rendering
     if (subsurf_render_levels > 1):
         bpy.context.object.modifiers.new("subd", type='SUBSURF')
         bpy.context.object.modifiers['subd'].levels=1
         bpy.context.object.modifiers['subd'].render_levels=subsurf_render_levels
-        bpy.context.scene.objects.active = bpy.context.object
         bpy.ops.object.modifier_apply(apply_as='DATA', modifier='subd')
-        bpy.context.object.data.materials.append(bpy.data.materials[material_name])
+
 
 def createBevelCircle(name,scale):
 
@@ -179,6 +183,8 @@ def drawAtomicSurfaces(atomic_surfaces,critical_points,nuclei,triangulate=True,m
                     surface_faces = []
                     surface_points = []
 
+                    material_name = 'Bond-curve-material'
+
                     for gradient_path in interatomic_surface.gradient_paths:
                         nacp_index = gradient_path.getNuclearIndex(critical_points)
                         element = nuclei[nacp_index].element.lower()
@@ -202,8 +208,6 @@ def drawAtomicSurfaces(atomic_surfaces,critical_points,nuclei,triangulate=True,m
                             new_edge = [index+num_points_on_path-1,n_points_on_next_path-1]
                             surface_edges.append(new_edge)
 
-                        print("Path ", j, " points = ", num_points_on_path, " points on adj = ", n_points_on_next_path)
-
                         # walk along the path point by point
                         for i, point in enumerate(gradient_path.points): # [:-1]
 
@@ -225,6 +229,7 @@ def drawAtomicSurfaces(atomic_surfaces,critical_points,nuclei,triangulate=True,m
 
                             index += 1
 
+                    surface_edges = []
                     surface_triangulation = TopologyClasses.Triangulation(surface_points,surface_edges,surface_faces)
                     drawMesh(surface_triangulation,material_name)
 
