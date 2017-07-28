@@ -35,7 +35,10 @@ sub parseMgpviz {
    $envelope_indices,
    $atomic_basin_coords,
    $atomic_basin_properties,
-   $atomic_basin_indices) = parseRelatedIasvizFiles($elements,$nuclearIndices,$_[1]);
+   $atomic_basin_indices,
+   $ring_surface_gps,
+   $ring_surface_props,
+   $ring_surface_indices) = parseRelatedIasvizFiles($elements,$nuclearIndices,$_[1]);
 
   return $sourceInformation,
          $elements,
@@ -86,14 +89,16 @@ sub parseRingSurfacesFromMgpviz {
 
       $parseSwitch = 0;
       # save the ring surface and go to next one
-      push(@rs_gp_coords,    \@gp_coords);
-      push(@rs_gp_properties,\@gp_properties);
-      push(@rs_gp_indices,   \@gp_indices);
+      if (scalar(@gp_coords) > 0) {
+        push(@rs_gp_coords,    \@gp_coords);
+        push(@rs_gp_properties,\@gp_properties);
+        push(@rs_gp_indices,   \@gp_indices);
+      }
 
     } elsif ($fileContents[$line] =~ m/(\d+)\s+sample points along path from RCP to BCP between atoms\s+\w+(\d+)\s+and\s+\w+(\d+)/) {
 
       $nPoints = $1;
-      @slice = @fileContents[$line+1 .. $line+$nPoints];
+      @slice = @fileContents[$line+1..$line+$nPoints];
 
       ($gp,$map) = parseGradientPath(\@slice);
       my @indices = ($cpIndex,0); # todo - determine BCP index
@@ -329,7 +334,7 @@ sub parseGradientPath {
   foreach(@{$_[0]}) {
 
     if ($_ =~ m/\s+(-?\d+\.\d+E[+-]\d+)\s+(-?\d+\.\d+E[+-]\d+)\s+(-?\d+\.\d+E[+-]\d+)\s+(-?\d+\.\d+E[+-]\d+)/) {
-      if ($4 >= 0.001) {
+      if ($4 >= 0.000) {
         my @coords = ($1,$2,$3);
         push(@points,\@coords);
 
@@ -363,6 +368,10 @@ sub parseRelatedIasvizFiles {
   my @atomic_basin_properties;
   my @atomic_basin_indices;
 
+  my @ring_surface_coords;
+  my @ring_surface_props;
+  my @ring_surface_indices;
+
   $iasvizDir = "$sysName\_atomicfiles";
   for($i=0; $i<@indices; $i++) {
     
@@ -376,14 +385,22 @@ sub parseRelatedIasvizFiles {
       $atom = parseAtomFromIasviz($iasvizContents);
       $atom =~ m/[a-zA-Z]+(\d+)/; $cp_index = $1;
       ($as_coords, $as_properties) = parseAtomicSurfaceFromIasviz($iasvizContents);
-      push(@atomic_surface_coords,$as_coords);
-      push(@atomic_surface_properties,$as_properties);
-      push(@atomic_surface_indices,$cp_index);
+
+      if (scalar(@{$as_coords}) > 0) {
+        push(@atomic_surface_coords,$as_coords);
+        push(@atomic_surface_properties,$as_properties);
+        push(@atomic_surface_indices,$cp_index);
+      }
 
       ($coords, $properties) = parseIntegrationRayIsodensitySurfaceIntersectionsFromIasviz($iasvizContents);
       push(@envelope_coords,$coords);
       push(@envelope_properties,$properties);
       push(@envelope_indices,$cp_index);
+
+      ($rs_coords, $rs_properties, $rs_indices) = parseRingSurfacesFromIasviz($iasvizContents);
+      push(@ring_surface_coords,$rs_coords);
+      push(@ring_surface_props,$rs_properties);
+      push(@ring_surface_indices,$rs_indices);
 
     } else {
       print STDERR "Warning\: No iasviz file found for $element$indices[$i]\n";
@@ -414,7 +431,41 @@ sub parseRelatedIasvizFiles {
          \@envelope_indices,
          \@atomic_basin_coords,
          \@atomic_basin_properties,
-         \@atomic_basin_indices;
+         \@atomic_basin_indices,
+         \@ring_surface_coords,
+         \@ring_surface_props,
+         \@ring_surface_indices;
+}
+
+sub parseRingSurfacesFromIasviz {
+
+  @iasvizContents = @{$_[0]};
+
+  my @rs_gp_coords;
+  my @rs_gp_properties;
+  my @rs_gp_indices;
+
+  for ($line=0; $line<@iasvizContents; $line++) {
+    if ($iasvizContents[$line] =~ m/\<BCP to RCP Path\>/) {
+      if ($iasvizContents[$line+1] =~ m/\d+\s+\d+\s+(\d+)/) {
+        $nPoints = $1;
+      } else {
+        die "Malformed header of Ring Path\: $iasvizContents[$line+1]\n";
+      }
+
+      @slice = @iasvizContents[$line+2..$line+1+$nPoints];
+      ($gp_coords,$gp_properties) = parseGradientPath(\@slice);
+      my @indices = (0,0); # todo - determine RCP and BCP index
+
+      push(@rs_gp_coords,$gp_coords);
+      push(@rs_gp_properties,$gp_properties);
+      push(@rs_gp_indices,\@indices); # WRONG
+
+    }
+  }
+
+  return \@rs_gp_coords, \@rs_gp_properties, \@rs_gp_indices;
+
 }
 
 sub parseBasinFromBasviz {
