@@ -25,9 +25,8 @@ He shared an interest in the Vedanta school of Indian philosophy with Erwin Schr
 Roerich also provided plotting and visual design for Stravinsky's 'The Rite of Spring'[4], possibly the most influential musical work of the 20th century.
 
 The Greek character rho is used in scientific context to represent the charge density, the central scalar field of Atoms in Molecules[5]; the reason for its inclusion is obvious.
-Finally the chi is borrowed from Donald Knuth's TeX typesetting system, tex being an abbreviation for the Greek for 'art' and 'craft', and the root of 'technical'[6].
 
-The name is written 'RhoRix', with the Greek character used when appropriate.
+#### References
 
 1) Jacqueline Decter, Ph.D - Messenger of Beauty: The Life and Visionary Art of Nicholas Roerich
 
@@ -38,5 +37,3 @@ The name is written 'RhoRix', with the Greek character used when appropriate.
 4) Alex Ross - The Rest is Noise, Listening to the 21st Century
 
 5) Richard F. W. Bader - Atoms in Molecules, A Quantum Theory
-
-6) Donald Knuth - The TeXbook
