@@ -1,30 +1,23 @@
 # RhoRix (QCT For Blender)
 
-RhoRix is a [Blender](http://www.blender.org) *Add-On* (i.e. a script that extends Blender with extra functionality) that allows the user to read files containing topological objects defined by the theories of [Quantum Chemical Topology](http://www.chemistry.mcmaster.ca/bader/) and convert them to 3D scenes. Subsequently the full functionality of Blender can be used to render these objects. Note that the purpose of this program is to enable import of (and provide a standard appearance for) a topology, and the user is encouraged to consult the full Blender documentation and tutorials in order to obtain creative renders.
+RhoRix is a [Blender](http://www.blender.org) *Add-On* (i.e. a script that extends Blender with extra functionality) that allows the user to import files containing topological objects defined by the theories of [Quantum Chemical Topology](http://www.chemistry.mcmaster.ca/bader/) (QCT). The program converts topological data to 3D objects, and subsequently the full functionality of Blender can be used to render images of the topology. Note that the purpose of this program is to enable import of (and provide a standard appearance for) a topology, and the user is encouraged to consult the full Blender documentation and tutorials in order to obtain creative renders.
 
-The code is written to adhere to the [Pep-8 Guidelines](http://www.python.org/dev/peps/pep-0008/#introduction).
-The initial code was written with reference to Chapter 4 of the WikiBook '[Blender 3D: Noob to Pro](http://en.wikibooks.org/wiki/Blender_3D:_Noob_to_Pro#Table_of_Contents/)' and the appropriate section of the [Blender documentation](http://www.blender.org/api/blender_python_api_2_76_2/).
+The Add-On's Python code is written to adhere to the [Pep-8 Guidelines](http://www.python.org/dev/peps/pep-0008/#introduction).
+The initial code was written with reference to Chapter 4 of the WikiBook '[Blender 3D: Noob to Pro](http://en.wikibooks.org/wiki/Blender_3D:_Noob_to_Pro#Table_of_Contents/)' and the appropriate section of the [Blender documentation](https://docs.blender.org/api/blender_python_api_2_78c_release/).
+Significant Perl code is provided for conversion of the output of standard QCT programs to the included XML-based filetype. These scripts are provided as a set of traditional modules (sets of subroutines for import).
+
 Full documentation will be provided in 'Manual.pdf', 'Quickstart.pdf' and a peer-reviewed paper.
 
-The included conversion programs are implemented in Perl, as a set of traditional modules (sets of subroutines for import).
 
 #### Using the Program
 
-There are two options for using the script. 
-The more permanent solution is installation, i.e. putting the script into your Blender user preferences directory, which will cause it to appear in the Add-Ons list in the User Preferences window. Doing this directly is OS-dependent. This dependence can be avoided by installing from inside Blender. Navigate to User Preferences and choose the 'Add-Ons' tab. Click "Install Add-On" and navigate to the location of the script on your machine. This will copy the script to your personal Add-Ons directory, and it will now appear in the list of available Add-Ons. To activate it you must tick the checkbox for that entry. You can then save the Blender configuration for all future documents, or alternatively tick the Add-On in each document you use for QCT drawing.
-
-The non-permanent option is to store the script in a text block within your Blender document. This has to be added to each document you make so is less desirable unless you intend to make changes to the script, as it allows for quick editing and reloading of the program. To do this, bring up a Text Editor in a convenient window and click the 'New' button in the window header. Paste the script into the resulting Editor. Press Alt+P to execute the script. After you make changes to the script, pressing Alt+P again will re-execute the script and apply your changes. The location of any Python error messages is OS and execution-environment dependent. Check documentation if you cannot find them.
-
-Irrespective of the method, the script will add an operator named 'Import Topology' to the built-in list that can be accessed by pressing the spacebar with the 3D view active. Additionally, the operator is added as a menu item under File -> Import -> Quantum Chemical Topology (.top). No keyboard shortcuts are defined.
+The entire package should be installed by placing the files into your Blender user preferences directory, which will cause Rhorix to appear in the Add-Ons list in the User Preferences window. Doing this directly is OS-dependent and users are advised to consult the Blender documentation. The script will add an operator named 'Import Topology' to the built-in list that can be accessed by pressing the spacebar with the 3D view active. Additionally, the operator is added as a menu item under File -> Import -> Quantum Chemical Topology (.top). Finally, a panel will appear in the left-hand side of the 3D view with an 'Import Topology' button. No keyboard shortcuts are defined.
 
 #### The Name
 
 This program is named for Nicholas Roerich (Nikolai Konstatinovich Rerikh), a Russian artist[1].
 Roerich initiated the modern movement for the defense of cultural objects, culminating in the signing of the 'Roerich Pact'.
-He shared an interest in the Vedanta school of Indian philosophy with Erwin Schrodinger[2], the first scientist to suggest the charge density as a source of real-world physical concepts[3].
-Roerich also provided plotting and visual design for Stravinsky's 'The Rite of Spring'[4], possibly the most influential musical work of the 20th century.
-
-The Greek character rho is used in scientific context to represent the charge density, the central scalar field of Atoms in Molecules[5]; the reason for its inclusion is obvious.
+He shared an interest in the Vedanta school of Indian philosophy with Erwin Schrodinger[2], the first scientist to suggest the charge density as a source of real-world physical concepts[3]. Roerich also provided plotting and visual design for Stravinsky's 'The Rite of Spring'[4], possibly the most influential musical work of the 20th century. The Greek character rho is used in scientific context to represent the charge density, the central scalar field of the Quantum Theory of Atoms in Molecules[5].
 
 #### References
 
