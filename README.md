@@ -6,7 +6,7 @@ The Add-On's Python code is written to adhere to the [Pep-8 Guidelines](http://w
 The initial code was written with reference to Chapter 4 of the WikiBook '[Blender 3D: Noob to Pro](http://en.wikibooks.org/wiki/Blender_3D:_Noob_to_Pro#Table_of_Contents/)' and the appropriate section of the [Blender documentation](https://docs.blender.org/api/blender_python_api_2_78c_release/).
 Significant Perl code is provided for conversion of the output of standard QCT programs to the included XML-based filetype. These scripts are provided as a set of traditional modules (sets of subroutines for import).
 
-Full documentation will be provided in 'Manual.pdf', 'Quickstart.pdf' and a peer-reviewed paper.
+Full documentation is provided in 'Manual.pdf', 'QuickStart.pdf' and a peer-reviewed paper.
 
 
 #### Using the Program
