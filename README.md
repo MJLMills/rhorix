@@ -2,8 +2,8 @@
 
 RhoRix is a [Blender](http://www.blender.org) *Add-On* (i.e. a script that extends Blender with extra functionality) that allows the user to read files containing topological objects defined by the theories of [Quantum Chemical Topology](http://www.chemistry.mcmaster.ca/bader/) and convert them to 3D scenes. Subsequently the full functionality of Blender can be used to render these objects. Note that the purpose of this program is to enable import of (and provide a standard appearance for) a topology, and the user is encouraged to consult the full Blender documentation and tutorials in order to obtain creative renders.
 <p>
-The code is written to adhere to the PEP-8 guidelines at https://www.python.org/dev/peps/pep-0008/#introduction
-The code was written with reference to Chapter 4 of the WikiBook '[Blender 3D: Noob to Pro](http://en.wikibooks.org/wiki/Blender_3D:_Noob_to_Pro#Table_of_Contents/)' and the appropriate section of the [Blender documentation](http://www.blender.org/api/blender_python_api_2_76_2/).
+The code is written to adhere to the [PEP-8 guidelines](https://www.python.org/dev/peps/pep-0008/#introduction).
+The initial code was written with reference to Chapter 4 of the WikiBook '[Blender 3D: Noob to Pro](http://en.wikibooks.org/wiki/Blender_3D:_Noob_to_Pro#Table_of_Contents/)' and the appropriate section of the [Blender documentation](http://www.blender.org/api/blender_python_api_2_76_2/).
 Full documentation will be provided in 'Manual.pdf', 'Quickstart.pdf' and a peer-reviewed paper.
 
 The included conversion programs are implemented in Perl, as a set of traditional modules (sets of subroutines for import).
