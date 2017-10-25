@@ -6,7 +6,7 @@ The Add-On's Python code is written to adhere to the [Pep-8 Guidelines](http://w
 The initial code was written with reference to Chapter 4 of the WikiBook '[Blender 3D: Noob to Pro](http://en.wikibooks.org/wiki/Blender_3D:_Noob_to_Pro#Table_of_Contents/)' and the appropriate section of the [Blender documentation](https://docs.blender.org/api/blender_python_api_2_78c_release/).
 Significant Perl code is provided for conversion of the output of standard QCT programs to the included XML-based filetype. These scripts are provided as a set of traditional modules (sets of subroutines for import).
 
-Full documentation is provided in 'Manual.pdf', 'QuickStart.pdf' and a [peer-reviewed paper](http://dx.doi.org/10.1002/jcc.25054). Building documentation requires LaTeX and the [tufte-latex](https://github.com/Tufte-LaTeX/tufte-latex) package. The .cls files from the package are required to create the pdf documentation.
+Full documentation is provided in 'Manual.pdf', 'QuickStart.pdf' and a [peer-reviewed paper](https://www.researchgate.net/publication/319407440_Rhorix_An_interface_between_quantum_chemical_topology_and_the_3D_graphics_program_blender). Building documentation requires LaTeX and the [tufte-latex](https://github.com/Tufte-LaTeX/tufte-latex) package. The .cls files from the package are required to create the pdf documentation.
 
 See the [program website](http://www.mjohnmills.com/rhorix) for further information.
 
