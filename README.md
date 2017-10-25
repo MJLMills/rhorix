@@ -20,6 +20,10 @@ The repo owner intends to continue development of the program and welcomes contr
 
 This project was initially developed as an employee of Sandia National Laboratories, in the Enzyme Optimization group at the DOE's [Joint BioEnergy Institute](https://www.jbei.org/) under the direction of Dr. Kenneth Sale. Much of the necessary knowledge was developed during the author's graduate studies in the [Quantum Chemical Topology group](http://www.qct.manchester.ac.uk/) of Paul Popelier at the University of Manchester. The program would not exist without the expert advice and guidance of Mark Forrer.
 
+#### License
+
+This project is licensed under a modified BSD license - see LICENSE.txt for details.
+
 #### Copyright Message
 
 Rhorix Copyright (c) 2017, The Regents of the University of California, through Lawrence Berkeley National Laboratory (subject to receipt of any required approvals from the U.S. Dept. of Energy).  All rights reserved.
