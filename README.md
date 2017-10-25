@@ -14,10 +14,10 @@ The entire package should be installed by placing the files into your Blender us
 
 #### Citing the Program
 
-If you use this code to make figures (or parts thereof) please cite both the paper (details at the [journal page](http://dx.doi.org/10.1002/jcc.25054)) and the software as:
+If you use this code to make figures (or parts thereof) for a publication, please cite the paper (details at the [journal page](http://dx.doi.org/10.1002/jcc.25054)) and the software separately as:
 
 
-Rhorix 1.0.0, M. J. L. Mills, 2017, https://github.com/MJLMills/RhoRix
+Rhorix 1.0.0, M. J. L. Mills, 2017, github.com/MJLMills/RhoRix
 
 #### Contributing, Feature Requests and Bugs
 
