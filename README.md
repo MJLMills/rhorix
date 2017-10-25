@@ -8,6 +8,8 @@ Significant Perl code is provided for conversion of the output of standard QCT p
 
 Full documentation is provided in 'Manual.pdf', 'QuickStart.pdf' and a [peer-reviewed paper](http://dx.doi.org/10.1002/jcc.25054). Building documentation requires LaTeX and the [tufte-latex](https://github.com/Tufte-LaTeX/tufte-latex) package. The .cls files from the package are required to create the pdf documentation.
 
+See the [program website](http://www.mjohnmills.com/rhorix) for further information.
+
 #### Using the Program
 
 The entire package should be installed by placing the files into your Blender user preferences directory, which will cause Rhorix to appear in the Add-Ons list in the User Preferences window. Doing this directly is OS-dependent and users are advised to consult the Blender documentation. The script will add an operator named 'Import Topology' to the built-in list that can be accessed by pressing the spacebar with the 3D view active. Additionally, the operator is added as a menu item under File -> Import -> Quantum Chemical Topology (.top). Finally, a panel will appear in the left-hand side of the 3D view with an 'Import Topology' button. No keyboard shortcuts are defined.
