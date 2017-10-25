@@ -12,6 +12,13 @@ Full documentation is provided in 'Manual.pdf', 'QuickStart.pdf' and a [peer-rev
 
 The entire package should be installed by placing the files into your Blender user preferences directory, which will cause Rhorix to appear in the Add-Ons list in the User Preferences window. Doing this directly is OS-dependent and users are advised to consult the Blender documentation. The script will add an operator named 'Import Topology' to the built-in list that can be accessed by pressing the spacebar with the 3D view active. Additionally, the operator is added as a menu item under File -> Import -> Quantum Chemical Topology (.top). Finally, a panel will appear in the left-hand side of the 3D view with an 'Import Topology' button. No keyboard shortcuts are defined.
 
+#### Citing the Program
+
+If you use this code to make figures (or parts thereof) please cite both the paper (details at the [journal page](http://dx.doi.org/10.1002/jcc.25054)) and the software as:
+
+
+Rhorix 1.0.0, M. J. L. Mills, 2017, https://github.com/MJLMills/RhoRix
+
 #### Contributing, Feature Requests and Bugs
 
 The repo owner intends to continue development of the program and welcomes contributors. Please make contact before making changes and be sure to read the license in LICENSE.txt beforehand. Feature requests and descriptions of issues/bugs can be submitted via the issue tracker.
