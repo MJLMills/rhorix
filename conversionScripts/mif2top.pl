@@ -3,6 +3,7 @@
 # Convert morphy mif files to the top format
 
 use Utilities qw(checkArgs readFile);
+use TopUtils qw(getRank getSignature);
 
 $removeRedundant = 1;
 $printEdges = 0;
@@ -399,33 +400,6 @@ sub parseVertexLine {
     return @vector;
   } else {
     return;
-  }
-
-}
-
-sub getRank {
-
-  local $type = "$_[0]";
-
-  if ($type eq "bcp" or $type eq "rcp" or $type eq "ccp") {
-    return 3;
-  } else {
-    return 3;
-  }
-}
-
-sub getSignature {
-
-  local $type = "$_[0]";
-
-  if ($type eq "bcp") {
-    return -1;
-  } elsif ($type eq "rcp") {
-    return 1;
-  } elsif ($type eq "ccp") {
-    return 3;
-  } else {
-    return -3;
   }
 
 }
