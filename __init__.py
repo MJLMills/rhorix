@@ -31,7 +31,7 @@ bl_info = {
     "description" : "Import and manipulate .top files",
     "author"      : "Matthew J L Mills <mjohnmills@gmail.com>",
     "version"     : (1, 0, 0),
-    "blender"     : (2, 78, 0),
+    "blender"     : (2, 79, 0),
     "location"    : "View 3D > Object Mode > Tool Shelf",
     "warning"     : "Be aware of XML vulnerabilities when opening external .top files",
     # link to the wiki page of the script
