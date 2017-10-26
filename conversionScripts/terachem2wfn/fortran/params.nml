@@ -1,0 +1,4 @@
+&params 
+inputFilename = 'c0', 
+Nprimitives = 4 
+&END
