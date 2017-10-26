@@ -19,8 +19,8 @@ Run Blender, and you should find  Rhorix in the Add-Ons tab in the File -> User 
 It may help to search for 'rhorix' in the Add-Ons tab if you cannot find it.
 Tick the box next to 'Add Mesh: Rhorix' to activate the Add-On.
 You may wish to delete the default cube, camera and light and then save the startup file (File -> Save Startup File) to avoid having to activate Rhorix each time you start Blender.
-Rhorix will add an operator named 'Import Topology' to the built-in list that can be accessed by pressing the spacebar with the 3D view active. 
-Additionally, the operator is added as a menu item under File -> Import -> Quantum Chemical Topology (.top). 
+On activation, an operator named 'Import Topology' is added to the built-in list that can be accessed by pressing the spacebar with the 3D view active. 
+Alternatively, the operator is added as a menu item under File -> Import -> Quantum Chemical Topology (.top). 
 Finally, a panel will appear in the left-hand side of the 3D view with an 'Import Topology' button and a set of other useful tools.
 No keyboard shortcuts are defined by Rhorix.
 
