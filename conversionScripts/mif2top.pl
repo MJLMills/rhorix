@@ -10,7 +10,7 @@ $factor = 10;
 
 # Read the .mif file
 
-$mifFile = checkArgs(@ARGV);
+$mifFile = checkArgs(\@ARGV,"mif");
 @mifContents = readFile($mifFile);
 
 # Create the .top file
