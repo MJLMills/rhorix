@@ -1,0 +1,25 @@
+﻿Provider: John Wiley & Sons, Ltd
+Content:text/plain; charset="UTF-8"
+
+TY  - JOUR
+AU  - Mills, Matthew J. L.
+AU  - Sale, Kenneth L.
+AU  - Simmons, Blake A.
+AU  - Popelier, Paul L. A.
+TI  - Rhorix: An interface between quantum chemical topology and the 3D graphics program blender
+JO  - Journal of Computational Chemistry
+JA  - J. Comput. Chem.
+VL  - 38
+IS  - 29
+SN  - 1096-987X
+UR  - http://dx.doi.org/10.1002/jcc.25054
+DO  - 10.1002/jcc.25054
+SP  - 2538
+EP  - 2552
+KW  - quantum chemical topology
+KW  - quantum theory of atoms in molecules
+KW  - blender
+KW  - molecular graphics
+KW  - visualization
+PY  - 2017
+ER  - 
