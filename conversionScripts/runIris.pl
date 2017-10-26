@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 # Matthew J L Mills
 
-use Utilities qw(stripExt);
+use Utilities qw(stripExt readFile);
 
 $psaPath = ""; # This must be the path to morphyPSA on your machine
 $ailPath = ""; # This must be the path to morphyAIL on your machine
@@ -24,7 +24,7 @@ foreach(@wfnFiles) {
 
   &printAILinput($system,$dir);
 
-  @wfnContents = &readFile($_);
+  @wfnContents = readFile($_);
   @atomNames = &parseSystem(\@wfnContents);
   foreach (@atomNames) {
     &printPSAinput($_,$dir,$system);
@@ -127,16 +127,6 @@ sub printAILinput {
   print AIL "STOP\n";
 
   close AIL;
-
-}
-
-sub readFile {
-
-  open(INP,"<","$_[0]") || die "Cannot open input file\: $_[0] for reading\n";
-  my @inpContents = <INP>;
-  chomp(@inpContents);
-  close INP;
-  return @inpContents;
 
 }
 
