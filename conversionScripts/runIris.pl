@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 # Matthew J L Mills
 
-use Utilities qw(stripExt readFile);
+use Utilities qw(stripExt readFile listFilesOfType);
 
 $psaPath = ""; # This must be the path to morphyPSA on your machine
 $ailPath = ""; # This must be the path to morphyAIL on your machine
@@ -127,26 +127,5 @@ sub printAILinput {
   print AIL "STOP\n";
 
   close AIL;
-
-}
-
-sub listFilesOfType {
-
-  my $ext = $_[0];
-  my @fileList;
-
-  my $dir = ".";
-  opendir my($dirHandle), $dir || die "Cannot open directory $dir\: $!";
-  for (readdir $dirHandle) {
-    if (-d $_) { next; }
-    if ($_ =~ m/^[.]/) { next; }
-    if ($_ =~ m/(.+)[.]$ext/) {
-      push(@fileList,"$_");
-    }
-  }
-
-  closedir $dirHandle;
-  @fileList = sort(@fileList);
-  return @fileList;
 
 }
