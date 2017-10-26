@@ -1,8 +1,14 @@
 #!/usr/bin/perl -w
 # Matthew J L Mills
 
-$psaPath = "/scratch/mjmills_scratch/iris/morphyPSA2";
-$ailPath = "/scratch/mjmills_scratch/iris/morphyAIL";
+use Utilities qw(stripExt);
+
+$psaPath = ""; # This must be the path to morphyPSA on your machine
+$ailPath = ""; # This must be the path to morphyAIL on your machine
+
+if ($psaPath eq "" || $ailPath eq "") {
+  die "\nError\: Please edit the script to incude paths to the MORPHY executables\n\n";
+}
 
 @wfnFiles = listFilesOfType("wfn");
 if (@wfnFiles <= 0) { die "No Wavefunction Files\n"; }
@@ -11,7 +17,7 @@ open(MST,">","master-script\.sh");
 
 foreach(@wfnFiles) {
 
-  $system = &stripExt($_);
+  $system = stripExt($_,"wfn");
   $dir = sprintf("%s\_atomicfiles",$system);
   mkdir $dir || die "Cannot create Iris directory\: $dir\n";
   system("cp $_ $dir");
@@ -34,7 +40,7 @@ foreach(@wfnFiles) {
 close MST;
 system("chmod \+x master-script\.sh");
 
-# SUBROUTINES
+# SUBROUTINES - Being specific to this script's task, these subroutines are kept here.
 
 sub printScript {
 
@@ -121,13 +127,6 @@ sub printAILinput {
   print AIL "STOP\n";
 
   close AIL;
-
-}
-
-sub stripExt {
-
-  $_[0] =~ m/(.*)\..*/;
-  return "$1";
 
 }
 
