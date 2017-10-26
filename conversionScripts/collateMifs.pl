@@ -4,6 +4,9 @@
 use Utilities qw(readFile listFilesOfType);
 
 @mifList = listFilesOfType("mif");
+if (@mifList <= 0) {
+  die "Error\: No \.mif files\n";
+}
 
 my @outputAils;
 my @outputSurfaces;
