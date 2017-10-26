@@ -3,13 +3,19 @@
 # Script to convert plaintext mgpviz output files from AIMAll to XML files conformant to the document model in Topology.dtd.
 # Rhorix v1.0
 
+use File::Basename;
+use lib dirname(__FILE__); # find modules in script directory - adds the path to @LIB
+
 use Utilities     qw(checkArgs getExt readFile stripExt);
 use VizUtils      qw(checkMgpvizFile);
 use ParseViz      qw(parseMgpviz);
 use WriteTopology qw(writeTopologyXML);
 
-# This could be an argument
-$dtdPath = "/Users/mjmills/Downloads/blender-2.78c-OSX_10.6-x86_64/blender.app/Contents/Resources/2.78/scripts/addons/rhorix/Topology.dtd";
+if (dirname(__FILE__) =~ m/(.*)\/conversionScripts/) {
+  $dtdPath = "$1\/Topology\.dtd";
+} else {
+  die "Error\: Problem locating Topology\.dtd\n";
+}
 
 # The single (mandatory) command line argument is the name of the file to convert.
 my $mgpvizFile = &checkArgs(\@ARGV,"mgpviz");
