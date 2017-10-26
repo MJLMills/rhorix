@@ -1,7 +1,9 @@
 #!/usr/bin/perl -w
 # Matthew J L Mills
 
-@mifList = &listFilesOfType("mif");
+use Utilities qw(readFile listFilesOfType);
+
+@mifList = listFilesOfType("mif");
 
 my @outputAils;
 my @outputSurfaces;
@@ -11,17 +13,17 @@ foreach(@mifList) {
 #  print " PARSING $_\n";
   if ($_ =~ m/(.*)\-AIL/) {
     $fileName = "$1";
-    @outputAils = &readFile($_); 
+    @outputAils = readFile($_); 
   } else {
     if ($_ =~ m/(\w+\d+)\.mif/) {
       $atomName = $1;
 
-      @moutContents = &readFile("$atomName\.mout");
-      $time = &parseTime(\@moutContents);
+      @moutContents = readFile("$atomName\.mout");
+      $time = parseTime(\@moutContents);
       if ($time != 0) {
 
         $totalTime += $time;
-        my @mifContents = &readFile($_);
+        my @mifContents = readFile($_);
         foreach (@mifContents) {
           if ($_ =~ m/atom\s+\d+/) {
             push(@outputSurfaces,"atom $atomName");
@@ -39,7 +41,7 @@ foreach(@mifList) {
   }
 }
 
-&printOutput(\@outputAils,\@outputSurfaces,$fileName);
+printOutput(\@outputAils,\@outputSurfaces,$fileName);
 print "Total Triangulation Time\: $totalTime s\n";
 
 sub parseTime {
@@ -67,36 +69,3 @@ sub printOutput {
   close MIF;
 
 }
-
-
-sub readFile {
-
-  open(INP,"<","$_[0]") || die "Cannot open input file\: $_[0] for reading\n";
-  my @inpContents = <INP>;
-  chomp(@inpContents);
-  close INP;
-  return @inpContents;
-
-}
-
-sub listFilesOfType {
-
-  my $ext = $_[0];
-  my @fileList;
-
-  my $dir = ".";
-  opendir my($dirHandle), $dir || die "Cannot open directory $dir\: $!";
-  for (readdir $dirHandle) {
-    if (-d $_) { next; }
-    if ($_ =~ m/^[.]/) { next; }
-    if ($_ =~ m/(.+)[.]$ext/) {
-      push(@fileList,"$_");
-    }
-  }
-
-  closedir $dirHandle;
-  @fileList = sort(@fileList);
-  return @fileList;
-
-}
-
