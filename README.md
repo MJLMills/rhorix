@@ -16,7 +16,11 @@ The entire package should be installed by placing the files into your Blender us
 
 #### Citing the Program
 
-If you use this code to make figures (or parts thereof) for a publication, please cite the paper (see documentation/citation) and the software separately as:
+If you use this code to make figures (or parts thereof) for a publication, please cite the paper and the software separately (see documentation/citation for prepared files) as:
+
+J. Comput. Chem., 2017, 38(29): 2358-2552, DOI: 10.1002/jcc.25054
+
+and
 
 Rhorix 1.0.0, M. J. L. Mills, 2017, github.com/MJLMills/rhorix
 
