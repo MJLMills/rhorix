@@ -7,4 +7,9 @@ use XmlRoutines   qw(checkValidity);
 my $topFile = &checkArgs(\@ARGV,"top");
 print "Validating $topFile\n";
 $result = checkValidity($topFile);
-print "RESULT\: $result\n";
+
+if ($result == 1) {
+  print "$topFile is valid against DTD\n";
+} else {
+  print "$topFile is not valid against DTD\n";
+}
