@@ -1,6 +1,9 @@
 #!/usr/bin/perl -w
 # Matthew J L Mills
 
+# Note: most likely doesn't work under Windows since the output is a BASH script.
+# Relies on the user having the IRIS executables of the Popelier group.
+
 use Utilities qw(stripExt readFile listFilesOfType);
 
 $psaPath = ""; # This must be the path to morphyPSA on your machine
@@ -11,7 +14,7 @@ if ($psaPath eq "" || $ailPath eq "") {
 }
 
 @wfnFiles = listFilesOfType("wfn");
-if (@wfnFiles <= 0) { die "No Wavefunction Files\n"; }
+if (@wfnFiles <= 0) { die "Error\: No .wfn files\n"; }
 
 open(MST,">","master-script\.sh");
 
@@ -22,15 +25,15 @@ foreach(@wfnFiles) {
   mkdir $dir || die "Cannot create Iris directory\: $dir\n";
   system("cp $_ $dir");
 
-  &printAILinput($system,$dir);
+  printAILinput($system,$dir);
 
   @wfnContents = readFile($_);
-  @atomNames = &parseSystem(\@wfnContents);
+  @atomNames = parseSystem(\@wfnContents);
   foreach (@atomNames) {
-    &printPSAinput($_,$dir,$system);
+    printPSAinput($_,$dir,$system);
   }
 
-  &printScript(\@atomNames,$dir,$system);
+  printScript(\@atomNames,$dir,$system);
   print MST "cd $dir\n";
   print MST "\.\/runMORPHY\.sh \&\> runMORPHY.out \&\n";
   print MST "cd \.\.\/\n";
