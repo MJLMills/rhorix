@@ -10,9 +10,19 @@ Full documentation is provided in 'Manual.pdf', 'QuickStart.pdf' and a [peer-rev
 
 See the [program website](http://www.mjohnmills.com/rhorix) for further information.
 
-#### Using the Program
+#### Installing the Program
 
-The entire package should be installed by placing the files into your Blender user preferences directory, which will cause Rhorix to appear in the Add-Ons list in the User Preferences window. Doing this directly is OS-dependent and users are advised to consult the Blender documentation. The script will add an operator named 'Import Topology' to the built-in list that can be accessed by pressing the spacebar with the 3D view active. Additionally, the operator is added as a menu item under File -> Import -> Quantum Chemical Topology (.top). Finally, a panel will appear in the left-hand side of the 3D view with an 'Import Topology' button. No keyboard shortcuts are defined.
+Download and install the most [current supported version](https://www.blender.org/download/) of Blender (2.79) for your OS.
+The entire Rhorix package should be installed by placing the files into your Blender addons directory.
+The location of the addons directory is OS-dependent; please check the [documentation](https://docs.blender.org/manual/en/dev/getting_started/installing/configuration/directories.html) if you cannot find the appropriate location.
+Run Blender, and you should find  Rhorix in the Add-Ons tab in the File -> User Preferences window.
+It may help to search for 'rhorix' in the Add-Ons tab if you cannot find it.
+Tick the box next to 'Add Mesh: Rhorix' to activate the Add-On.
+You may wish to delete the default cube, camera and light and then save the startup file (File -> Save Startup File) to avoid having to activate Rhorix each time you start Blender.
+Rhorix will add an operator named 'Import Topology' to the built-in list that can be accessed by pressing the spacebar with the 3D view active. 
+Additionally, the operator is added as a menu item under File -> Import -> Quantum Chemical Topology (.top). 
+Finally, a panel will appear in the left-hand side of the 3D view with an 'Import Topology' button and a set of other useful tools.
+No keyboard shortcuts are defined by Rhorix.
 
 #### Citing the Program
 
