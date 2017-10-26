@@ -9,7 +9,7 @@ require Exporter;
 
 our @ISA       = qw(Exporter);
 our @EXPORT    = ();
-our @EXPORT_OK = qw(stripExt getExt readFile checkArgs);
+our @EXPORT_OK = qw(stripExt getExt readFile checkArgs listFilesOfType);
 our $VERSION   = 1.0;
 
 ### Subroutines ###
@@ -66,6 +66,30 @@ sub checkArgs {
   } else {
     return "@{$_[0]}[0]";
   }
+
+}
+
+# listFilesOfType - Return a list of all files in the current directory with the extension in the argument
+# Arguments: $_[0] - String containing file extension of interest
+# Return: List of files in the current directory with the given extension
+sub listFilesOfType {
+
+  my $ext = $_[0];
+  my @fileList;
+
+  my $dir = ".";
+  opendir my($dirHandle), $dir || die "Cannot open directory $dir\: $!";
+  for (readdir $dirHandle) {
+    if (-d $_) { next; }
+    if ($_ =~ m/^[.]/) { next; }
+    if ($_ =~ m/(.+)[.]$ext/) {
+      push(@fileList,"$_");
+    }
+  }
+
+  closedir $dirHandle;
+  @fileList = sort(@fileList);
+  return @fileList;
 
 }
 
