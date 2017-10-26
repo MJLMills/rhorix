@@ -56,6 +56,7 @@ sub readFile {
 
 # checkArgs - Check the correct number (1) of arguments is passed to the script and return single argument
 # Arguments: $_[0] - Reference to an array of script arguments
+#            $_[1] - Extension of the file expected to be passed
 # Return: name of file (first element of argument array provided only one element present)
 sub checkArgs {
 
