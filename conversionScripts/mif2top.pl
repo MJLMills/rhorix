@@ -2,13 +2,15 @@
 # Dr. Matthew J L Mills - RhoRix
 # Convert morphy mif files to the top format
 
+use Utilities qw(checkArgs readFile);
+
 $removeRedundant = 1;
 $printEdges = 0;
 $factor = 10;
 
 # Read the .mif file
 
-$mifFile = &checkArgs(@ARGV);
+$mifFile = checkArgs(@ARGV);
 @mifContents = readFile($mifFile);
 
 # Create the .top file
@@ -424,32 +426,6 @@ sub getSignature {
     return 3;
   } else {
     return -3;
-  }
-
-}
-
-sub readFile {
-
-  local $fileName = "$_[0]";
-  local @fileContents;
-
-  open(INP,"<","$fileName") || die "ERROR: FILE $fileName DOES NOT EXIST\n";
-  @fileContents = <INP>;
-  close INP;
-  chomp(@fileContents);
-  
-  return @fileContents;
-  
-}
-
-#Check that 1 arg was passed (the filename)
-sub checkArgs {
-
-  my $nArg = @_;
-  if ($nArg == 0 || $nArg > 1) {
-    die "Incorrect number of arguments\: $nArg\nPlease run script as \"perl mif2top.pl filename\"\n";
-  } else {
-    return "$_[0]";
   }
 
 }
