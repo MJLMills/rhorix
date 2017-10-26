@@ -14,7 +14,7 @@ See the [program website](http://www.mjohnmills.com/rhorix) for further informat
 
 Download and install the most [current supported version](https://www.blender.org/download/) of Blender (2.79) for your OS.
 The entire Rhorix package should be installed by placing the files into your Blender addons directory.
-The location of the addons directory is OS-dependent; please check the [documentation](https://docs.blender.org/manual/en/dev/getting_started/installing/configuration/directories.html) if you cannot find the appropriate location.
+The location of this directory is OS-dependent; please check the [documentation](https://docs.blender.org/manual/en/dev/getting_started/installing/configuration/directories.html) if you cannot find the appropriate location.
 Run Blender, and you should find  Rhorix in the Add-Ons tab in the File -> User Preferences window.
 It may help to search for 'rhorix' in the Add-Ons tab if you cannot find it.
 Tick the box next to 'Add Mesh: Rhorix' to activate the Add-On.
