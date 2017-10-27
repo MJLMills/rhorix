@@ -47,6 +47,7 @@ def register():
     bpy.utils.register_class(RenderStereo)
     bpy.utils.register_class(ResizeAILs)
     bpy.utils.register_class(ResizeNonbondedInteractions)
+    bpy.utils.register_class(ResizeRingLines)
     bpy.utils.register_class(ToggleBCPs)
     bpy.utils.register_class(ToggleRCPs)
     bpy.utils.register_class(ToggleCCPs)
@@ -61,6 +62,7 @@ def unregister():
     bpy.utils.unregister_class(ToggleCCPs)
     bpy.utils.unregister_class(ToggleRCPs)
     bpy.utils.unregister_class(ToggleBCPs)
+    bpy.utils.unregister_class(ResizeRingLines)
     bpy.utils.unregister_class(ResizeNonbondedInteractions)
     bpy.utils.unregister_class(ResizeAILs)
     bpy.utils.unregister_class(RenderStereo)
@@ -141,6 +143,17 @@ class ResizeNonbondedInteractions(bpy.types.Operator):
         bpy.ops.object.select_pattern(pattern="non_bond-BevelCircle")
         return {'FINISHED'}
 
+class ResizeRingLines(bpy.types.Operator):
+
+    bl_idname = "rhorix.resize_ringlines"
+    bl_label = "Resize Ring Lines"
+
+    def invoke(self,context,event):
+        for object in bpy.data.objects:
+            object.select = False
+        bpy.ops.object.select_pattern(pattern="RingSurfaces-BevelCircle")
+        return {'FINISHED'}
+
 class ToggleBCPs(bpy.types.Operator):
 
     bl_idname = "rhorix.toggle_bcps"
@@ -210,13 +223,14 @@ class RhorixControlPanel(bpy.types.Panel):
 
     def draw(self,context):
         uiColumn = self.layout.column(align=True)
-        uiColumn.operator("rhorix.import_topology", text="Import Topology")
-        uiColumn.operator("rhorix.render_stereo",   text="Render Stereo")
-        uiColumn.operator("rhorix.resize_ails", text="Resize AILs")
-        uiColumn.operator("rhorix.resize_nbs", text="Resize NBs")
-        uiColumn.operator("rhorix.toggle_bcps", text="Toggle BCPs") 
-        uiColumn.operator("rhorix.toggle_rcps", text="Toggle RCPs")
-        uiColumn.operator("rhorix.toggle_ccps", text="Toggle CCPs")
+        uiColumn.operator("rhorix.import_topology",  text="Import Topology")
+        uiColumn.operator("rhorix.render_stereo",    text="Render Stereo")
+        uiColumn.operator("rhorix.resize_ails",      text="Resize AILs")
+        uiColumn.operator("rhorix.resize_nbs",       text="Resize NBs")
+        uiColumn.operator("rhorix.resize_ringlines", text="Resize Ring Lines")
+        uiColumn.operator("rhorix.toggle_bcps",      text="Toggle BCPs") 
+        uiColumn.operator("rhorix.toggle_rcps",      text="Toggle RCPs")
+        uiColumn.operator("rhorix.toggle_ccps",      text="Toggle CCPs")
 
 # Add a menu function for the main operator by defining a new draw function
 # and adding it to an existing class (in the register function)
