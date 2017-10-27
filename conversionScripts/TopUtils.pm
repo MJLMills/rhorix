@@ -14,6 +14,9 @@ our $VERSION   = 1.0;
 
 ### Subroutines ###
 
+# getRank - Get the integer rank from the string form of a critical point's type
+# Arguments: $_[0] - String containing type label
+# Return: rank corresponding to the given label
 sub getRank {
 
   local $type = "$_[0]";
@@ -25,6 +28,9 @@ sub getRank {
   }
 }
 
+# getRank - Get the integer signature from the string form of a critical point's type
+# Arguments: $_[0] - String containing type label
+# Return: signature corresponding to the given label
 sub getSignature {
 
   local $type = "$_[0]";
