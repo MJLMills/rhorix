@@ -1,10 +1,10 @@
 \documentclass{tufte-handout}
 
-\newcommand{\blenderVersion}{2.76b}
-\newcommand{\programName}{RhoRix}
-\newcommand{\fullName}{RhoRix - A Program for Drawing of Quantum Chemical Topologies by M J L Mills}
-\newcommand{\programWebsite}{www.mjlmills.com/rhorix}
-\newcommand{\programCitation}{Mills \& Popelier, in Preparation}
+\newcommand{\blenderVersion}{2.79}
+\newcommand{\programName}{Rhorix}
+\newcommand{\fullName}{Rhorix - A Program for Drawing of Quantum Chemical Topologies by M J L Mills}
+\newcommand{\programWebsite}{www.mjohnmills.com/rhorix}
+\newcommand{\programCitation}{Mills, Sale, Simmons, Popelier, J. Comput. Chem., 2017, 38(29), 2538-2552}
 \newcommand{\addonPath}{User Preferences $\rightarrow$ Add-Ons}
 \newcommand{\operatorPath}{File $\rightarrow$ Import $\rightarrow$ Quantum Chemical Topology (.top)}
 \newcommand{\navLink}{www.blender.org/manual/editors/3dview/navigate/camera\_view.html}
@@ -55,24 +55,20 @@ Those users requiring more detail should consult the \programName{} and Blender 
 \end{abstract}
 
 \section{Obtaining the Code}
-\programName{} can currently only be obtained directly from the author\sidenote{mjohnmills@gmail.com} by sending a request message, including your name.
-The supplied archive contains the Blender Add-On Python script, its data files, the filetype conversion Perl scripts and documentation. The script and data files must be placed in an appropriate directory (of your choosing) prior to following the installation instructions below.
+\programName{} can be downloaded from the release page on GitHub\sidenote{https://github.com/MJLMills/rhorix}.
+The supplied archive contains the Blender Add-On Python code, an XML file definition, filetype conversion Perl scripts, examples and documentation. The contents should be placed in the appropriate directory according to the installation instructions below.
 
 \section{Installing the Add-On}
-The currently supported version (\blenderVersion{}) of Blender must be installed before proceeding with the \programName{} installation. Installing Blender is not covered here; please consult their website for instructions for your OS\sidenote{Windows, Mac OSX, GNU/Linux and FreeBSD are supported.}. 
-Once you have a working version of Blender in place, the script can be installed within it.
-Users with existing Blender installations and setups can directly install the script following the instructions below.
-New users are encouraged to first load the provided Blender settings file, which will arrange the internal windows appropriately for the given task.
-These settings can then be saved as defaults for future projects if needed.
+The currently supported version (\blenderVersion{}) of Blender must be installed before proceeding with the \programName{} installation. Users with existing Blender installations and setups can directly install the script following the instructions below. Installing Blender is not covered here; please consult their website for instructions for your OS\sidenote{Windows, Mac OSX, GNU/Linux and FreeBSD are supported.}. 
+Once a working version of Blender in place, the script can be installed within it.
+
 \par{}
-For users that do not wish to load the provided settings file, installation of the script should be carried out from inside Blender.
-To begin, open Blender, navigate to User Preferences and choose the 'Add-Ons' tab\sidenote{\addonPath{}}.
-Click "Install Add-On" and use the file viewer to locate the script on your machine and select it.
-This will copy the script to you personal Add-Ons directory, and it will now appear in the list of available Add-Ons.
-To activate it you must tick the checkbox for its entry.
-You can then save the Blender configuration for all future documents, or alternatively tick the Add-On in each document you use for QCT drawing.
+Installation of the script requires the program contents be placed in the Blender addons directory. The location of this directory is OS-dependent.
+AFter copying the files, open Blender, navigate to User Preferences and choose the 'Add-Ons' tab\sidenote{\addonPath{}}.
+Use the search box to find \programName{}. To activate, tick the checkbox to the left of the entry.
+The Blender configuration can be saved for all future documents, or alternatively the Add-On can be ticked in each document used for QCT drawing.
 The script, when the checkbox is selected, will add an operator named 'Import Topology' to Blender as a menu item.
-Clicking this button will open a file viewer allowing navigation to a .top file.
+Clicking this button will open a file viewer allowing navigation to an existing .top file.
 
 \section{Converting QCT Output Files}
 In order to model and render a topology, the topology must first be known. 
@@ -85,6 +81,9 @@ Several Perl scripts are provided for this purpose, named for the filetype that 
 After successful conversion, the .top file can be read into Blender via \programName{} by clicking the appropriate menu item\sidenote{\operatorPath{}} and navigating to the file's location.
 The appearance of the topology will follow the default template, i.e. standard colors and sphere radii will be used as listed in the Manual.
 Following successful reading of a .top file, a 3D model of the topology will appear. To the right of the 3D model, in the outliner window, a folder structure appears which breaks the topology down into sets of elements for easy navigation and selection.
+
+\section{Useful GUI Buttons}
+\programName{} provides a set of useful buttons for commonly needed manipulation tasks. These can be used to select and resize various types of gradient path, turn on or off all CPs of a given type and switch to stereoscopic rendering.
 
 \section{Placing the Camera \& Rendering an Image}
 The camera must be positioned such that the appropriate part of the topology will be rendered onto the 2D image plane.
