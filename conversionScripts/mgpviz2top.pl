@@ -14,7 +14,11 @@ use WriteTopology qw(writeTopologyXML);
 if (dirname(__FILE__) =~ m/(.*)\/conversionScripts/) {
   $dtdPath = "$1\/Topology\.dtd";
 } else {
-  die "Error\: Problem locating Topology\.dtd\n";
+  if (-e "../Topology\.dtd") {
+    $dtdPath = "\.\.\/Topology\.dtd";
+  } else {
+    die "Error\: Problem locating Topology\.dtd\n";
+  }
 }
 
 # The single (mandatory) command line argument is the name of the file to convert.
