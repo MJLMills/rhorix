@@ -2,6 +2,9 @@
 # Dr. Matthew J L Mills - RhoRix
 # Convert morphy mif files to the top format
 
+use File::Basename;
+use lib dirname(__FILE__); # find modules in script directory - adds the path to @LIB
+
 use Utilities qw(checkArgs readFile);
 use TopUtils qw(getRank getSignature);
 

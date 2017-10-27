@@ -4,6 +4,9 @@
 # Note: most likely doesn't work under Windows since the output is a BASH script.
 # Relies on the user having the IRIS executables of the Popelier group.
 
+use File::Basename;
+use lib dirname(__FILE__); # find modules in script directory - adds the path to @LIB
+
 use Utilities qw(stripExt readFile listFilesOfType);
 
 $psaPath = ""; # This must be the path to morphyPSA on your machine

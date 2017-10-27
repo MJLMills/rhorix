@@ -1,6 +1,9 @@
 #!/usr/bin/perl -w
 # Matthew J L Mills
 
+use File::Basename;
+use lib dirname(__FILE__); # find modules in script directory - adds the path to @LIB
+
 use Utilities qw(readFile listFilesOfType);
 
 @mifList = listFilesOfType("mif");
