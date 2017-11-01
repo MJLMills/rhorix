@@ -10,33 +10,33 @@ Where possible, code for writing the XML files has been abstracted into a set of
 ### Utilities.pm
 Contains generic utility functions related to reading/writing files and dealing with arguments.
 
-stripExt
+*stripExt*
 
-getExt
+*getExt*
 
-readFile
+*readFile*
 
-checkArgs
+*checkArgs*
 
-listFilesOfType
+*listFilesOfType*
 
 ### XmlRoutines.pm
 Contains routines expressly dedicated to writing to XML files and checking their validity against a document type definition.
 
-writePCData
+*writePCData*
 
-openTag
+*openTag*
 
-closeTag
+*closeTag*
 
-writeXMLHeader
+*writeXMLHeader*
 
-checkValidity
+*checkValidity*
 
 ### WriteTopology.pm
 Contains routines for writing files which adhere to the topology document type definition.
 
-writeTopologyXML
+*writeTopologyXML*
 
 writeSourceInformation
 
@@ -96,16 +96,16 @@ writePair
 
 ### TopUtils.pm
 
-getRank
+*getRank*
 
-getSignature
+*getSignature*
 
 ## Topology Program Specific Modules
 
 ### ParseViz.pm
 Contains functions for reading from AIMAll's .*viz formats and creating corresponding objects.
 
-parseMgpviz
+*parseMgpviz*
 
 parseRingSurfacesFromMgpviz
 
@@ -140,7 +140,7 @@ determineCages
 ### VizUtils.pm
 Contains basic utilities related to AIMAll's .*viz file formats.
 
-checkMgpvizFile
+*checkMgpvizFile*
 
 checkPoincareHopf
 
