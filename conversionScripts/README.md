@@ -7,22 +7,92 @@ Where possible, code for writing the XML files has been abstracted into a set of
 
 #### General Use Modules
 
-Utilities.pm - Contains generic utility functions related to reading/writing files and dealing with arguments.
+# Utilities.pm
+Contains generic utility functions related to reading/writing files and dealing with arguments.
 
-XmlRoutines.pm - Contains routines expressly dedicated to writing to XML files and checking their validity against a document type definition.
+stripExt
+getExt
+readFile
+checkArgs
+listFilesOfType
 
-WriteTopology.pm - Contains routines for writing files which adhere to the topology document type definition.
+# XmlRoutines.pm
+Contains routines expressly dedicated to writing to XML files and checking their validity against a document type definition.
 
+writePCData
+openTag
+closeTag
+writeXMLHeader
+checkValidity
+
+# WriteTopology.pm
+Contains routines for writing files which adhere to the topology document type definition.
+
+writeTopologyXML
+writeSourceInformation
+writeNuclei
+writeNucleus
+writeCriticalPoints
+writeCP
+writeGradientVectorField
+writeMolecularGraph
+writeAtomicSurfaces
+writeAtomicSurface
+writeInteratomicSurface
+writeEnvelopes
+writeEnvelope
+writeAtomicBasins
+writeAtomicBasin
+writeRingSurfaces
+writeRingSurface
+writeRing
+writeCage
+writeTriangulation
+writeEdge
+writeFace
+writeAtomicInteractionLine
+writeGradientPaths
+writeGradientPath
+writePoint
+writePositionVector
+writeMap
+writePair
+
+# TopUtils.pm
+getRank
+getSignature
 
 #### Topology Program Specific Modules
 
 ParseViz.pm - Contains functions for reading from AIMAll's .*viz formats and creating corresponding objects.
 
-VizUtils.pm - Contains basic utilities related to AIMAll's .*viz file formats.
+parseMgpviz
+parseRingSurfacesFromMgpviz
+parseInteratomicSurfacesFromMgpviz
+parseSourceInformationFromViz
+parseNucleiFromViz
+parseCPsFromViz
+parseMolecularGraphFromViz
+parseGradientPath
+parseRelatedIasvizFiles
+parseRingSurfacesFromIasviz
+parseBasinFromBasviz
+parseAtomFromIasviz
+parseAtomicSurfaceFromIasviz
+parseIntegrationRayIsodensitySurfaceIntersectionsFromIasviz
+determineRings
+determineCages
+
+# VizUtils.pm
+Contains basic utilities related to AIMAll's .*viz file formats.
+
+checkMgpvizFile
+checkPoincareHopf
+checkCompletion
+
+#### Scripts
 
 mgpviz2top.pl - Script for converting AIMAll output to top format.
-
-#### Other
 
 mif2top.pl - Script for converting MORPHY/IRIS output to top format.
 
