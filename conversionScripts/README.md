@@ -23,6 +23,8 @@ runIris.pl - run the various executables that comprise IRIS on a set of wavefunc
 
 ## General Use Modules
 
+In the following, *italics* indicate that a subroutine is made public by its parent module.
+
 ### Utilities.pm
 Contains generic utility functions related to reading/writing files and dealing with arguments.
 
