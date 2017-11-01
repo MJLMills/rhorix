@@ -11,55 +11,93 @@ Where possible, code for writing the XML files has been abstracted into a set of
 Contains generic utility functions related to reading/writing files and dealing with arguments.
 
 stripExt
+
 getExt
+
 readFile
+
 checkArgs
+
 listFilesOfType
 
 ### XmlRoutines.pm
 Contains routines expressly dedicated to writing to XML files and checking their validity against a document type definition.
 
 writePCData
+
 openTag
+
 closeTag
+
 writeXMLHeader
+
 checkValidity
 
 ### WriteTopology.pm
 Contains routines for writing files which adhere to the topology document type definition.
 
 writeTopologyXML
+
 writeSourceInformation
+
 writeNuclei
+
 writeNucleus
+
 writeCriticalPoints
+
 writeCP
+
 writeGradientVectorField
+
 writeMolecularGraph
+
 writeAtomicSurfaces
+
 writeAtomicSurface
+
 writeInteratomicSurface
+
 writeEnvelopes
+
 writeEnvelope
+
 writeAtomicBasins
+
 writeAtomicBasin
+
 writeRingSurfaces
+
 writeRingSurface
+
 writeRing
+
 writeCage
+
 writeTriangulation
+
 writeEdge
+
 writeFace
+
 writeAtomicInteractionLine
+
 writeGradientPaths
+
 writeGradientPath
+
 writePoint
+
 writePositionVector
+
 writeMap
+
 writePair
 
 ### TopUtils.pm
+
 getRank
+
 getSignature
 
 ## Topology Program Specific Modules
@@ -68,27 +106,44 @@ getSignature
 Contains functions for reading from AIMAll's .*viz formats and creating corresponding objects.
 
 parseMgpviz
+
 parseRingSurfacesFromMgpviz
+
 parseInteratomicSurfacesFromMgpviz
+
 parseSourceInformationFromViz
+
 parseNucleiFromViz
+
 parseCPsFromViz
+
 parseMolecularGraphFromViz
+
 parseGradientPath
+
 parseRelatedIasvizFiles
+
 parseRingSurfacesFromIasviz
+
 parseBasinFromBasviz
+
 parseAtomFromIasviz
+
 parseAtomicSurfaceFromIasviz
+
 parseIntegrationRayIsodensitySurfaceIntersectionsFromIasviz
+
 determineRings
+
 determineCages
 
 ### VizUtils.pm
 Contains basic utilities related to AIMAll's .*viz file formats.
 
 checkMgpvizFile
+
 checkPoincareHopf
+
 checkCompletion
 
 ## Scripts
