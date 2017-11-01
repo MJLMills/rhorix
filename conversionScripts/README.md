@@ -10,28 +10,28 @@ Where possible, code for writing the XML files has been abstracted into a set of
 ### Utilities.pm
 Contains generic utility functions related to reading/writing files and dealing with arguments.
 
-*stripExt*
+*stripExt* - Remove the extension from a filename.
 
-*getExt*
+*getExt* - Get the extension from a filename.
 
-*readFile*
+*readFile* - Open and read the contents of a file.
 
-*checkArgs*
+*checkArgs* - Check that the appropriate arguments have been passed to a script.
 
-*listFilesOfType*
+*listFilesOfType* - Make a list of all files with a given extension in a directory.
 
 ### XmlRoutines.pm
 Contains routines expressly dedicated to writing to XML files and checking their validity against a document type definition.
 
-*writePCData*
+*writePCData* - Write a parsed character data XML element.
 
-*openTag*
+*openTag* - Write an XML element open tag.
 
-*closeTag*
+*closeTag* - Write an XML element close tag.
 
-*writeXMLHeader*
+*writeXMLHeader* - Write the header of an XML file.
 
-*checkValidity*
+*checkValidity* - Check an XML file against its specified DTD file.
 
 ### WriteTopology.pm
 Contains routines for writing files which adhere to the topology document type definition.
