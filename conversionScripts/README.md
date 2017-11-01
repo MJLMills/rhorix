@@ -5,9 +5,9 @@ However, no current topological analysis program provides output in this format.
 There is therefore a need for tools which can convert the output of existing programs into the XML format.
 Where possible, code for writing the XML files has been abstracted into a set of Perl modules.
 
-#### General Use Modules
+## General Use Modules
 
-# Utilities.pm
+### Utilities.pm
 Contains generic utility functions related to reading/writing files and dealing with arguments.
 
 stripExt
@@ -16,7 +16,7 @@ readFile
 checkArgs
 listFilesOfType
 
-# XmlRoutines.pm
+### XmlRoutines.pm
 Contains routines expressly dedicated to writing to XML files and checking their validity against a document type definition.
 
 writePCData
@@ -25,7 +25,7 @@ closeTag
 writeXMLHeader
 checkValidity
 
-# WriteTopology.pm
+### WriteTopology.pm
 Contains routines for writing files which adhere to the topology document type definition.
 
 writeTopologyXML
@@ -58,13 +58,13 @@ writePositionVector
 writeMap
 writePair
 
-# TopUtils.pm
+### TopUtils.pm
 getRank
 getSignature
 
-#### Topology Program Specific Modules
+## Topology Program Specific Modules
 
-ParseViz.pm - Contains functions for reading from AIMAll's .*viz formats and creating corresponding objects.
+### ParseViz.pm - Contains functions for reading from AIMAll's .*viz formats and creating corresponding objects.
 
 parseMgpviz
 parseRingSurfacesFromMgpviz
@@ -83,14 +83,14 @@ parseIntegrationRayIsodensitySurfaceIntersectionsFromIasviz
 determineRings
 determineCages
 
-# VizUtils.pm
+### VizUtils.pm
 Contains basic utilities related to AIMAll's .*viz file formats.
 
 checkMgpvizFile
 checkPoincareHopf
 checkCompletion
 
-#### Scripts
+## Scripts
 
 mgpviz2top.pl - Script for converting AIMAll output to top format.
 
