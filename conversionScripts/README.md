@@ -5,6 +5,22 @@ However, no current topological analysis program provides output in this format.
 There is therefore a need for tools which can convert the output of existing programs into the XML format.
 Where possible, code for writing the XML files has been abstracted into a set of Perl modules.
 
+## Scripts
+
+mgpviz2top.pl - Script for converting AIMAll output to top format.
+
+mif2top.pl - Script for converting MORPHY/IRIS output to top format.
+
+Currently support for MORPHY's mif filetype is contained in a single script with much redundant code with the modules above.
+This needs to be changed.
+
+centerTop.pl - center a topology on the center of mass of its nuclei.
+
+collateMifs.pl - collect the various mif files produced by IRIS into a single file for conversion.
+
+runIris.pl - run the various executables that comprise IRIS on a set of wavefunctions.
+
+
 ## General Use Modules
 
 ### Utilities.pm
@@ -36,76 +52,76 @@ Contains routines expressly dedicated to writing to XML files and checking their
 ### WriteTopology.pm
 Contains routines for writing files which adhere to the topology document type definition.
 
-*writeTopologyXML*
+*writeTopologyXML* - Write a complete topology file.
 
-writeSourceInformation
+writeSourceInformation - Write a complete source information element.
 
-writeNuclei
+writeNuclei - Write a set of nuclei.
 
-writeNucleus
+writeNucleus - Write a single Nucleus.
 
-writeCriticalPoints
+writeCriticalPoints - Write a set of critical points.
 
-writeCP
+writeCP - Write a single critical point.
 
-writeGradientVectorField
+writeGradientVectorField - Write a complete gradient vector field element.
 
-writeMolecularGraph
+writeMolecularGraph - Write a complete molecular graph element.
 
-writeAtomicSurfaces
+writeAtomicSurfaces - Write a set of atomic surfaces.
 
-writeAtomicSurface
+writeAtomicSurface - Write a single atomic surface.
 
-writeInteratomicSurface
+writeInteratomicSurface - Write a single interatomic surface.
 
-writeEnvelopes
+writeEnvelopes - Write a set of constant electron density envelopes.
 
-writeEnvelope
+writeEnvelope - Write a single constant electron density envelope.
 
-writeAtomicBasins
+writeAtomicBasins - Write a set of atomic basin elements.
 
-writeAtomicBasin
+writeAtomicBasin - Write a single atomic basin element.
 
-writeRingSurfaces
+writeRingSurfaces - Write a set of ring surface elements.
 
-writeRingSurface
+writeRingSurface - Write a single ring surface element.
 
-writeRing
+writeRing - Write a ring element.
 
-writeCage
+writeCage - Write a cage element.
 
-writeTriangulation
+writeTriangulation - Write a triangulation element.
 
-writeEdge
+writeEdge - Write an edge element.
 
-writeFace
+writeFace - Write a face element.
 
-writeAtomicInteractionLine
+writeAtomicInteractionLine - Write an atomic interaction line element.
 
-writeGradientPaths
+writeGradientPaths - Write a set of gradient path elements.
 
-writeGradientPath
+writeGradientPath - Write a single gradient path element.
 
-writePoint
+writePoint - Write a single point element.
 
-writePositionVector
+writePositionVector - Write a single position vector element.
 
-writeMap
+writeMap - Write a single map element.
 
-writePair
+writePair - Write a single pair element.
 
 ### TopUtils.pm
 
-*getRank*
+*getRank* - Convert a critical point label to the corresponding integer rank value.
 
-*getSignature*
+*getSignature* - Convert a critical point label to the corresponding integer signature value.
 
 ## Topology Program Specific Modules
 
 ### ParseViz.pm
 Contains functions for reading from AIMAll's .*viz formats and creating corresponding objects.
 
-*parseMgpviz*
+*parseMgpviz* - Master routine for parsing contents of an .mgpviz file.
 
 parseRingSurfacesFromMgpviz
 
@@ -140,23 +156,9 @@ determineCages
 ### VizUtils.pm
 Contains basic utilities related to AIMAll's .*viz file formats.
 
-*checkMgpvizFile*
+*checkMgpvizFile* - Confirm that an .mgpviz file is complete and correct.
 
-checkPoincareHopf
+checkPoincareHopf - Check that a .viz file does not violate the Poincare-Hopf relationship.
 
-checkCompletion
+checkCompletion - Check for the presence of a completion statement in a .viz file.
 
-## Scripts
-
-mgpviz2top.pl - Script for converting AIMAll output to top format.
-
-mif2top.pl - Script for converting MORPHY/IRIS output to top format.
-
-Currently support for MORPHY's mif filetype is contained in a single script with much redundant code with the modules above.
-This needs to be changed.
-
-centerTop.pl - center a topology on the center of mass of its nuclei.
-
-collateMifs.pl - collect the various mif files produced by IRIS into a single file for conversion.
-
-runIris.pl - run the various executables that comprise IRIS on a set of wavefunctions.
