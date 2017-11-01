@@ -64,7 +64,8 @@ getSignature
 
 ## Topology Program Specific Modules
 
-### ParseViz.pm - Contains functions for reading from AIMAll's .*viz formats and creating corresponding objects.
+### ParseViz.pm
+Contains functions for reading from AIMAll's .*viz formats and creating corresponding objects.
 
 parseMgpviz
 parseRingSurfacesFromMgpviz
