@@ -1,5 +1,5 @@
 This program (FormatMO) exists to format the unformatted MO coefficients written by TeraChem 1.8 to its output files; c0 (for restricted wavefunctions) or cA and cB (for unrestricted wavefunctions).
-Input is provided via the namelist file *params.nml*; it specifies the input file (c0, cA or cB) and the number of primitive gaussians.
+Input is provided via the namelist file *params.nml*; it specifies the input file (c0, cA or cB) and the number of primitive Gaussians.
 The former is to keep the program simple, the latter is because it was not clear how to infer the num of primitives from the data size.
 An example namelist file is provided in params.nml.
 
