@@ -2,7 +2,7 @@
 
 This directory contains examples in both .top and .blend format which can be used to check the reading and rendering of Blender respectively.
 The .blend files can be loaded without needing to install the Rhorix software.
-The following lists the included example by name, corresponding figure in the Rhorix paper and the QM/QCT codes used to generate the data.
+The following lists the included example by name, corresponding figure in the [Rhorix paper](https://www.researchgate.net/publication/319407440_Rhorix_An_interface_between_quantum_chemical_topology_and_the_3D_graphics_program_f) and the QM/QCT codes used to generate the data.
 
 ## List of Chemical Systems
 
