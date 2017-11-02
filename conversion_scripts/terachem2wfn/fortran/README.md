@@ -8,4 +8,4 @@ An example namelist file is provided.
 Note: The binary MO coefficient file is written by C, meaning ACCESS='stream' from the Fortran2003 spec is needed to read it properly.
 To compile and link the program, enter 'make all' at the command line. 
 This requires the free gfortran compiler and make. 
-The compilation has not been tested on any other compiler.
+The compilation has not been tested with any other compiler.
