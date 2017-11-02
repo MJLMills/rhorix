@@ -15,7 +15,16 @@ our $VERSION   = 1.0;
 ### Subroutines ###
 # To be replaced with their .mif equivalents:
 
-#sub parseMif {} # public subroutine to call private subroutines
+# public subroutine to call private subroutines
+sub parseMif {
+
+  @mifContents = ${$_[0]};
+
+}
+
+
+
+
 
 # The following are in the mif2top.pl script already
 #sub parseCPsFromMif {}
