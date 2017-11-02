@@ -9,7 +9,7 @@ require Exporter;
 
 our @ISA       = qw(Exporter);
 our @EXPORT    = ();
-our @EXPORT_OK = qw(getRank getSignature getMassesFromElements);
+our @EXPORT_OK = qw(getRank getSignature getMassesFromElements computeCOM);
 our $VERSION   = 1.0;
 
 ### Subroutines ###
@@ -90,6 +90,31 @@ sub getMassesFromElements {
   }
 
   return (\@masses);
+
+}
+
+sub computeCOM {
+
+  my @masses = @{$_[0]};
+  my @cartesian_coords = @{$_[1]};
+
+  my $totalMass = 0;
+  my @com;
+  for($atom=0; $atom<@$masses; $atom++) {
+
+    $totalMass += @$masses[$atom];
+    my @coords = @{$cartesian_coords[$atom]};
+    for ($i=0; $i<3; $i++) {
+      $com[$i] += $coords[$i] * @$masses[$atom];
+    }
+
+  }
+  if ($totalMass == 0) { die "Error\: Total Mass = 0\n"; }
+  for ($i=0; $i<3; $i++) {
+    $com[$i] /= $totalMass;
+  }
+
+  return \@com;
 
 }
 
