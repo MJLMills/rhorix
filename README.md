@@ -3,9 +3,9 @@
 RhoRix is a [Blender](http://www.blender.org) *Add-On* (i.e. a script that extends Blender with extra functionality) that allows the user to import files containing topological objects defined by the theory of [Quantum Chemical Topology](http://www.chemistry.mcmaster.ca/bader/) (QCT). The program converts topological data to 3D objects, and subsequently the full functionality of Blender can be used to render images of the topology. Note that the purpose of this program is to enable import of (and provide a standard appearance for) a topology, and the user is encouraged to consult the full Blender documentation and tutorials in order to obtain creative renders.
 
 The initial code was written with reference to Chapter 4 of the WikiBook '[Blender 3D: Noob to Pro](http://en.wikibooks.org/wiki/Blender_3D:_Noob_to_Pro#Table_of_Contents/)' and the appropriate section of the [Blender documentation](https://docs.blender.org/api/2.79/).
-Significant Perl code is provided for conversion of the output of standard QCT programs to the included XML-based filetype. These scripts are provided as a set of traditional modules (sets of subroutines for import).
+Significant Perl code is provided for conversion of the output of standard QCT programs to the included XML-based filetype. Much of this code is provided as a set of traditional modules (sets of subroutines for import).
 
-Full documentation is provided in 'Manual.pdf', 'QuickStart.pdf' and a [peer-reviewed paper](https://www.researchgate.net/publication/319407440_Rhorix_An_interface_between_quantum_chemical_topology_and_the_3D_graphics_program_f). Building documentation requires LaTeX and the [tufte-latex](https://github.com/Tufte-LaTeX/tufte-latex) package. The .cls files from the package are required to create the pdf documentation.
+Full documentation is provided in 'QuickStart.pdf' and a [peer-reviewed paper](https://www.researchgate.net/publication/319407440_Rhorix_An_interface_between_quantum_chemical_topology_and_the_3D_graphics_program_f). Building documentation requires LaTeX and the [tufte-latex](https://github.com/Tufte-LaTeX/tufte-latex) package. The .cls files from the package are required to create the pdf documentation.
 
 See the [program website](http://www.mjohnmills.com/rhorix) for further information.
 
