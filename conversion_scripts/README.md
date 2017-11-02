@@ -3,7 +3,7 @@
 The included Blender Add-On functions on topological data provided in the XML format described in the Rhorix [paper](https://www.researchgate.net/publication/319407440_Rhorix_An_interface_between_quantum_chemical_topology_and_the_3D_graphics_program_blender).
 However, no topological analysis program currently provides output in this format.
 There is therefore a need for tools which can convert the output of existing programs into the XML format.
-The code in this directory provides tools for converting output from AIMAll and MORPHY/IRIS into Rhorix input.
+The code in this directory provides the ability to convert output from AIMAll and MORPHY/IRIS into Rhorix input.
 In addition, code for general use and for writing the XML files has been abstracted into a set of Perl modules.
 This facilitates the future addition of converters for other QCT analysis programs.
 
