@@ -135,6 +135,12 @@ writePair - Write a single pair element.
 
 *getSignature* - Convert a critical point label to the corresponding integer signature value.
 
+*computeCOM* - Compute the center of mass of an array of nuclei.
+
+*getMassesFromElements* - Convert a list of element labels to their corresponding masses.
+
+getMassFromElement - Convert a single element label to the corresponding mass.
+
 ## Topology Program Specific Modules
 
 ### ParseViz
