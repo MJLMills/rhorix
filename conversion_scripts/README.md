@@ -4,6 +4,7 @@ The included Blender Add-On functions entirely on the existence of topological d
 However, no current topological analysis program provides output in this format.
 There is therefore a need for tools which can convert the output of existing programs into the XML format.
 Where possible, code for writing the XML files has been abstracted into a set of Perl modules.
+The scripts in this directory currently allow conversion from output files produced by AIMAll and IRIS.
 
 ## Scripts
 
@@ -16,9 +17,10 @@ This needs to be changed.
 
 centerTop.pl - center a topology on the center of mass of its nuclei.
 
-collateMifs.pl - collect the various mif files produced by IRIS into a single file for conversion.
+The following scripts are for running the IRIS program and collecting its output into a single file respectively.
 
 runIris.pl - run the various executables that comprise IRIS on a set of wavefunctions.
+collateMifs.pl - collect the various mif files produced by IRIS into a single file for conversion.
 
 
 ## General Use Modules
