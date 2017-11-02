@@ -1,4 +1,4 @@
-#### TeraChem Compatibility
+# TeraChem Compatibility
 
 TeraChem is GPU-enabled software for quantum chemistry (see the [software website](http://www.petachem.com/products.html) for details).
 In order to apply QCT analysis software to TeraChem output it is necessary to convert the wavefunction data to a standard format.
