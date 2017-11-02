@@ -8,20 +8,23 @@ The scripts in this directory currently allow conversion from output files produ
 
 ## Scripts
 
+### AIMAll Conversion
 mgpviz2top.pl - Script for converting AIMAll output to top format.
 
-mif2top.pl - Script for converting MORPHY/IRIS output to top format.
+
+### Morphy/Iris Conversion
+
+The following scripts are for running the IRIS program and collecting its output into a single file respectively.
 
 Currently support for MORPHY's mif filetype is contained in a single script with much redundant code with the modules above.
 This needs to be changed.
 
-centerTop.pl - center a topology on the center of mass of its nuclei.
-
-The following scripts are for running the IRIS program and collecting its output into a single file respectively.
-
+mif2top.pl - Script for converting MORPHY/IRIS output to top format.
 runIris.pl - run the various executables that comprise IRIS on a set of wavefunctions.
 collateMifs.pl - collect the various mif files produced by IRIS into a single file for conversion.
 
+### General
+centerTop.pl - center a topology on the center of mass of its nuclei.
 
 ## General Use Modules
 
