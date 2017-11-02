@@ -1,32 +1,30 @@
-This directory contains examples in both .top and .blend format which can be used to check the reading and rendering of Blender respectively. The .blend files can be loaded without needing to install the Rhorix software.
+# Rendering Examples
 
-Decaborane - B10H14 - 9b (g09/aimall)
-Tetraborane - B4H10 - 9a (g09/aimall)
-Hexamethylenetetramine - C6H12N4 - 9c (g09/aimall)
-PSMa3-helix - 10 (tchem/aimall)
-PSMa3-dihelix - Cover Image (tchem/aimall)
+This directory contains examples in both .top and .blend format which can be used to check the reading and rendering of Blender respectively.
+The .blend files can be loaded without needing to install the Rhorix software.
 
-To Do
+## List of Chemical Systems
 
-LigM - 11 (tchem/aimall)
-HFH- - 8a (g09/morphy)
-HF5 - 8b (g09/?)
-diacetic acid 8c (g09/morphy)
-S8 - 7a and b (g09/morphy)
-benzene (g09/aimall and morphy) - 4a and b respectively
+Benzene-aimall - 4a - g09/AIMAll
 
+Benzene-morphy - 4b - g09/Morphy
 
-Decaborane_B10H14
-DiaceticAcid
-FHF-
-HF5
-Hexamethylenetetramine_C6H12N4
-LigM
-PSMa3-dihelix
-PSMa3-helix
-README.md
-Sulfur-S8
-Tetraborane_B4H10
-benzene-aimall
-benzene-morphy
+Sulfur - 7a,7b - g09/Morphy
 
+FHF- 8a - g09/Morphy
+
+HF5 - 8b - g09/Morphy
+
+DiaceticAcid - 8c - g09/Morphy
+
+Tetraborane - 9a - g09/AIMAll
+
+Decaborane - 9b - g09/AIMAll
+
+Hexamethylenetetramine - 9c - g09/AIMAll
+
+PSMa3-helix - 10 - TeraChem/AIMAll
+
+LigM - 11 - TeraChem/AIMAll
+
+PSMa3-dihelix - Journal Cover - TeraChem/AIMAll
