@@ -33,6 +33,11 @@ centerTop.pl - Move a topology so that its origin is at the center of mass of it
 This is useful when a topology loaded into Blender is too far from the view center to be easily manipulated.
 Please note this script relies on x,y and z tags not being broken over multiple lines.
 
+validateXML.pl
+
+This is a simple script that verifies that a given XML file conforms to its listed document type definition.
+It should be used to check any .top file that proves difficult to read into Blender.
+
 ## General Use Modules
 
 In the following, *italics* indicate that a subroutine is made public by its parent module and thus may appear in an above script.
