@@ -9,7 +9,7 @@ require Exporter;
 
 our @ISA       = qw(Exporter);
 our @EXPORT    = ();
-our @EXPORT_OK = qw(getRank getSignature);
+our @EXPORT_OK = qw(getRank getSignature getMassesFromElements);
 our $VERSION   = 1.0;
 
 ### Subroutines ###
@@ -46,3 +46,50 @@ sub getSignature {
   }
 
 }
+
+sub getMassFromElement {
+
+  my $element = "$_[0]";
+
+  if ($element eq "H") {
+    return 1.0079;
+  } elsif ($element eq "C") {
+    return 12.0107;
+  } elsif ($element eq "N") {
+    return 14.0067;
+  } elsif ($element eq "O") {
+    return 15.9994;
+  } elsif ($element eq "P") {
+    return 30.9728;
+  } elsif ($element eq "S") {
+    return 32.065;
+  } elsif ($element eq "F") {
+    return 18.9984;
+  } elsif ($element eq "B") {
+    return 10.811;
+  } elsif ($element eq "Br") {
+    return 79.904;
+  } elsif ($element eq "Cl") {
+    return 35.453;
+  } elsif ($element eq "Se") {
+    return 78.96;
+  } else {
+    die "No mass defined for element $element\n";
+  }
+
+}
+
+sub getMassesFromElements {
+
+  my @elements = @{$_[0]};
+
+  my @masses;
+  foreach(@elements) {
+    $mass = getMassFromElement($_);
+    push(@masses,$mass);
+  }
+
+  return (\@masses);
+
+}
+
