@@ -1,6 +1,7 @@
 #!/usr/bin/perl -w
-# Matthew J L Mills
-# Terachem9TOwfn.pl - Convert TeraChem output files to the PROAIM .wfn format.
+# Dr. Matthew J L Mills - Rhorix 1.0.0
+# terachem2wfn.pl - Convert TeraChem 1.9 output files to the PROAIM .wfn format.
+# See README.md for further details.
 
 $debug = 0;
 # The virial is not provided by TeraChem 1.9 - set to exact value
