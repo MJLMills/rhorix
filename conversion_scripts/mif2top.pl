@@ -2,6 +2,8 @@
 # Dr. Matthew J L Mills - RhoRix
 # Convert morphy mif files to the top format
 
+# The .mif file does not contain the full connectivity of the system! This is a problem.
+
 use File::Basename;
 use lib dirname(__FILE__); # find modules in script directory - adds the path to @LIB
 use Utilities qw(checkArgs readFile);
@@ -20,7 +22,10 @@ $mifFile = checkArgs(\@ARGV,"mif");
 if (getExt($mifFile) ne "mif") { die "Error\: $0 script requires a mif file as input\n"; }
 $mifContents = readFile($mifFile);
 
+# Get initial info for the .top file
+
 $systemName = stripExt($mifFile);
+my @source_information = ("unknown","unknown","unknown","MORPHY"); # perhaps the morphy version can be parsed from the MOUT?
 
 if (dirname(__FILE__) =~ m/(.*)\/conversionScripts/) {
   $dtdPath = "$1\/Topology\.dtd";
@@ -32,8 +37,7 @@ if (dirname(__FILE__) =~ m/(.*)\/conversionScripts/) {
   }
 }
 
-my @source_information = ("unknown","unknown","unknown","MORPHY"); # perhaps the morphy version can be parsed from the MOUT?
-
+# add list of returns from parseMif
 parseMif($mifContents);
 
 writeTopologyXML($dtdPath,                   #  0 done
