@@ -10,18 +10,19 @@ This facilitates the future addition of converters for other QCT analysis progra
 ## Scripts
 
 ### AIMAll Conversion
-mgpviz2top.pl - Script for converting AIMAll output to top format.
+
+mgpviz2top.pl - Script for converting AIMAll output to XML .top format.
+The input file must be an .mgpviz file, but the script will also check for the presence of other types of .viz file.
+Files containing interatomic surface data are produced by running AIMAll with the -iaswrite=true flag.
 
 ### Morphy/Iris Conversion
 
 The following scripts are for running the IRIS program and collecting its output into a single file respectively.
-
-Currently support for MORPHY's mif filetype is contained in a single script with much redundant code with the modules above.
-This needs to be changed.
+Currently support for MORPHY's mif filetype is contained in a single script (mif2top.pl) with much redundant code with the modules above.
 
 mif2top.pl - Script for converting MORPHY/IRIS output to top format.
-runIris.pl - run the various executables that comprise IRIS on a set of wavefunctions.
-collateMifs.pl - collect the various mif files produced by IRIS into a single file for conversion.
+runIris.pl - Run the various executables that comprise IRIS on a set of wavefunctions.
+collateMifs.pl - Collect the various mif files produced by IRIS into a single file for conversion.
 
 ### General
 centerTop.pl - Move a topology so that its origin is at the center of mass of its nuclei.
