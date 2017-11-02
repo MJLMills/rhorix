@@ -15,6 +15,18 @@ diacetic acid 8c (g09/morphy)
 S8 - 7a and b (g09/morphy)
 benzene (g09/aimall and morphy) - 4a and b respectively
 
-other examples?
-Popelier
-Sol
+
+Decaborane_B10H14
+DiaceticAcid
+FHF-
+HF5
+Hexamethylenetetramine_C6H12N4
+LigM
+PSMa3-dihelix
+PSMa3-helix
+README.md
+Sulfur-S8
+Tetraborane_B4H10
+benzene-aimall
+benzene-morphy
+
