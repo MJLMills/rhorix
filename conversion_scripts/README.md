@@ -1,16 +1,16 @@
 # Conversion Scripts
 
-The included Blender Add-On functions entirely on the existence of topological data formatted into the XML format described in the [paper](https://www.researchgate.net/publication/319407440_Rhorix_An_interface_between_quantum_chemical_topology_and_the_3D_graphics_program_blender).
-However, no current topological analysis program provides output in this format.
+The included Blender Add-On functions on topological data provided in the XML format described in the Rhorix [paper](https://www.researchgate.net/publication/319407440_Rhorix_An_interface_between_quantum_chemical_topology_and_the_3D_graphics_program_blender).
+However, no topological analysis program currently provides output in this format.
 There is therefore a need for tools which can convert the output of existing programs into the XML format.
-Where possible, code for writing the XML files has been abstracted into a set of Perl modules.
-The scripts in this directory currently allow conversion from output files produced by AIMAll and IRIS/MORPHY.
+The code in this directory provides tools for converting output from AIMAll and MORPHY/IRIS into Rhorix input.
+In addition, code for general use and for writing the XML files has been abstracted into a set of Perl modules.
+This facilitates the future addition of converters for other QCT analysis programs.
 
 ## Scripts
 
 ### AIMAll Conversion
 mgpviz2top.pl - Script for converting AIMAll output to top format.
-
 
 ### Morphy/Iris Conversion
 
@@ -24,11 +24,13 @@ runIris.pl - run the various executables that comprise IRIS on a set of wavefunc
 collateMifs.pl - collect the various mif files produced by IRIS into a single file for conversion.
 
 ### General
-centerTop.pl - center a topology on the center of mass of its nuclei.
+centerTop.pl - Move a topology so that its origin is at the center of mass of its nuclei.
+This is useful when a topology loaded into Blender is too far from the view center to be easily manipulated.
+Please note this script relies on x,y and z tags not being broken over multiple lines.
 
 ## General Use Modules
 
-In the following, *italics* indicate that a subroutine is made public by its parent module.
+In the following, *italics* indicate that a subroutine is made public by its parent module and thus may appear in an above script.
 
 ### Utilities
 Contains generic utility functions related to reading/writing files and dealing with arguments.
@@ -129,6 +131,8 @@ writePair - Write a single pair element.
 Contains functions for reading from AIMAll's .*viz formats and creating corresponding objects.
 
 *parseMgpviz* - Master routine for parsing contents of an .mgpviz file.
+
+The remainder of the subroutines in this module have obvious function given their names.
 
 parseRingSurfacesFromMgpviz
 
