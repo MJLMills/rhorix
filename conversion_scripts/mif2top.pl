@@ -7,7 +7,39 @@ use lib dirname(__FILE__); # find modules in script directory - adds the path to
 
 use Utilities qw(checkArgs readFile);
 use TopUtils qw(getRank getSignature);
+use WriteTopology qw(writeTopologyXML);
 
+# we will initially call parseMif to get all available data from the input file
+# ...
+# we are eventually going to call writeTopologyXML from writeTopology.pm with info parsed from the mif
+#writeTopologyXML($dtdPath,                   #  0 done
+#                 $systemName,                #  1 done
+#                 $sourceInformation,         #  2 done
+#                 $elements,                  #  3 NUCLEI
+#                 $nuclearIndices,            #  4
+#                 $nuclearCoordinates,        #  5
+#                 $cpIndices,                 #  6 CRITICAL POINTS
+#                 $ranks,                     #  7
+#                 $signatures,                #  8
+#                 $cpCoordinates,             #  9
+#                 $scalarProperties,          # 10
+#                 $ails,                      # 11 MOLECULAR GRAPH
+#                 $indices,                   # 12
+#                 $props,                     # 13
+#                 $atomic_surface_coords,     # 14 ATOMIC SURFACES
+#                 $atomic_surface_properties, # 15
+#                 $atomic_surface_indices,    # 16
+#                 $ring_surface_coords,       # 17 RING SURFACES
+#                 $ring_surface_indices,      # 18
+#                 $ring_surface_props,        # 19
+#                 $envelope_coords,           # 20 ENVELOPES
+#                 $envelope_properties,       # 21
+#                 $envelope_indices,          # 22
+#                 $atomic_basin_coords,       # 23
+#                 $atomic_basin_properties,   # 24
+#                 $atomic_basin_indices);     # 25
+
+# these are options which can be set and should be documented
 $removeRedundant = 1;
 $printEdges = 0;
 $factor = 10;
@@ -15,17 +47,35 @@ $factor = 10;
 # Read the .mif file
 
 $mifFile = checkArgs(\@ARGV,"mif");
-@mifContents = readFile($mifFile);
+@mifContents = readFile($mifFile); # returns ref to array, not array
 
-# Create the .top file
+$systemName = stripExt($mgpvizFile,"mgpviz");
 
-$mifFile =~ m/(.*)\.mif/;
+if (dirname(__FILE__) =~ m/(.*)\/conversionScripts/) {
+  $dtdPath = "$1\/Topology\.dtd";
+} else {
+  if (-e "../Topology\.dtd") {
+    $dtdPath = "\.\.\/Topology\.dtd";
+  } else {
+    die "Error\: Problem locating Topology\.dtd\n";
+  }
+}
+
+my @source_information = ("unknown","unknown","unknown","MORPHY"); # perhaps the morphy version can be parsed from the MOUT?
+
+# now need an overarching parseMif subroutine
+
+# Create the .top file - actually due to calling writeTopologyXML there is no need to open a filehandle here
+
+$mifFile =~ m/(.*)\.mif/; # use stripExt instead
 $topFile = "$1\.top";
 open(TOP,">","$topFile") || die "Cannot create topology file\: $topFile\n";
 print TOP "\<topology\>\n";
 
 # Parse the .mif file, printing the .top file as you go
 
+# This mixed thing here is the template for each parsing subroutine that needs to be implemented
+# this code will go in the parseMif module and be called here instead
 $c = 0;
 MAIN_LOOP: for ($line=0; $line<@mifContents; $line++) {
   
@@ -174,7 +224,7 @@ MAIN_LOOP: for ($line=0; $line<@mifContents; $line++) {
 
 } # end MAIN_LOOP
 
-# Close up the topology file
+# Close up the topology file - won't need this, at this point call the write routine
 
 print TOP "\<\/topology\>\n";
 close TOP;
@@ -266,6 +316,8 @@ sub reformatSurface {
   }
 
 }
+
+# none of these print routines will be needed - see writeTopology.pm
 
 sub printFaces {
 
@@ -372,37 +424,5 @@ sub printCP {
   printf TOP "\<y\>%8.5f\<\/y\>", $y;
   printf TOP "\<z\>%8.5f\<\/z\>\n", $z;
   print  TOP "  \<\/CP\>\n";
-
-}
-
-sub parseVertexLine {
-
-  local $line = "$_[0]";
-  local $x = undef; local $y = undef; local $z = undef;
-
-  if ($line =~ m/(-?\d+\.\d+)E([+-]\d+)\s+(-?\d+\.\d+)E([+-]\d+)\s+(-?\d+\.\d+)E([+-]\d+)/) {
-    $x = $1 * (10 ** $2); $y = $3 * (10 ** $4); $z = $5 * (10 ** $6);
-  } elsif ($line =~ m/(-?\d+\.\d+)\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)E([+-]\d+)/) {
-    $x = $1; $y = $2; $z = $3 * (10 ** $4);
-  } elsif ($line =~ m/(-?\d+\.\d+)\s+(-?\d+\.\d+)E([+-]\d+)\s+(-?\d+\.\d+)E([+-]\d+)/) {
-    $x = $1; $y = $2 * (10 ** $3); $z = $4 * (10 ** $5);
-  } elsif ($line =~ m/(-?\d+\.\d+)E([+-]\d+)\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)E([+-]\d+)/) {
-    $x = $1 * (10 ** $2); $y = $3; $z = $4 * (10 ** $5); 
-  } elsif ($line =~ m/(-?\d+\.\d+)E([+-]\d+)\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)/) {
-    $x = $1 * (10 ** $2); $y = $3; $z = $4;
-  } elsif ($line =~ m/(-?\d+\.\d+)E([+-]\d+)\s+(-?\d+\.\d+)E([+-]\d+)\s+(-?\d+\.\d+)/) {
-    $x = $1 * (10 ** $2); $y = $3 * (10 ** $4); $z = $5;
-  } elsif ($line =~ m/(-?\d+\.\d+)\s+(-?\d+\.\d+)E([+-]\d+)\s+(-?\d+\.\d+)/) {
-    $x = $1; $y = $2 * (10 ** $3); $z = $4;
-  } elsif ($line =~ m/(-?\d+\.\d+)\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)/) {
-    $x = $1; $y = $2; $z = $3;
-  }
-
-  if (defined $x) {
-    local @vector = ($x, $y, $z);
-    return @vector;
-  } else {
-    return;
-  }
 
 }
