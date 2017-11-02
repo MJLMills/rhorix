@@ -36,6 +36,163 @@ our $VERSION   = 1.0;
 #sub determineRings { # leave empty
 #sub determineCages { # leave empty
 
+
+
+
+
+# This mixed thing here is the template for each parsing subroutine that needs to be implemented
+# this code will go in the parseMif module and be called here instead
+$c = 0;
+MAIN_LOOP: for ($line=0; $line<@mifContents; $line++) {
+  
+    # Parse a single atomic interaction line
+
+    if ($mifContents[$line] =~ m/AIL\s+\d+\s+(\w+)\s+(\d+)\s+(\w+)\s+(\d+)/) {
+
+      $atomA = "$1$2";  $atomB = "$3$4";
+      #sometimes the AIL ID is printed twice - skip to next $line if so
+      if ($mifContents[$line+1] =~ m/\w+\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)/) {
+   
+        my @ailCoords_x; my @ailCoords_y; my @ailCoords_z;
+        AIL_LOOP: for ($ailLine=$line+1; $ailLine<@mifContents; $ailLine++) {
+
+          if ($mifContents[$ailLine] =~ m/\w+\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)/) {
+            push(@ailCoords_x,$1/$factor);
+            push(@ailCoords_y,$2/$factor);
+            push(@ailCoords_z,$3/$factor);
+          } else {
+            #the AIL has been parsed; jump the main loop over the coordinates of this AIL and continue parsing the file
+            $line = $ailLine - 1;
+            last AIL_LOOP;
+          }
+
+        }
+        printLine(\@ailCoords_x, \@ailCoords_y, \@ailCoords_z);
+      }
+
+    # Parse all of the critical points in the file
+
+    } elsif ($mifContents[$line] =~ m/CRIT/) {
+
+      CRIT_LOOP: for ($cpLine=$line+1; $cpLine<@mifContents; $cpLine++) {
+        if ($mifContents[$cpLine] =~ m/(\w+)\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)/) {
+
+          $cpType = $1;
+          $x = $2 / $factor;
+          $y = $3 / $factor;
+          $z = $4 / $factor;
+          
+          $rank = getRank("$cpType");
+          $signature = getSignature("$cpType");
+          printCP($cpType,$rank,$signature,$x,$y,$z);
+
+        } else {
+
+          #the CPs have been parsed; jump the main loop over the coordinates of the CPs and continue parsing the file
+          $line = $cpLine - 1; #jump the parser over the critical points
+          last CRIT_LOOP;
+
+        }
+      }
+
+    # Parse an interatomic or bounding surface
+
+    } elsif ($mifContents[$line] =~ m/atom\s+(\w+)(\d+)/ || $mifContents[$line] =~ m/surf\s+(\w+)(\d+)/) {
+
+     print "SURFACE\: $mifContents[$line]\n";
+
+      $atom = "$1$2"; print "$atom\n";
+      if ($mifContents[$line+1] =~ m/(\w+)\s+(\d+)/) {
+        print "READING SURFACE OF ATOM $atom ASSOCIATED WITH $1 $2\: ";
+      } else {
+        die "ERROR - Malformed File \(line $line\)\: Cannot read CP associated with surface $atom\n\n";
+      }
+
+      my @edgeA; my @edgeB; my @faceA; my @faceB; my @faceC;
+      my @ailCoords_x; my @ailCoords_y; my @ailCoords_z;
+
+      $vertex = 1; $pointID = 0;
+      SURF_LOOP: for ($surfLine=$line+2; $surfLine<@mifContents; $surfLine++) {
+
+        my @vertexCoords = parseVertexLine($mifContents[$surfLine]);
+        if (@vertexCoords) {
+
+          push(@ailCoords_x,$vertexCoords[0]); 
+          push(@ailCoords_y,$vertexCoords[1]); 
+          push(@ailCoords_z,$vertexCoords[2]);
+
+          if ($vertex == 1) {
+            push(@faceA,$pointID); 
+            push(@faceB,$pointID+1); 
+            push(@faceC,$pointID+2); 
+          }
+
+          if ($vertex == 1) { #connect A to B
+            push(@edgeA,$pointID); 
+            $pointID++; 
+            push(@edgeB,$pointID);
+          } elsif ($vertex == 2) { # connect B to C
+            push(@edgeA,$pointID); 
+            $pointID++; 
+            push(@edgeB,$pointID);
+          } elsif ($vertex == 3) { # connect C to A
+            push(@edgeA,$pointID); 
+            push(@edgeB,$pointID-2); 
+            $pointID++;
+          }
+
+          #$vertexCount++;
+
+          #cycle the vertex of the triangle
+          if ($vertex == 3) { $vertex = 1 } else { $vertex++ }
+
+        } else {
+
+          $n = @ailCoords_x;
+          if ($n > 0) {
+
+            $nTriangles = $n / 3;
+            print "$n POINTS READ \($nTriangles TRIANGLES\)\n";
+            # $line is still currently set to the previously found surf line - set it to the line after the last surface
+            $line = $surfLine;
+            #Correct the MIF units
+
+            for ($point=0;$point<@ailCoords_x;$point++) {
+              #$ailCoords_x[$point] *= 10;
+              #$ailCoords_y[$point] *= 10;
+              #$ailCoords_z[$point] *= 10;
+            }
+
+            $line = $surfLine - 1;
+            last SURF_LOOP;
+
+          } else {
+            #in this case an empty surface was found - jump $line past the two entries surf and cp
+            $line = $surfLine;
+            last SURF_LOOP;
+          }
+        }
+      } # END SURF_LOOP
+      
+      $n = @ailCoords_x;
+      if ($n > 0) {
+        if ($removeRedundant == 1) {
+          reformatSurface(\@ailCoords_x, \@ailCoords_y, \@ailCoords_z, \@edgeA, \@edgeB, \@faceA, \@faceB, \@faceC);
+        } else {
+          printSurf(\@ailCoords_x, \@ailCoords_y, \@ailCoords_z, \@edgeA, \@edgeB, \@faceA, \@faceB, \@faceC);
+        }
+      } else {
+        print "EMPTY SURFACE FOUND FOR ATOM $atom\n";
+      }
+      $c++;
+
+    } # END PICK_READER
+
+} # end MAIN_LOOP
+
+
+
+
 sub parseVertexLine {
 
   local $line = "$_[0]";
