@@ -65,13 +65,6 @@ my @source_information = ("unknown","unknown","unknown","MORPHY"); # perhaps the
 
 # now need an overarching parseMif subroutine
 
-# Create the .top file - actually due to calling writeTopologyXML there is no need to open a filehandle here
-
-$mifFile =~ m/(.*)\.mif/; # use stripExt instead
-$topFile = "$1\.top";
-open(TOP,">","$topFile") || die "Cannot create topology file\: $topFile\n";
-print TOP "\<topology\>\n";
-
 # Parse the .mif file, printing the .top file as you go
 
 # This mixed thing here is the template for each parsing subroutine that needs to be implemented
@@ -223,8 +216,3 @@ MAIN_LOOP: for ($line=0; $line<@mifContents; $line++) {
     } # END PICK_READER
 
 } # end MAIN_LOOP
-
-# Close up the topology file - won't need this, at this point call the write routine
-
-print TOP "\<\/topology\>\n";
-close TOP;
