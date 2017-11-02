@@ -4,10 +4,36 @@
 
 use File::Basename;
 use lib dirname(__FILE__); # find modules in script directory - adds the path to @LIB
-
 use Utilities qw(checkArgs readFile);
 use TopUtils qw(getRank getSignature);
 use WriteTopology qw(writeTopologyXML);
+
+#### Script Options ###
+
+$removeRedundant = 1;  # The .mif filetype includes redundant information on triangulated surfaces. Flag to remove or keep this info.
+$printEdges      = 0;  # Print edges to the .top file rather than faces.
+$factor          = 10; # Data in .mif files is often scaled - this factor removes the scaling.
+
+# Read the .mif file
+
+$mifFile = checkArgs(\@ARGV,"mif");
+@mifContents = readFile($mifFile); # returns ref to array, not array
+
+$systemName = stripExt($mgpvizFile,"mgpviz");
+
+if (dirname(__FILE__) =~ m/(.*)\/conversionScripts/) {
+  $dtdPath = "$1\/Topology\.dtd";
+} else {
+  if (-e "../Topology\.dtd") {
+    $dtdPath = "\.\.\/Topology\.dtd";
+  } else {
+    die "Error\: Problem locating Topology\.dtd\n";
+  }
+}
+
+my @source_information = ("unknown","unknown","unknown","MORPHY"); # perhaps the morphy version can be parsed from the MOUT?
+
+parseMif();
 
 # we will initially call parseMif to get all available data from the input file
 # ...
@@ -39,29 +65,6 @@ use WriteTopology qw(writeTopologyXML);
 #                 $atomic_basin_properties,   # 24
 #                 $atomic_basin_indices);     # 25
 
-# these are options which can be set and should be documented
-$removeRedundant = 1;
-$printEdges = 0;
-$factor = 10;
-
-# Read the .mif file
-
-$mifFile = checkArgs(\@ARGV,"mif");
-@mifContents = readFile($mifFile); # returns ref to array, not array
-
-$systemName = stripExt($mgpvizFile,"mgpviz");
-
-if (dirname(__FILE__) =~ m/(.*)\/conversionScripts/) {
-  $dtdPath = "$1\/Topology\.dtd";
-} else {
-  if (-e "../Topology\.dtd") {
-    $dtdPath = "\.\.\/Topology\.dtd";
-  } else {
-    die "Error\: Problem locating Topology\.dtd\n";
-  }
-}
-
-my @source_information = ("unknown","unknown","unknown","MORPHY"); # perhaps the morphy version can be parsed from the MOUT?
 
 # now need an overarching parseMif subroutine
 
