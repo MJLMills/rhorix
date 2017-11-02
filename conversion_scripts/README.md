@@ -17,15 +17,18 @@ Files containing interatomic surface data are produced by running AIMAll with th
 
 ### Morphy/Iris Conversion
 
-The following scripts are for running the IRIS program and collecting its output into a single file respectively.
+The following scripts are for running the IRIS program and collecting its output into a single file respectively, then converting to XML .top format.
 Currently support for MORPHY's mif filetype is contained in a single script (mif2top.pl) with much redundant code with the modules above.
 
 mif2top.pl - Script for converting MORPHY/IRIS output to top format.
+
 runIris.pl - Run the various executables that comprise IRIS on a set of wavefunctions.
+
 collateMifs.pl - Collect the various mif files produced by IRIS into a single file for conversion.
 
 ### General
 centerTop.pl - Move a topology so that its origin is at the center of mass of its nuclei.
+
 This is useful when a topology loaded into Blender is too far from the view center to be easily manipulated.
 Please note this script relies on x,y and z tags not being broken over multiple lines.
 
