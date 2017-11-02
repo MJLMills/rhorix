@@ -4,7 +4,7 @@ The included Blender Add-On functions entirely on the existence of topological d
 However, no current topological analysis program provides output in this format.
 There is therefore a need for tools which can convert the output of existing programs into the XML format.
 Where possible, code for writing the XML files has been abstracted into a set of Perl modules.
-The scripts in this directory currently allow conversion from output files produced by AIMAll and IRIS.
+The scripts in this directory currently allow conversion from output files produced by AIMAll and IRIS/MORPHY.
 
 ## Scripts
 
