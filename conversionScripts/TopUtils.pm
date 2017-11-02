@@ -100,12 +100,12 @@ sub computeCOM {
 
   my $totalMass = 0;
   my @com;
-  for($atom=0; $atom<@$masses; $atom++) {
+  for($atom=0; $atom<@masses; $atom++) {
 
-    $totalMass += @$masses[$atom];
+    $totalMass += $masses[$atom];
     my @coords = @{$cartesian_coords[$atom]};
     for ($i=0; $i<3; $i++) {
-      $com[$i] += $coords[$i] * @$masses[$atom];
+      $com[$i] += $coords[$i] * $masses[$atom];
     }
 
   }
