@@ -1,3 +1,6 @@
+! Joint BioEnergy Institute
+! Dr. Matthew J L Mills - Rhorix 1.0.0
+!
 ! Program FormatMO exists to format the unformatted MO coefficients written by TeraChem to its output files;
 ! c0 (for restricted wavefunctions) or cA and cB (for unrestricted wavefunctions)
 ! Input is provided via the namelist file params.nml; it specifies the input file (c0, cA or cB) and the number of primitive gaussians.
