@@ -6,4 +6,6 @@ The former is to keep the program simple, the latter is because it was not clear
 An example namelist file is provided in params.nml.
 
 Note: The binary MO coefficient file is written by C, meaning ACCESS='stream' from the Fortran2003 spec is needed to read it properly.
-To compile and link the program, enter 'make all' at the command line. Requires gfortran and make. Not tested on any other compiler.
+To compile and link the program, enter 'make all' at the command line. 
+This requires the free gfortran compiler and make. 
+The compilation has not been tested on any other compiler.
