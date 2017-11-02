@@ -30,7 +30,7 @@ centerTop.pl - center a topology on the center of mass of its nuclei.
 
 In the following, *italics* indicate that a subroutine is made public by its parent module.
 
-### Utilities.pm
+### Utilities
 Contains generic utility functions related to reading/writing files and dealing with arguments.
 
 *stripExt* - Remove the extension from a filename.
@@ -43,7 +43,7 @@ Contains generic utility functions related to reading/writing files and dealing 
 
 *listFilesOfType* - Make a list of all files with a given extension in a directory.
 
-### XmlRoutines.pm
+### XmlRoutines
 Contains routines expressly dedicated to writing to XML files and checking their validity against a document type definition.
 
 *writePCData* - Write a parsed character data XML element.
@@ -56,7 +56,7 @@ Contains routines expressly dedicated to writing to XML files and checking their
 
 *checkValidity* - Check an XML file against its specified DTD file.
 
-### WriteTopology.pm
+### WriteTopology
 Contains routines for writing files which adhere to the topology document type definition.
 
 *writeTopologyXML* - Write a complete topology file.
@@ -117,7 +117,7 @@ writeMap - Write a single map element.
 
 writePair - Write a single pair element.
 
-### TopUtils.pm
+### TopUtils
 
 *getRank* - Convert a critical point label to the corresponding integer rank value.
 
@@ -125,7 +125,7 @@ writePair - Write a single pair element.
 
 ## Topology Program Specific Modules
 
-### ParseViz.pm
+### ParseViz
 Contains functions for reading from AIMAll's .*viz formats and creating corresponding objects.
 
 *parseMgpviz* - Master routine for parsing contents of an .mgpviz file.
@@ -160,7 +160,7 @@ determineRings
 
 determineCages
 
-### VizUtils.pm
+### VizUtils
 Contains basic utilities related to AIMAll's .*viz file formats.
 
 *checkMgpvizFile* - Confirm that an .mgpviz file is complete and correct.
