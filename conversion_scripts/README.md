@@ -12,6 +12,7 @@ This facilitates the future addition of converters for other QCT analysis progra
 ### AIMAll Conversion
 
 mgpviz2top.pl - Script for converting AIMAll output to XML .top format.
+
 The input file must be an .mgpviz file, but the script will also check for the presence of other types of .viz file.
 Files containing interatomic surface data are produced by running AIMAll with the -iaswrite=true flag.
 
