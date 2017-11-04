@@ -4,7 +4,6 @@
 
 package ParseMif;
 require Exporter;
-use Utilities qw(readFile);
 use TopUtils qw(getRank getSignature);
 
 ### Module Settings ###
@@ -15,21 +14,23 @@ our @EXPORT_OK = qw(parseMif);
 our $VERSION   = 1.0;
 
 ### Subroutines ###
-# To be replaced with their .mif equivalents:
 
 # public subroutine to call private subroutines
 sub parseMif {
 
   my $mifContents = $_[0];
   my $factor = $_[1];
+  my $remove_redundant = $_[2];
+  my $print_edges = $_[3];
 
   ($nuclear_elements, $nuclear_coordinates, $nuclear_indices) = parseNucleiFromMif($mifContents,$factor);
 
   ($cp_indices, $ranks, $signatures, $cp_coordinates, $cp_scalar_properties) = parseCPsFromMif($mifContents,$factor);
 
-  #($ails, $indices, $props) = parseMolecularGraphFromMif($_[0],$cp_coordinates,$cp_indices);
+  #($ails, $indices, $props) = parseMolecularGraphFromMif($mifContents);
 
-  #parseSurfacesFromMif();
+  #($atomic_surface_coords, $atomic_surface_properties, $atomic_surface_indices, $envelope_coords, $envelope_properties, $envelope_indices) = 
+  parseSurfacesFromMif($mifContents,$remove_redundant,$print_edges);
 
   return $nuclear_elements,
          $nuclear_indices,
@@ -40,22 +41,20 @@ sub parseMif {
          $cp_coordinates,
          $cp_scalar_properties;
 
-# These come from parsing the molecular graph
-#         $ails,
-#         $indices,
-#         $props,
+#$ails,
+#$indices,
+#$props,
 
-# These come from parsing the surface data
-#         $atomic_surface_coords,
-#         $atomic_surface_properties,
-#         $atomic_surface_indices,
-#         $envelope_coords,
-#         $envelope_properties,
-#         $envelope_indices,
+#$atomic_surface_coords,
+#$atomic_surface_properties,
+#$atomic_surface_indices,
+#$envelope_coords,
+#$envelope_properties,
+#$envelope_indices
 
 }
 
-# This routine should parse nuclei and CPs from the mif since they are in ths same block.
+# This routine parses all nuclei from the mif file..
 # Arguments - [0] - reference to an array containing the lines of the mif file
 #             [1] - inverse scale factor for the Cartesian coordinates
 sub parseNucleiFromMif {
@@ -70,14 +69,13 @@ sub parseNucleiFromMif {
   for ($line=0; $line<@mifContents; $line++) {
 
     if ($mifContents[$line] =~ m/CRIT/) {
+      $nuclear_index = 1;
       for ($cLine=$line+1; $cLine<@mifContents; $cLine++) {
-        $nuclear_index = 1;
         if ($mifContents[$cLine] =~ m/(\w+)\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)/) {
 
-          my $label = $1;
-          my @position_vector = ($2/$factor, $3/$factor, $4/$factor);
-          
+          my $label = $1;          
           if ($label !~ m/cp/) {
+            my @position_vector = ($2/$factor, $3/$factor, $4/$factor);
             push(@nuclear_coordinates,\@position_vector);
             push(@nuclear_elements,$label);
             push(@nuclear_indices,$nuclear_index); $nuclear_index++;
@@ -88,8 +86,6 @@ sub parseNucleiFromMif {
   }
 
   return \@nuclear_elements, \@nuclear_coordinates, \@nuclear_indices; 
-
-  #\@cp_indices, \@ranks, \@signatures, \@cp_coordinates, \@cp_scalar_properties;
 
 }
 
@@ -107,22 +103,23 @@ sub parseCPsFromMif {
   for ($line=0; $line<@mifContents; $line++) {
 
     if ($mifContents[$line] =~ m/CRIT/) {
+
+      $cp_index = 1;
       for ($cLine=$line+1; $cLine<@mifContents; $cLine++) {
-        $cp_index = 1;
+
         if ($mifContents[$cLine] =~ m/(\w+)\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)/) {
 
           my $label = $1;
           my @position_vector = ($2/$factor, $3/$factor, $4/$factor);
 
+          if ($1 !~ m/cp/) { $label = "ccp"; }
+
           push(@cp_coordinates,\@position_vector);
-          if ($label !~ m/cp/) {
-            $label = "ccp";
-          }
           $rank = getRank($label);
           $signature = getSignature($label);
           push(@ranks,$rank);
           push(@signatures,$signature);
-          my $empty_hash = {};
+          my $empty_hash = {}; # no scalar properties are written to the mif
           push(@cp_scalar_properties,$empty_hash);
           push(@cp_indices,$cp_index); $cp_index++;
 
@@ -137,99 +134,106 @@ sub parseCPsFromMif {
 
 sub parseSurfacesFromMif {
 
+  @mifContents = @{$_[0]};
+  $removeRedundant = $_[1];
+  $printEdges = $_[2];
+
   # Parse an interatomic or bounding surface
 
-  if ($mifContents[$line] =~ m/atom\s+(\w+)(\d+)/ || $mifContents[$line] =~ m/surf\s+(\w+)(\d+)/) {
+  for ($line=0; $line<@mifContents; $line++) {
 
-   print "SURFACE\: $mifContents[$line]\n";
+    if ($mifContents[$line] =~ m/atom\s+(\w+)(\d+)/ || $mifContents[$line] =~ m/surf\s+(\w+)(\d+)/) {
 
-    $atom = "$1$2"; print "$atom\n";
-    if ($mifContents[$line+1] =~ m/(\w+)\s+(\d+)/) {
-      print "READING SURFACE OF ATOM $atom ASSOCIATED WITH $1 $2\: ";
-    } else {
-      die "ERROR - Malformed File \(line $line\)\: Cannot read CP associated with surface $atom\n\n";
-    }
+      print STDERR "SURFACE\: $mifContents[$line]\n";
 
-    my @edgeA; my @edgeB; my @faceA; my @faceB; my @faceC;
-    my @ailCoords_x; my @ailCoords_y; my @ailCoords_z;
-
-    $vertex = 1; $pointID = 0;
-    SURF_LOOP: for ($surfLine=$line+2; $surfLine<@mifContents; $surfLine++) {
-
-      my @vertexCoords = parseVertexLine($mifContents[$surfLine]);
-      if (@vertexCoords) {
-
-        push(@ailCoords_x,$vertexCoords[0]); 
-        push(@ailCoords_y,$vertexCoords[1]); 
-        push(@ailCoords_z,$vertexCoords[2]);
-
-        if ($vertex == 1) {
-          push(@faceA,$pointID); 
-          push(@faceB,$pointID+1); 
-          push(@faceC,$pointID+2); 
-        }
-
-        if ($vertex == 1) { #connect A to B
-          push(@edgeA,$pointID); 
-          $pointID++; 
-          push(@edgeB,$pointID);
-        } elsif ($vertex == 2) { # connect B to C
-          push(@edgeA,$pointID); 
-          $pointID++; 
-          push(@edgeB,$pointID);
-        } elsif ($vertex == 3) { # connect C to A
-          push(@edgeA,$pointID); 
-          push(@edgeB,$pointID-2); 
-          $pointID++;
-        }
-
-        #$vertexCount++;
-
-        #cycle the vertex of the triangle
-        if ($vertex == 3) { $vertex = 1 } else { $vertex++ }
-
+      $atom = "$1$2"; print STDERR "$atom\n";
+      if ($mifContents[$line+1] =~ m/(\w+)\s+(\d+)/) {
+        print STDERR "READING SURFACE OF ATOM $atom ASSOCIATED WITH $1 $2\: ";
       } else {
+        die "ERROR - Malformed File \(line $line\)\: Cannot read CP associated with surface $atom\n\n";
+      }
 
-        $n = @ailCoords_x;
-        if ($n > 0) {
+      my @edgeA; my @edgeB; my @faceA; my @faceB; my @faceC;
+      my @ailCoords_x; my @ailCoords_y; my @ailCoords_z;
 
-          $nTriangles = $n / 3;
-          print "$n POINTS READ \($nTriangles TRIANGLES\)\n";
-          # $line is still currently set to the previously found surf line - set it to the line after the last surface
-          $line = $surfLine;
-          #Correct the MIF units
+      $vertex = 1; $pointID = 0;
+      SURF_LOOP: for ($surfLine=$line+2; $surfLine<@mifContents; $surfLine++) {
 
-          for ($point=0;$point<@ailCoords_x;$point++) {
-            #$ailCoords_x[$point] *= 10;
-            #$ailCoords_y[$point] *= 10;
-            #$ailCoords_z[$point] *= 10;
+        my @vertexCoords = parseVertexLine($mifContents[$surfLine]);
+        if (@vertexCoords) {
+
+          push(@ailCoords_x,$vertexCoords[0]); 
+          push(@ailCoords_y,$vertexCoords[1]); 
+          push(@ailCoords_z,$vertexCoords[2]);
+
+          if ($vertex == 1) {
+            push(@faceA,$pointID); 
+            push(@faceB,$pointID+1); 
+            push(@faceC,$pointID+2); 
           }
 
-          $line = $surfLine - 1;
-          last SURF_LOOP;
+          if ($vertex == 1) { #connect A to B
+            push(@edgeA,$pointID); 
+            $pointID++; 
+            push(@edgeB,$pointID);
+          } elsif ($vertex == 2) { # connect B to C
+            push(@edgeA,$pointID); 
+            $pointID++; 
+            push(@edgeB,$pointID);
+          } elsif ($vertex == 3) { # connect C to A
+            push(@edgeA,$pointID); 
+            push(@edgeB,$pointID-2); 
+            $pointID++;
+          }
+
+          #$vertexCount++;
+
+          #cycle the vertex of the triangle
+          if ($vertex == 3) { $vertex = 1 } else { $vertex++ }
 
         } else {
-          #in this case an empty surface was found - jump $line past the two entries surf and cp
-          $line = $surfLine;
-          last SURF_LOOP;
-        }
-      }
-    } # END SURF_LOOP
 
-    $n = @ailCoords_x;
-    if ($n > 0) {
-      if ($removeRedundant == 1) {
-        reformatSurface(\@ailCoords_x, \@ailCoords_y, \@ailCoords_z, \@edgeA, \@edgeB, \@faceA, \@faceB, \@faceC);
+          $n = @ailCoords_x;
+          if ($n > 0) {
+
+            $nTriangles = $n / 3;
+            print STDERR "$n POINTS READ \($nTriangles TRIANGLES\)\n";
+            # $line is still currently set to the previously found surf line - set it to the line after the last surface
+            $line = $surfLine;
+            #Correct the MIF units - this should use $factor?
+
+            for ($point=0;$point<@ailCoords_x;$point++) {
+              #$ailCoords_x[$point] *= 10;
+              #$ailCoords_y[$point] *= 10;
+              #$ailCoords_z[$point] *= 10;
+            }
+
+            $line = $surfLine - 1;
+            last SURF_LOOP;
+
+          } else {
+            #in this case an empty surface was found - jump $line past the two entries surf and cp
+            $line = $surfLine;
+            last SURF_LOOP;
+          }
+        }
+      } # END SURF_LOOP
+
+      $n = @ailCoords_x;
+      if ($n > 0) {
+        if ($removeRedundant == 1) {
+          reformatSurface(\@ailCoords_x, \@ailCoords_y, \@ailCoords_z, \@edgeA, \@edgeB, \@faceA, \@faceB, \@faceC, $printEdges);
+        } else {
+          #printSurf(\@ailCoords_x, \@ailCoords_y, \@ailCoords_z, \@edgeA, \@edgeB, \@faceA, \@faceB, \@faceC);
+        }
       } else {
-        printSurf(\@ailCoords_x, \@ailCoords_y, \@ailCoords_z, \@edgeA, \@edgeB, \@faceA, \@faceB, \@faceC);
+        print STDERR "EMPTY SURFACE FOUND FOR ATOM $atom\n";
       }
-    } else {
-      print "EMPTY SURFACE FOUND FOR ATOM $atom\n";
+      $c++;
+
     }
-    $c++;
 
   }
-
 }
 
 # Arguments - [0] - Reference to array containing lines of the mif file
@@ -346,7 +350,7 @@ sub parseVertexLine {
 
 sub reformatSurface {
 
-  my ($xPoints,$yPoints,$zPoints,$edgeA,$edgeB,$faceA,$faceB,$faceC) = @_;
+  my ($xPoints,$yPoints,$zPoints,$edgeA,$edgeB,$faceA,$faceB,$faceC,$printEdges) = @_;
   my @isRedundant; 
   my @xNew; 
   my @yNew; 
@@ -420,7 +424,7 @@ sub reformatSurface {
       } 
       $percent = ($n_redundant / $n_x) * 100; $remains = @xNew;
       printf "%d REDUNDANT POINTS \(OF $n_x\) REMOVED \(%5.2f percent\) LEAVING %d\n",$n_redundant,$percent,$remains;
-      printSurf(\@xNew, \@yNew, \@zNew, \@$edgeA, \@$edgeB, \@$faceA, \@$faceB, \@$faceC);
+      #printSurf(\@xNew, \@yNew, \@zNew, \@$edgeA, \@$edgeB, \@$faceA, \@$faceB, \@$faceC);
     }
 
   } else {

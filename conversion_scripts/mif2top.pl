@@ -13,7 +13,7 @@ use ParseMif qw(parseMif);
 
 #### Script Options ###
 
-$removeRedundant = 1;  # The .mif filetype includes redundant information on triangulated surfaces. Flag to remove or keep this info.
+$removeRedundant = 0;  # The .mif filetype includes redundant information on triangulated surfaces. Flag to remove or keep this info.
 $printEdges      = 0;  # Print edges to the .top file rather than faces.
 $factor          = 10; # Data in .mif files is often scaled - this factor removes the scaling.
 
