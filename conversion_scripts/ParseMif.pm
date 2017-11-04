@@ -30,6 +30,7 @@ sub parseMif {
   #($ails, $indices, $props) = parseMolecularGraphFromMif($mifContents);
 
   #($atomic_surface_coords, $atomic_surface_properties, $atomic_surface_indices, $envelope_coords, $envelope_properties, $envelope_indices) = 
+  # This needs to be fixed to return the appropriate arrays
   parseSurfacesFromMif($mifContents,$remove_redundant,$print_edges);
 
   return $nuclear_elements,
@@ -138,28 +139,29 @@ sub parseSurfacesFromMif {
   $removeRedundant = $_[1];
   $printEdges = $_[2];
 
-  # Parse an interatomic or bounding surface
+  # create the arrays that will be returned
 
   for ($line=0; $line<@mifContents; $line++) {
 
     if ($mifContents[$line] =~ m/atom\s+(\w+)(\d+)/ || $mifContents[$line] =~ m/surf\s+(\w+)(\d+)/) {
 
-      print STDERR "SURFACE\: $mifContents[$line]\n";
-
-      $atom = "$1$2"; print STDERR "$atom\n";
-      if ($mifContents[$line+1] =~ m/(\w+)\s+(\d+)/) {
-        print STDERR "READING SURFACE OF ATOM $atom ASSOCIATED WITH $1 $2\: ";
-      } else {
+      $atom = "$1$2";
+      if ($mifContents[$line+1] !~ m/(\w+)\s+(\d+)/) {
         die "ERROR - Malformed File \(line $line\)\: Cannot read CP associated with surface $atom\n\n";
       }
 
+      # these will be filled for this surface then pushed to a collected array
       my @edgeA; my @edgeB; my @faceA; my @faceB; my @faceC;
       my @ailCoords_x; my @ailCoords_y; my @ailCoords_z;
 
       $vertex = 1; $pointID = 0;
       SURF_LOOP: for ($surfLine=$line+2; $surfLine<@mifContents; $surfLine++) {
 
-        my @vertexCoords = parseVertexLine($mifContents[$surfLine]);
+        my @vertexCoords;
+        if ($mifContents[$surfLine] =~ m/(.*)\s+(.*)\s+(.*)/) {
+          @vertexCoords = ($1, $2, $3);
+        }
+
         if (@vertexCoords) {
 
           push(@ailCoords_x,$vertexCoords[0]); 
@@ -222,8 +224,10 @@ sub parseSurfacesFromMif {
       $n = @ailCoords_x;
       if ($n > 0) {
         if ($removeRedundant == 1) {
+          # this should return the reformatted data instead of writing it out in-routine
           reformatSurface(\@ailCoords_x, \@ailCoords_y, \@ailCoords_z, \@edgeA, \@edgeB, \@faceA, \@faceB, \@faceC, $printEdges);
         } else {
+          # push the data to the appropriate arrays rather than writing out
           #printSurf(\@ailCoords_x, \@ailCoords_y, \@ailCoords_z, \@edgeA, \@edgeB, \@faceA, \@faceB, \@faceC);
         }
       } else {
@@ -234,6 +238,9 @@ sub parseSurfacesFromMif {
     }
 
   }
+
+  # return the arrays that have now been filled
+
 }
 
 # Arguments - [0] - Reference to array containing lines of the mif file
@@ -316,38 +323,6 @@ sub distance {
 
 }
 
-sub parseVertexLine {
-
-  local $line = "$_[0]";
-  local $x = undef; local $y = undef; local $z = undef;
-
-  if ($line =~ m/(-?\d+\.\d+)E([+-]\d+)\s+(-?\d+\.\d+)E([+-]\d+)\s+(-?\d+\.\d+)E([+-]\d+)/) {
-    $x = $1 * (10 ** $2); $y = $3 * (10 ** $4); $z = $5 * (10 ** $6);
-  } elsif ($line =~ m/(-?\d+\.\d+)\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)E([+-]\d+)/) {
-    $x = $1; $y = $2; $z = $3 * (10 ** $4);
-  } elsif ($line =~ m/(-?\d+\.\d+)\s+(-?\d+\.\d+)E([+-]\d+)\s+(-?\d+\.\d+)E([+-]\d+)/) {
-    $x = $1; $y = $2 * (10 ** $3); $z = $4 * (10 ** $5);
-  } elsif ($line =~ m/(-?\d+\.\d+)E([+-]\d+)\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)E([+-]\d+)/) {
-    $x = $1 * (10 ** $2); $y = $3; $z = $4 * (10 ** $5); 
-  } elsif ($line =~ m/(-?\d+\.\d+)E([+-]\d+)\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)/) {
-    $x = $1 * (10 ** $2); $y = $3; $z = $4;
-  } elsif ($line =~ m/(-?\d+\.\d+)E([+-]\d+)\s+(-?\d+\.\d+)E([+-]\d+)\s+(-?\d+\.\d+)/) {
-    $x = $1 * (10 ** $2); $y = $3 * (10 ** $4); $z = $5;
-  } elsif ($line =~ m/(-?\d+\.\d+)\s+(-?\d+\.\d+)E([+-]\d+)\s+(-?\d+\.\d+)/) {
-    $x = $1; $y = $2 * (10 ** $3); $z = $4;
-  } elsif ($line =~ m/(-?\d+\.\d+)\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)/) {
-    $x = $1; $y = $2; $z = $3;
-  }
-
-  if (defined $x) {
-    local @vector = ($x, $y, $z);
-    return @vector;
-  } else {
-    return;
-  }
-
-}
-
 sub reformatSurface {
 
   my ($xPoints,$yPoints,$zPoints,$edgeA,$edgeB,$faceA,$faceB,$faceC,$printEdges) = @_;
@@ -424,6 +399,7 @@ sub reformatSurface {
       } 
       $percent = ($n_redundant / $n_x) * 100; $remains = @xNew;
       printf "%d REDUNDANT POINTS \(OF $n_x\) REMOVED \(%5.2f percent\) LEAVING %d\n",$n_redundant,$percent,$remains;
+      # rather than print this should return the reduced data to the main routine
       #printSurf(\@xNew, \@yNew, \@zNew, \@$edgeA, \@$edgeB, \@$faceA, \@$faceB, \@$faceC);
     }
 
@@ -432,10 +408,3 @@ sub reformatSurface {
   }
 
 }
-
-#sub parseGradientPath {}
-#sub parseSourceInformationFromMif {} # not possible - maybe from a mout?
-#sub parseRingSurfacesFromMif {} # ring lines not present in mif
-#sub determineRings {} # leave empty
-#sub determineCages {} # leave empty
-
