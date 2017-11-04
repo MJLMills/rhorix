@@ -27,11 +27,12 @@ sub parseMif {
 
   ($cp_indices, $ranks, $signatures, $cp_coordinates, $cp_scalar_properties) = parseCPsFromMif($mifContents,$factor);
 
-  #($ails, $indices, $props) = parseMolecularGraphFromMif($mifContents);
+  #($ails, $indices, $props) = 
+  parseMolecularGraphFromMif($mifContents,$factor);
 
   #($atomic_surface_coords, $atomic_surface_properties, $atomic_surface_indices, $envelope_coords, $envelope_properties, $envelope_indices) = 
   # This needs to be fixed to return the appropriate arrays
-  parseSurfacesFromMif($mifContents,$remove_redundant,$print_edges);
+  #parseSurfacesFromMif($mifContents,$remove_redundant,$print_edges);
 
   return $nuclear_elements,
          $nuclear_indices,
@@ -247,9 +248,7 @@ sub parseSurfacesFromMif {
 sub parseMolecularGraphFromMif {
 
   @mifContents    = @{$_[0]};
-  @cp_coordinates = @{$_[1]};
-  @cp_indices     = @{$_[2]};
-  $factor         = $_[3]; # maybe keep this in the mif2top script and apply it after the parsing
+  $factor         = $_[1]; # maybe keep this in the mif2top script and apply it after the parsing
 
   # output references to these arrays, which we will build by parsing the file
   my @ails;
@@ -304,7 +303,7 @@ sub parseMolecularGraphFromMif {
     }
   }
 
-  return $ails, $indices, $props;
+  return \@ails, \@indices, \@props;
 
 }
 
