@@ -1,9 +1,11 @@
+#!/usr/bin/perl -w
 # ParseMif Perl Module
 # Dr. Matthew J L Mills - Rhorix v1.0 - June 2017
 
 package ParseMif;
 require Exporter;
 use Utilities qw(readFile);
+use TopUtils qw(getRank getSignature);
 
 ### Module Settings ###
 
@@ -18,10 +20,16 @@ our $VERSION   = 1.0;
 # public subroutine to call private subroutines
 sub parseMif {
 
-  ($nuclear_elements, $nuclear_coordinates, $nuclear_indices, $cp_indices, $ranks, $signatures, $cp_coordinates, $cp_scalar_properties) = parseNucleiFromMif($_[0]);
-  ($ails, $indices, $props) = parseMolecularGraphFromMif($_[0],$cp_coordinates,$cp_indices);
+  my $mifContents = $_[0];
+  my $factor = $_[1];
 
-  parseSurfacesFromMif();
+  ($nuclear_elements, $nuclear_coordinates, $nuclear_indices) = parseNucleiFromMif($mifContents,$factor);
+
+  ($cp_indices, $ranks, $signatures, $cp_coordinates, $cp_scalar_properties) = parseCPsFromMif($mifContents,$factor);
+
+  #($ails, $indices, $props) = parseMolecularGraphFromMif($_[0],$cp_coordinates,$cp_indices);
+
+  #parseSurfacesFromMif();
 
   return $nuclear_elements,
          $nuclear_indices,
@@ -45,22 +53,12 @@ sub parseMif {
 #         $envelope_properties,
 #         $envelope_indices,
 
-
-# There is no ring surface data in the mif file
-#         $ring_surface_gps
-#         $ring_surface_indices
-#         $ring_surface_props
-# There is no basin data in the mif file
-#         $atomic_basin_coords
-#         $atomic_basin_properties
-#         $atomic_basin_indices
-
 }
 
 # This routine should parse nuclei and CPs from the mif since they are in ths same block.
 # Arguments - [0] - reference to an array containing the lines of the mif file
 #             [1] - inverse scale factor for the Cartesian coordinates
-sub parseNucleiAndCPsFromMif {
+sub parseNucleiFromMif {
 
   my @mifContents = @{$_[0]};
   my $factor = $_[1];
@@ -68,28 +66,20 @@ sub parseNucleiAndCPsFromMif {
   my @nuclear_elements;
   my @nuclear_coordinates;
   my @nuclear_indices;
-  my @cp_indices;
-  my @ranks;
-  my @signatures;
-  my @cp_coordinates;
-  my @cp_scalar_properties;
 
   for ($line=0; $line<@mifContents; $line++) {
+
     if ($mifContents[$line] =~ m/CRIT/) {
       for ($cLine=$line+1; $cLine<@mifContents; $cLine++) {
-        $cp_index = 1; $nuclear_index = 1;
+        $nuclear_index = 1;
         if ($mifContents[$cLine] =~ m/(\w+)\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)/) {
 
           my $label = $1;
           my @position_vector = ($2/$factor, $3/$factor, $4/$factor);
-          push(@cp_coordinates,\@position_vector);
-          push(@ranks,getRank($label));
-          push(@signatures,getSignature($label));
-          push(@cp_indices); $cp_index++;
           
-          if ($label !=~ m/cp/) {
+          if ($label !~ m/cp/) {
             push(@nuclear_coordinates,\@position_vector);
-            push(@nuclear_elements,$1);
+            push(@nuclear_elements,$label);
             push(@nuclear_indices,$nuclear_index); $nuclear_index++;
           }
         }
@@ -97,7 +87,51 @@ sub parseNucleiAndCPsFromMif {
     }
   }
 
-  return \@nuclear_elements, \@nuclear_coordinates, \@nuclear_indices, \@cp_indices, \@ranks, \@signatures, \@cp_coordinates, \@cp_scalar_properties;
+  return \@nuclear_elements, \@nuclear_coordinates, \@nuclear_indices; 
+
+  #\@cp_indices, \@ranks, \@signatures, \@cp_coordinates, \@cp_scalar_properties;
+
+}
+
+sub parseCPsFromMif {
+
+  my @mifContents = @{$_[0]};
+  $factor = $_[1];
+
+  my @cp_indices;
+  my @ranks;
+  my @signatures;
+  my @cp_coordinates;
+  my @cp_scalar_properties;
+
+  for ($line=0; $line<@mifContents; $line++) {
+
+    if ($mifContents[$line] =~ m/CRIT/) {
+      for ($cLine=$line+1; $cLine<@mifContents; $cLine++) {
+        $cp_index = 1;
+        if ($mifContents[$cLine] =~ m/(\w+)\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)/) {
+
+          my $label = $1;
+          my @position_vector = ($2/$factor, $3/$factor, $4/$factor);
+
+          push(@cp_coordinates,\@position_vector);
+          if ($label !~ m/cp/) {
+            $label = "ccp";
+          }
+          $rank = getRank($label);
+          $signature = getSignature($label);
+          push(@ranks,$rank);
+          push(@signatures,$signature);
+          my $empty_hash = {};
+          push(@cp_scalar_properties,$empty_hash);
+          push(@cp_indices,$cp_index); $cp_index++;
+
+        }
+      }
+    }
+  }
+
+  return \@cp_indices, \@ranks, \@signatures, \@cp_coordinates, \@cp_scalar_properties;
 
 }
 
@@ -270,7 +304,7 @@ sub distance {
 
   $sum = 0.0;
   for ($i=0; $i<3; $i++) {
-    $diff = $vector_a[$i] - $vector_b[$i]
+    $diff = $vector_a[$i] - $vector_b[$i];
     $sum += $diff * $diff;
   }
 

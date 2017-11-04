@@ -6,9 +6,10 @@
 
 use File::Basename;
 use lib dirname(__FILE__); # find modules in script directory - adds the path to @LIB
-use Utilities qw(checkArgs readFile);
+use Utilities qw(checkArgs readFile getExt stripExt);
 use TopUtils qw(getRank getSignature);
 use WriteTopology qw(writeTopologyXML);
+use ParseMif qw(parseMif);
 
 #### Script Options ###
 
@@ -24,7 +25,7 @@ $mifContents = readFile($mifFile);
 
 # Get initial info for the .top file
 
-$systemName = stripExt($mifFile);
+$systemName = stripExt($mifFile,"mif");
 my @source_information = ("unknown","unknown","unknown","MORPHY"); # perhaps the morphy version can be parsed from the MOUT?
 
 if (dirname(__FILE__) =~ m/(.*)\/conversionScripts/) {
@@ -38,11 +39,37 @@ if (dirname(__FILE__) =~ m/(.*)\/conversionScripts/) {
 }
 
 # add list of returns from parseMif
-parseMif($mifContents);
+($elements, 
+$nuclearIndices, 
+$nuclearCoordinates, 
+$cpIndices, 
+$ranks, 
+$signatures, 
+$cpCoordinates, 
+$scalarProperties) = parseMif($mifContents,$factor,$removeRedundant,$printEdges);
+
+# for now ! These must come from parseMif instead
+$ails = [];
+$indices = [];
+$props = [];
+$atomic_surface_coords = []; 
+$atomic_surface_properties = [];
+$atomic_surface_indices = [];
+$envelope_coords = [];
+$envelope_properties = [];
+$envelope_indices = [];
+
+# The following are not present in the mif file so are created as refs to empty arrays.
+$ring_surface_coords     = [];
+$ring_surface_indices    = [];
+$ring_surface_props      = [];
+$atomic_basin_coords     = [];
+$atomic_basin_properties = [];
+$atomic_basin_indices    = [];
 
 writeTopologyXML($dtdPath,                   #  0 done
                  $systemName,                #  1 done
-                 $sourceInformation,         #  2 done
+                 \@source_information,       #  2 done
                  $elements,                  #  3 NUCLEI
                  $nuclearIndices,            #  4
                  $nuclearCoordinates,        #  5
@@ -57,13 +84,13 @@ writeTopologyXML($dtdPath,                   #  0 done
                  $atomic_surface_coords,     # 14 ATOMIC SURFACES
                  $atomic_surface_properties, # 15
                  $atomic_surface_indices,    # 16
-                 $ring_surface_coords,       # 17 RING SURFACES
+                 $ring_surface_coords,       # 17 RING SURFACES - NOT PRESENT
                  $ring_surface_indices,      # 18
                  $ring_surface_props,        # 19
                  $envelope_coords,           # 20 ENVELOPES
                  $envelope_properties,       # 21
                  $envelope_indices,          # 22
-                 $atomic_basin_coords,       # 23
+                 $atomic_basin_coords,       # 23 BASINS - NOT PRESENT
                  $atomic_basin_properties,   # 24
                  $atomic_basin_indices);     # 25
 
