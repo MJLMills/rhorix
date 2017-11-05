@@ -346,7 +346,7 @@ sub parseMolecularGraphFromMif {
       my @maps = (\@maps_a,\@maps_b);
       push(@props,\@maps);
 
-      my @a = ($bcp_index,$index_a); my @b = ($bcp_index,$index_b);
+      my @a = ($index_a,$bcp_index); my @b = ($index_b,$bcp_index);
       @cpIndices = (\@a,\@b);
       push(@indices,\@cpIndices);
 
