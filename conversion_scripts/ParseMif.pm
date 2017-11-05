@@ -18,10 +18,11 @@ our $VERSION   = 1.0;
 # public subroutine to call private subroutines
 sub parseMif {
 
-  my $mifContents = $_[0];
-  my $factor = $_[1];
+  # Input Arguments
+  my $mifContents      = $_[0];
+  my $factor           = $_[1];
   my $remove_redundant = $_[2];
-  my $print_edges = $_[3];
+  my $print_edges      = $_[3];
 
   ($nuclear_elements, $nuclear_coordinates, $nuclear_indices) = parseNucleiFromMif($mifContents,$factor);
 
@@ -248,12 +249,12 @@ sub parseSurfacesFromMif {
 sub parseMolecularGraphFromMif {
 
   @mifContents    = @{$_[0]};
-  $factor         = $_[1]; # maybe keep this in the mif2top script and apply it after the parsing
+  $factor         = $_[1];
 
   # output references to these arrays, which we will build by parsing the file
   my @ails;
   my @indices;
-  my @props; # there are no point scalar properties stored in a mif file
+  my @props;
 
   for ($line=0; $line<@mifContents; $line++) {
 
@@ -265,7 +266,8 @@ sub parseMolecularGraphFromMif {
       if ($mifContents[$line+1] =~ m/AIL\s+\d+\s+(\w+)\s+(\d+)\s+(\w+)\s+(\d+)/) { $line++; }
 
       if ($mifContents[$line+1] =~ m/H\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)/) {
-   
+
+        # this is the entire AIL, needs to be broken into 2 gradient paths
         my @ailCoords_x; my @ailCoords_y; my @ailCoords_z;
         for ($ailLine=$line+1; $ailLine<@mifContents; $ailLine++) {
 
@@ -281,6 +283,7 @@ sub parseMolecularGraphFromMif {
 
         }
 
+        # THIS MUST HAPPEN FIRST TO SPLIT THE GRADIENT PATHS
         # push the AIL information to the appropriate arrays here
         # which means apply some approximate method of finding out the BCP
         # assuming a straight AIL, the midpoint of the first and last point is a good guess, then can scan the BCPs to find the closest
