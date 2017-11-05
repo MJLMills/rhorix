@@ -245,6 +245,45 @@ sub parseSurfacesFromMif {
 
 }
 
+sub parseAILFromMif {
+
+    my @mif_slice = @{$_[0]};
+    my @ail_coords; 
+
+    for ($line=0; $line<@mif_slice; $line++) {
+      if ($mifContents[$line] =~ m/H\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)/) {
+        my @position_vector = ($1, $2, $3);
+        push(@ail_coords,\@position_vector);
+      } else {
+        last;
+      }
+
+    }
+
+    return \@ail_coords;
+
+}
+
+sub findClosestCPToPoint {
+
+  $point      = $_[0];
+  @cp_coords  = @{$_[1]};
+  @cp_indices = @{$_[2]};
+
+  $closest_index = -1;
+  $closest_distance = 100000.0;
+  for ($cp=0; $cp<@cp_coords; $cp++) {
+    $r = $distance(\@point,\@cp_coords[$cp]);
+    if ($r < $closest_distance) {
+      $closest_distance = $r;
+      $closest_index = $cp_indices[$cp];
+    }
+  }
+
+  return $closest_index;
+
+}
+
 # Arguments - [0] - Reference to array containing lines of the mif file
 sub parseMolecularGraphFromMif {
 
@@ -258,51 +297,46 @@ sub parseMolecularGraphFromMif {
 
   for ($line=0; $line<@mifContents; $line++) {
 
-    if ($mifContents[$line] =~ m/AIL\s+\d+\s+\w+\s+(\d+)\s+\w+\s+(\d+)/) {
-
-      $indexA = $1; $indexB = $2; # these are the necessary nuclear indices but BCP index is unknown
+    if ($mifContents[$line] =~ m/AIL\s+\d+\s+\w+\s+\d+\s+\w+\s+\d+/) {
 
       #sometimes the AIL header is printed twice - skip to next $line if so
-      if ($mifContents[$line+1] =~ m/AIL\s+\d+\s+(\w+)\s+(\d+)\s+(\w+)\s+(\d+)/) { $line++; }
+      if ($mifContents[$line+1] =~ m/AIL\s+\d+\s+\w+\s+\d+\s+\w+\s+\d+/) { $line++; }
 
+      # first parse the AIL coordinates from the mif
       if ($mifContents[$line+1] =~ m/H\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)/) {
-
-        # this is the entire AIL, needs to be broken into 2 gradient paths
-        my @ailCoords_x; my @ailCoords_y; my @ailCoords_z;
-        for ($ailLine=$line+1; $ailLine<@mifContents; $ailLine++) {
-
-          if ($mifContents[$ailLine] =~ m/H\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)/) {
-            push(@ailCoords_x,$1/$factor);
-            push(@ailCoords_y,$2/$factor);
-            push(@ailCoords_z,$3/$factor);
-          } else {
-            #the AIL has been parsed; jump the main loop over the coordinates of this AIL and continue parsing the file
-            $line = $ailLine - 1;
-            last;
-          }
-
-        }
-
-        # THIS MUST HAPPEN FIRST TO SPLIT THE GRADIENT PATHS
-        # push the AIL information to the appropriate arrays here
-        # which means apply some approximate method of finding out the BCP
-        # assuming a straight AIL, the midpoint of the first and last point is a good guess, then can scan the BCPs to find the closest
-        # means passing the CP coordinates into this routine
-
-        # @midpoint = (cp_coordinates[$indexA-1] + cp_coordinates[$indexB-1]) / 2; in each dimension is the midpoint
-#        $closestIndex = -1; $closestDistance = 10000.0;
-#        for($cp=0; $cp<@cp_indices; $cp++) {
-#          $r = distance(\@midpoint,\@cp_coordinates[$cp]);
-#          if ($r < $closest) {
-#            $closestDistance = $r;
-#            $closestIndex = $cp_indices[$cp];
-#          }
-#        }
-
-         # now we should have the index of the BCP closest to the AIL midpoint and can store data
-        #printLine(\@ailCoords_x, \@ailCoords_y, \@ailCoords_z);
-
+        $ail_coords = parseAILFromMIF($mifContents[$line+1 ..]);
       }
+
+      $index_a = findClosestPointToCP($ail_coords[0]);
+      $index_b = findClosestPointToCP($ail_coords[-1]);
+
+      # then take the central point on the AIL - if odd take the middle one, if even average the central 2
+      $n_points = scalar @{$ail_coords};
+      if ($n_points % 2 == 0) {
+        $point_i = $n_points/2;
+        $point_j = $point_i + 1;
+        for($i=0; $i<3; $i++) {
+          $midpoint[$i] = ($point_i - $point_j) / 2;
+        }
+      } else {
+        $midpoint = @{$ail_coords}[($n_points+1)/2];
+      }
+
+      my @gp_a;
+      my @gp_b;
+      # run over the ail coords adding them to the appropriate array
+      # distance from BCP will decrease along the path, when it starts to increase switch to B
+      my @distance_to_bcp;
+      foreach(@{$ail_coords}) {
+        
+      }
+
+      # this must happen twice, once for each nuclear index
+#      my @index = ($nuclear_index,$closest_index);
+#      push(@indices,\@index);
+#      push(@ails,)
+#      $scalars = {};
+#      push(@props,$scalars)
     }
   }
 
