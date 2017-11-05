@@ -27,7 +27,7 @@ No keyboard shortcuts are defined by Rhorix.
 
 If you use this code to make figures (or parts thereof) for a publication, please cite the paper and the software separately (see documentation/citation for prepared files) as:
 
-J. Comput. Chem., 2017, 38(29): 2538-2552, DOI: 10.1002/jcc.25054
+M. J. L. Mills, K. L. Sale, B. A. Simmons & P. L. A. Popelier, J. Comput. Chem., 2017, 38(29): 2538-2552, DOI: 10.1002/jcc.25054
 
 and
 
