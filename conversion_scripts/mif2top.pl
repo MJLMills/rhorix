@@ -27,7 +27,7 @@ $mifContents = readFile($mifFile);
 $systemName = stripExt($mifFile,"mif");
 my @source_information = ("unknown","unknown","unknown","MORPHY"); # perhaps the morphy version can be parsed from the MOUT?
 
-if (dirname(__FILE__) =~ m/(.*)\/conversionScripts/) {
+if (dirname(__FILE__) =~ m/(.*)\/conversion_scripts/) {
   $dtdPath = "$1\/Topology\.dtd";
 } else {
   if (-e "../Topology\.dtd") {

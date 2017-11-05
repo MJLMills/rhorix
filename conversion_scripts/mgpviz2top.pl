@@ -11,7 +11,7 @@ use VizUtils      qw(checkMgpvizFile);
 use ParseViz      qw(parseMgpviz);
 use WriteTopology qw(writeTopologyXML);
 
-if (dirname(__FILE__) =~ m/(.*)\/conversionScripts/) {
+if (dirname(__FILE__) =~ m/(.*)\/conversion_scripts/) {
   $dtdPath = "$1\/Topology\.dtd";
 } else {
   if (-e "../Topology\.dtd") {
