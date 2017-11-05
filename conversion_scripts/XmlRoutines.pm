@@ -20,6 +20,7 @@ our $VERSION = 1.0;
 # Arguments: $_[0] - Name of the element
 #            $_[1] - Value of the element
 sub writePCData {
+  if (! defined($_[1])) { die "No value for $_[0]\n"; }
   print "\<$_[0]\>$_[1]\<\/$_[0]\>\n";
 }
 
