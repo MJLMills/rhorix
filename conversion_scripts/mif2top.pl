@@ -2,8 +2,6 @@
 # Dr. Matthew J L Mills - RhoRix
 # Convert morphy mif files to the top format
 
-# The .mif file does not contain the full connectivity of the system! This is a problem.
-
 use File::Basename;
 use lib dirname(__FILE__); # find modules in script directory - adds the path to @LIB
 use Utilities qw(checkArgs readFile getExt stripExt);
@@ -37,7 +35,6 @@ if (dirname(__FILE__) =~ m/(.*)\/conversion_scripts/) {
   }
 }
 
-# add list of returns from parseMif
 ($elements, 
 $nuclearIndices, 
 $nuclearCoordinates, 
