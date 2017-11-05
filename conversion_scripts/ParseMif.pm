@@ -154,6 +154,7 @@ sub parseSurfacesFromMif {
 
       # these will be filled for this surface then pushed to a collected array
       my @edgeA; my @edgeB; my @faceA; my @faceB; my @faceC;
+      # my @ailCoords;
       my @ailCoords_x; my @ailCoords_y; my @ailCoords_z;
 
       $vertex = 1; $pointID = 0;
@@ -166,6 +167,7 @@ sub parseSurfacesFromMif {
 
         if (@vertexCoords) {
 
+          #push (@ailCoords,\@vertexCoords);
           push(@ailCoords_x,$vertexCoords[0]); 
           push(@ailCoords_y,$vertexCoords[1]); 
           push(@ailCoords_z,$vertexCoords[2]);
@@ -190,21 +192,19 @@ sub parseSurfacesFromMif {
             $pointID++;
           }
 
-          #$vertexCount++;
-
           #cycle the vertex of the triangle
           if ($vertex == 3) { $vertex = 1 } else { $vertex++ }
 
         } else {
 
-          $n = @ailCoords_x;
+          $n = @ailCoords_x; # $n = @ailCoords;
           if ($n > 0) {
 
             $nTriangles = $n / 3;
             print STDERR "$n POINTS READ \($nTriangles TRIANGLES\)\n";
             # $line is still currently set to the previously found surf line - set it to the line after the last surface
             $line = $surfLine;
-            #Correct the MIF units - this should use $factor?
+            #Correct the MIF units - this should use $factor and should be done above on reading
 
             for ($point=0;$point<@ailCoords_x;$point++) {
               #$ailCoords_x[$point] *= 10;
@@ -223,7 +223,7 @@ sub parseSurfacesFromMif {
         }
       } # END SURF_LOOP
 
-      $n = @ailCoords_x;
+      $n = @ailCoords_x; # $n = @ailCoords;
       if ($n > 0) {
         if ($removeRedundant == 1) {
           # this should return the reformatted data instead of writing it out in-routine
@@ -231,6 +231,7 @@ sub parseSurfacesFromMif {
         } else {
           # push the data to the appropriate arrays rather than writing out
           #printSurf(\@ailCoords_x, \@ailCoords_y, \@ailCoords_z, \@edgeA, \@edgeB, \@faceA, \@faceB, \@faceC);
+          # arrays get filled here, check the required format
         }
       } else {
         print STDERR "EMPTY SURFACE FOUND FOR ATOM $atom\n";
