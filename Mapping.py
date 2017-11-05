@@ -107,7 +107,14 @@ def drawMolecularGraph(molecular_graph,critical_points,nuclei,color_bonds=True,c
 
     for ail in molecular_graph.atomic_interaction_lines:
         bcp = ail.getBCP(critical_points)
-        if (bcp.scalar_properties.get('rho') < weak_limit):
+
+        is_weak = False
+        if 'rho' in bcp.scalar_properties:
+            if bcp.scalar_properties.get('rho') < weak_limit:
+                is_weak = True
+
+        # this should just test if interaction is weak
+        if (is_weak == True):
             if (color_nonbonds == True):
                 for gradient_path in ail.gradient_paths:
                     nacp_index = gradient_path.getNuclearIndex(critical_points)
