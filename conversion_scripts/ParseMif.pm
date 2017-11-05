@@ -28,8 +28,7 @@ sub parseMif {
 
   ($cp_indices, $ranks, $signatures, $cp_coordinates, $cp_scalar_properties) = parseCPsFromMif($mifContents,$factor);
 
-  #($ails, $indices, $props) = 
-  parseMolecularGraphFromMif($mifContents,$factor);
+  ($ails, $indices, $props) = parseMolecularGraphFromMif($mifContents,$factor,$cp_indices,$cp_coordinates);
 
   #($atomic_surface_coords, $atomic_surface_properties, $atomic_surface_indices, $envelope_coords, $envelope_properties, $envelope_indices) = 
   # This needs to be fixed to return the appropriate arrays
@@ -42,11 +41,10 @@ sub parseMif {
          $ranks,
          $signatures,
          $cp_coordinates,
-         $cp_scalar_properties;
-
-#$ails,
-#$indices,
-#$props,
+         $cp_scalar_properties,
+         $ails,
+         $indices,
+         $props;
 
 #$atomic_surface_coords,
 #$atomic_surface_properties,
@@ -248,11 +246,12 @@ sub parseSurfacesFromMif {
 sub parseAILFromMif {
 
     my @mif_slice = @{$_[0]};
+    my $factor = $_[1];
     my @ail_coords; 
 
-    for ($line=0; $line<@mif_slice; $line++) {
-      if ($mifContents[$line] =~ m/H\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)/) {
-        my @position_vector = ($1, $2, $3);
+    for ($slice_line=0; $slice_line<@mif_slice; $slice_line++) {
+      if ($mif_slice[$slice_line] =~ m/H\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)/) {
+        my @position_vector = ($1/$factor, $2/$factor, $3/$factor);
         push(@ail_coords,\@position_vector);
       } else {
         last;
@@ -273,7 +272,7 @@ sub findClosestCPToPoint {
   $closest_index = -1;
   $closest_distance = 100000.0;
   for ($cp=0; $cp<@cp_coords; $cp++) {
-    $r = $distance(\@point,\@cp_coords[$cp]);
+    $r = distance($point,$cp_coords[$cp]);
     if ($r < $closest_distance) {
       $closest_distance = $r;
       $closest_index = $cp_indices[$cp];
@@ -287,8 +286,10 @@ sub findClosestCPToPoint {
 # Arguments - [0] - Reference to array containing lines of the mif file
 sub parseMolecularGraphFromMif {
 
-  @mifContents    = @{$_[0]};
-  $factor         = $_[1];
+  @mifContents = @{$_[0]};
+  $factor      = $_[1];
+  $cp_indices  = $_[2];
+  $cp_coords   = $_[3];
 
   # output references to these arrays, which we will build by parsing the file
   my @ails;
@@ -303,40 +304,52 @@ sub parseMolecularGraphFromMif {
       if ($mifContents[$line+1] =~ m/AIL\s+\d+\s+\w+\s+\d+\s+\w+\s+\d+/) { $line++; }
 
       # first parse the AIL coordinates from the mif
-      if ($mifContents[$line+1] =~ m/H\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)/) {
-        $ail_coords = parseAILFromMIF($mifContents[$line+1 ..]);
-      }
 
-      $index_a = findClosestPointToCP($ail_coords[0]);
-      $index_b = findClosestPointToCP($ail_coords[-1]);
+      my $max = scalar @mifContents;
+      my @slice = @mifContents[$line+1 .. $max];
+      $ail_coords = parseAILFromMif(\@slice,$factor);
 
-      # then take the central point on the AIL - if odd take the middle one, if even average the central 2
-      $n_points = scalar @{$ail_coords};
-      if ($n_points % 2 == 0) {
-        $point_i = $n_points/2;
-        $point_j = $point_i + 1;
-        for($i=0; $i<3; $i++) {
-          $midpoint[$i] = ($point_i - $point_j) / 2;
+      $index_a = findClosestCPToPoint(@{$ail_coords}[0],$cp_coords,$cp_indices);
+      $index_b = findClosestCPToPoint(@{$ail_coords}[-1],$cp_coords,$cp_indices);
+
+      # Locate the pair of points on the AIL that differ the least - these will each be very close to the BCP (differing only by capture settings in MORPHY)
+      # The indices of these two points become demarcation between GP a and GP b, and either can be used to find the BCP.
+      @ail = @{$ail_coords};
+      $min_distance = 1000000;
+      for($point=0; $point<@ail-1; $point++) {
+        $r = distance($ail[$point],$ail[$point+1]);
+        if ($r < $min_distance) {
+          $min_distance = $r;
+          $final_point_a = $point;
         }
-      } else {
-        $midpoint = @{$ail_coords}[($n_points+1)/2];
       }
 
-      my @gp_a;
-      my @gp_b;
-      # run over the ail coords adding them to the appropriate array
-      # distance from BCP will decrease along the path, when it starts to increase switch to B
-      my @distance_to_bcp;
-      foreach(@{$ail_coords}) {
-        
+      $bcp_index = findClosestCPToPoint($ail[$final_point_a],$cp_coords,$cp_indices);
+
+      my @gp_a = @ail[0 .. $final_point_a];
+      my @gp_b = @ail[$final_point_a+1 .. -1];
+
+      my @maps_a;
+      foreach(@gp_a) {
+        my $scalars_a = {};
+        push(@maps_a,$scalars_a);
       }
 
-      # this must happen twice, once for each nuclear index
-#      my @index = ($nuclear_index,$closest_index);
-#      push(@indices,\@index);
-#      push(@ails,)
-#      $scalars = {};
-#      push(@props,$scalars)
+      my @maps_b;
+      foreach(@gp_b) {
+        my $scalars_b = {};
+        push(@maps_b,$scalars_b);
+      }
+
+      my @position_vectors = (\@gp_a,\@gp_b);
+      push(@ails,\@position_vectors);
+      my @maps = (\@maps_a,\@maps_b);
+      push(@props,\@maps);
+
+      my @a = ($bpc_index,$index_a); my @b = ($bcp_index,$index_b);
+      @cpIndices = (\@a,\@b);
+      push(@indices,\@cpIndices);
+
     }
   }
 
