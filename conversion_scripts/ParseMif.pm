@@ -113,7 +113,7 @@ sub parseCPsFromMif {
           my $label = $1;
           my @position_vector = ($2/$factor, $3/$factor, $4/$factor);
 
-          if ($1 !~ m/cp/) { $label = "ccp"; }
+          if ($1 !~ m/cp/) { $label = "nacp"; }
 
           push(@cp_coordinates,\@position_vector);
           $rank = getRank($label);
@@ -271,6 +271,7 @@ sub findClosestCPToPoint {
 
   $closest_index = -1;
   $closest_distance = 100000.0;
+
   for ($cp=0; $cp<@cp_coords; $cp++) {
     $r = distance($point,$cp_coords[$cp]);
     if ($r < $closest_distance) {
@@ -278,7 +279,6 @@ sub findClosestCPToPoint {
       $closest_index = $cp_indices[$cp];
     }
   }
-
   return $closest_index;
 
 }
@@ -325,6 +325,7 @@ sub parseMolecularGraphFromMif {
       }
 
       $bcp_index = findClosestCPToPoint($ail[$final_point_a],$cp_coords,$cp_indices);
+      print STDERR "A\: $index_a\tB\: $index_b\tBCP\: $bcp_index\n";
 
       my @gp_a = @ail[0 .. $final_point_a];
       my @gp_b = @ail[$final_point_a+1 .. -1];
@@ -347,7 +348,7 @@ sub parseMolecularGraphFromMif {
       push(@props,\@maps);
 
       my @a = ($index_a,$bcp_index); my @b = ($index_b,$bcp_index);
-      @cpIndices = (\@a,\@b);
+      my @cpIndices = (\@a,\@b);
       push(@indices,\@cpIndices);
 
     }
