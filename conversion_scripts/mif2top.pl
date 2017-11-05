@@ -51,9 +51,6 @@ $indices,
 $props) = parseMif($mifContents,$factor,$removeRedundant,$printEdges);
 
 # for now ! These must come from parseMif instead for a complete script
-#$ails = [];
-#$indices = [];
-#$props = [];
 $atomic_surface_coords = []; 
 $atomic_surface_properties = [];
 $atomic_surface_indices = [];
