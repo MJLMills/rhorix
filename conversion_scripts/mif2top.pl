@@ -7,7 +7,6 @@
 use File::Basename;
 use lib dirname(__FILE__); # find modules in script directory - adds the path to @LIB
 use Utilities qw(checkArgs readFile getExt stripExt);
-use TopUtils qw(getRank getSignature);
 use WriteTopology qw(writeTopologyXML);
 use ParseMif qw(parseMif);
 
@@ -48,7 +47,7 @@ $signatures,
 $cpCoordinates, 
 $scalarProperties) = parseMif($mifContents,$factor,$removeRedundant,$printEdges);
 
-# for now ! These must come from parseMif instead
+# for now ! These must come from parseMif instead for a complete script
 $ails = [];
 $indices = [];
 $props = [];
