@@ -325,10 +325,11 @@ sub parseMolecularGraphFromMif {
       }
 
       $bcp_index = findClosestCPToPoint($ail[$final_point_a],$cp_coords,$cp_indices);
-      print STDERR "A\: $index_a\tB\: $index_b\tBCP\: $bcp_index\n";
 
       my @gp_a = @ail[0 .. $final_point_a];
-      my @gp_b = @ail[$final_point_a+1 .. -1];
+      $n_ail = scalar @ail; $n_ail--;
+      $start = $final_point_a+1;
+      my @gp_b = @ail[$start .. $n_ail];
 
       my @maps_a;
       foreach(@gp_a) {
