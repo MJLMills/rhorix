@@ -34,7 +34,7 @@ sub parseMif {
 
   #($atomic_surface_coords, $atomic_surface_properties, $atomic_surface_indices, $envelope_coords, $envelope_properties, $envelope_indices) = 
   # This needs to be fixed to return the appropriate arrays
-  #parseSurfacesFromMif($mifContents,$remove_redundant,$print_edges);
+  parseSurfacesFromMif($mifContents,$factor,$remove_redundant,$print_edges);
 
   return $nuclear_elements,
          $nuclear_indices,
@@ -48,9 +48,17 @@ sub parseMif {
          $indices,
          $props;
 
+# initially we are going to treat all surfaces as interatomic surfaces, i.e. as part of an atomic surface
+# since there is no obvious way to determine what is an envelope and what isn't.
+# an atomic surface has a single critical point (the nucleus), and multiple interatomic surfaces
+# an interatomic surface has gradient paths and a triangulation thereof - morphy does not give the paths.
+# so we are just parsing triangulations from the mif file.
+# a triangulation is a bunch of points and a set of edges or faces.
+
 #$atomic_surface_coords,
 #$atomic_surface_properties,
 #$atomic_surface_indices,
+
 #$envelope_coords,
 #$envelope_properties,
 #$envelope_indices
@@ -137,40 +145,40 @@ sub parseCPsFromMif {
 
 sub parseSurfacesFromMif {
 
-  @mifContents = @{$_[0]};
-  $removeRedundant = $_[1];
-  $printEdges = $_[2];
+  @mifContents     = @{$_[0]};
+  $factor          = $_[1];
+  $removeRedundant = $_[2];
+  $printEdges      = $_[3];
 
-  # create the arrays that will be returned
+  my @atomic_surface_coords;
+  my @atomic_surface_properties;
+  my @atomic_surface_indices;
 
   for ($line=0; $line<@mifContents; $line++) {
 
     if ($mifContents[$line] =~ m/atom\s+(\w+)(\d+)/ || $mifContents[$line] =~ m/surf\s+(\w+)(\d+)/) {
 
       $atom = "$1$2";
-      if ($mifContents[$line+1] !~ m/(\w+)\s+(\d+)/) {
+      if ($mifContents[$line+1] !~ m/bcp\s+\d+/) {
         die "ERROR - Malformed File \(line $line\)\: Cannot read CP associated with surface $atom\n\n";
       }
 
       # these will be filled for this surface then pushed to a collected array
-      my @edgeA; my @edgeB; my @faceA; my @faceB; my @faceC;
-      # my @ailCoords;
-      my @ailCoords_x; my @ailCoords_y; my @ailCoords_z;
+      my @edgeA; my @edgeB;
+      my @faceA; my @faceB; my @faceC;
+      my @ailCoords;
 
       $vertex = 1; $pointID = 0;
       SURF_LOOP: for ($surfLine=$line+2; $surfLine<@mifContents; $surfLine++) {
 
         my @vertexCoords;
-        if ($mifContents[$surfLine] =~ m/(.*)\s+(.*)\s+(.*)/) {
-          @vertexCoords = ($1, $2, $3);
+        if ($mifContents[$surfLine] =~ m/(\S+)\s+(\S+)\s+(\S+)/) {
+          @vertexCoords = ($1/$factor, $2/$factor, $3/$factor);
         }
 
         if (@vertexCoords) {
 
-          #push (@ailCoords,\@vertexCoords);
-          push(@ailCoords_x,$vertexCoords[0]); 
-          push(@ailCoords_y,$vertexCoords[1]); 
-          push(@ailCoords_z,$vertexCoords[2]);
+          push (@ailCoords,\@vertexCoords);
 
           if ($vertex == 1) {
             push(@faceA,$pointID); 
@@ -178,7 +186,7 @@ sub parseSurfacesFromMif {
             push(@faceC,$pointID+2); 
           }
 
-          if ($vertex == 1) { #connect A to B
+          if ($vertex == 1) {      #connect A to B
             push(@edgeA,$pointID); 
             $pointID++; 
             push(@edgeB,$pointID);
@@ -197,7 +205,7 @@ sub parseSurfacesFromMif {
 
         } else {
 
-          $n = @ailCoords_x; # $n = @ailCoords;
+          $n = scalar @ailCoords;
           if ($n > 0) {
 
             $nTriangles = $n / 3;
@@ -205,12 +213,6 @@ sub parseSurfacesFromMif {
             # $line is still currently set to the previously found surf line - set it to the line after the last surface
             $line = $surfLine;
             #Correct the MIF units - this should use $factor and should be done above on reading
-
-            for ($point=0;$point<@ailCoords_x;$point++) {
-              #$ailCoords_x[$point] *= 10;
-              #$ailCoords_y[$point] *= 10;
-              #$ailCoords_z[$point] *= 10;
-            }
 
             $line = $surfLine - 1;
             last SURF_LOOP;
@@ -223,7 +225,7 @@ sub parseSurfacesFromMif {
         }
       } # END SURF_LOOP
 
-      $n = @ailCoords_x; # $n = @ailCoords;
+      $n = @ailCoords;
       if ($n > 0) {
         if ($removeRedundant == 1) {
           # this should return the reformatted data instead of writing it out in-routine
@@ -242,7 +244,7 @@ sub parseSurfacesFromMif {
 
   }
 
-  # return the arrays that have now been filled
+  return \@atomic_surface_coords, \@atomic_surface_properties, \@atomic_surface_indices;
 
 }
 
