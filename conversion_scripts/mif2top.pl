@@ -55,10 +55,11 @@ $envelope_coords = [];
 $envelope_properties = [];
 $envelope_indices = [];
 
-# The following are not present in the mif file so are created as refs to empty arrays.
+# Gradient paths connecting RCPs to BCPs are not present in the mif file.
 $ring_surface_coords     = [];
 $ring_surface_indices    = [];
 $ring_surface_props      = [];
+# A set of gradient paths representing the complete atomic basin are not present in the mif file.
 $atomic_basin_coords     = [];
 $atomic_basin_properties = [];
 $atomic_basin_indices    = [];
