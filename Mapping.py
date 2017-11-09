@@ -140,7 +140,7 @@ def drawAtomicInteractionLine(atomic_interaction_line,bevel,material_name):
 
 def drawAtomicBasins(atomic_basins,critical_points,nuclei,triangulate=True):
 
-    basin_path_scale = 0.01
+    basin_path_scale = 1.00
 
     bevel_name = 'Basin-BevelCircle'
     createBevelCircle(bevel_name,basin_path_scale)
