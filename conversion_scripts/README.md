@@ -16,7 +16,13 @@ mgpviz2top.pl - Script for converting AIMAll output to XML .top format.
 The input file must be an .mgpviz file, but the script will also check for the presence of other types of .viz file.
 Files containing interatomic surface data (iasviz) are produced by running AIMAll with the -iaswrite=true flag. 
 Files with basin visualization data (basviz) can be generated from within the AIMStudio GUI; to the best of our knowledge this cannot currently be done at the command line.
+There are two ways to map the gradient paths of an atomic basin to 3D objects.
+They can be treated as a set of gradient paths and individually drawn with a curve, or treated as a single mesh and drawn as such.
+Rhorix reads basins as sets of gradient paths, and triangulation can be performed internally if requested.
+The former is significantly more computationally expensive than the latter.
 AIMAll does not appear to put triangulation data in viz files, therefore AIMAll's atomic surface data (interatomic surfaces and envelopes) can only be rendered in Rhorix as a set of gradient paths or points.
+Rhorix is able to attempt to traingulate the point data in the AIMAll viz file.
+This is performed in Mapping.py of the Python code.
 
 ### Morphy/Iris Conversion
 
