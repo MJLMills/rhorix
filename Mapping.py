@@ -13,9 +13,9 @@ from . import Resources, Materials, TopologyClasses
 def drawTopology(topology,drawNACP=False,color_bonds=True,color_nonbonds=False):
 
     elementRadii = Resources.defineRadii()
-    cpMaterials = Materials.createAllMaterials('critical_point')
-    surfaceMaterials = Materials.createAllMaterials('interatomic_surface')
-    basinMaterials = Materials.createAllMaterials('atomic_basin')
+    cpMaterials = Materials.createAllMaterials('critical_point','SURFACE')
+    surfaceMaterials = Materials.createAllMaterials('interatomic_surface','WIRE')
+    basinMaterials = Materials.createAllMaterials('atomic_basin','WIRE')
     Materials.createGenericMaterials()
 
     start = time.time()

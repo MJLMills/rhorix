@@ -38,7 +38,7 @@ def createMaterials(critical_points):
         if duplicate == False:
             #create a new material
             createMaterial(elementColors[element],'WIRE',   1.0,element,'critical_point')
-            createMaterial(elementColors[element],'SURFACE',0.5,element,'surface')
+            createMaterial(elementColors[element],'WIRE',0.5,element,'surface')
             createdList.append(type)
 
     # create generic materials for AILs
@@ -50,7 +50,7 @@ def createGenericMaterials():
     createMaterial((0.4,0.4,0.4),'SURFACE',1.0,'Non-Bond','curve')
     createMaterial((0.2,0.2,0.2),'SURFACE',1.0,'Ring-Path','curve')
 
-def createAllMaterials(suffix):
+def createAllMaterials(suffix,material_type):
 
     materials = {}
 
@@ -58,7 +58,7 @@ def createAllMaterials(suffix):
     elementColors = Resources.defineColors()
     # create a material for each CP type and element
     for element in elementColors:
-        materials[element] = createMaterial(elementColors[element],'SURFACE',1.0,element,suffix)
+        materials[element] = createMaterial(elementColors[element],material_type,1.0,element,suffix)
 
     return materials
 
