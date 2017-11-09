@@ -178,7 +178,7 @@ def drawEnvelopes(envelopes):
         else:
             drawMesh(envelope.triangulation,'Bond-curve-material')
 
-def drawAtomicSurfaces(atomic_surfaces,critical_points,nuclei,triangulate=True,max_rho=0.0000):
+def drawAtomicSurfaces(atomic_surfaces,critical_points,nuclei,triangulate=False,max_rho=0.0000):
 
     for atomic_surface in atomic_surfaces:
         for interatomic_surface in atomic_surface.interatomic_surfaces:
