@@ -24,6 +24,7 @@ AIMAll does not appear to put triangulation data in viz files, therefore AIMAll'
 Rhorix is able to attempt to triangulate the interatomic surface point data in the AIMAll viz file.
 This is performed in Mapping.py of the Python code and currently only functions partially.
 The resulting triangulation can not be displayed as a filled-in surface, only a wireframe.
+Parsing iasviz isodensity envelope data is not currently supported and the program will issue a warning to make this clear.
 
 ### Morphy/Iris Conversion
 
