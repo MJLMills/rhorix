@@ -33,7 +33,7 @@ def drawTopology(topology,drawNACP=False,color_bonds=True,color_nonbonds=False):
 def drawGradientVectorField(gradient_vector_field,critical_points,nuclei,color_bonds,color_nonbonds):
 
     drawMolecularGraph(gradient_vector_field.molecular_graph,critical_points,nuclei,color_bonds=color_bonds,color_nonbonds=color_nonbonds)
-    drawAtomicBasins(gradient_vector_field.atomic_basins,critical_points,nuclei)
+    drawAtomicBasins(gradient_vector_field.atomic_basins,critical_points,nuclei) # this must be passed true/false for triangulating the basins
     #drawEnvelopes(gradient_vector_field.envelopes)
     drawAtomicSurfaces(gradient_vector_field.atomic_surfaces,critical_points,nuclei)
     drawRingSurfaces(gradient_vector_field.ring_surfaces)
@@ -140,7 +140,7 @@ def drawAtomicInteractionLine(atomic_interaction_line,bevel,material_name):
 
 def drawAtomicBasins(atomic_basins,critical_points,nuclei,triangulate=False):
 
-    basin_path_scale = 1.00
+    basin_path_scale = 0.01
 
     bevel_name = 'Basin-BevelCircle'
     createBevelCircle(bevel_name,basin_path_scale)
