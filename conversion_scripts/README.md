@@ -14,7 +14,9 @@ This facilitates the future addition of converters for other QCT analysis progra
 mgpviz2top.pl - Script for converting AIMAll output to XML .top format.
 
 The input file must be an .mgpviz file, but the script will also check for the presence of other types of .viz file.
-Files containing interatomic surface data are produced by running AIMAll with the -iaswrite=true flag.
+Files containing interatomic surface data (iasviz) are produced by running AIMAll with the -iaswrite=true flag. 
+Files with basin visualization data (basviz) can be generated from within the AIMStudio GUI; to the best of our knowledge this cannot currently be done at the command line.
+AIMAll does not appear to put triangulation data in viz files, therefore AIMAll's atomic surface data (interatomic surfaces and envelopes) can only be rendered in Rhorix as a set of gradient paths or points.
 
 ### Morphy/Iris Conversion
 
