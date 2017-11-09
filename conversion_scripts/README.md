@@ -20,8 +20,11 @@ AIMAll does not appear to put triangulation data in viz files, therefore AIMAll'
 
 ### Morphy/Iris Conversion
 
-The following scripts are for running the IRIS program and collecting its output into a single file respectively, then converting to XML .top format.
-Currently support for MORPHY's mif filetype is contained in a single script (mif2top.pl) with much redundant code with the modules above.
+The following scripts are for running the IRIS program and collecting its output into a single file (mif) respectively, then converting to XML .top format.
+The mif file does not contain any atomic basin data, so these cannot be visualized with IRIS.
+There are certain other limitations of the mif file, in particular the full connectivity of the molecular graph is not written and must be inferred from distances between gradient path points and critical points.
+These files also do not clearly differentiate between envelopes and interatomic surfaces, and contain triangulations thereof only (not individual gradient paths).
+Iris is currently the only program that produces triangulated surfaces for Rhorix.
 
 mif2top.pl - Script for converting MORPHY/IRIS output to top format.
 
