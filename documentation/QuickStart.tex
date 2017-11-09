@@ -5,15 +5,18 @@
 \newcommand{\fullName}{Rhorix - A Program for Drawing of Quantum Chemical Topologies by M J L Mills}
 \newcommand{\programWebsite}{www.mjohnmills.com/rhorix}
 \newcommand{\programCitation}{Mills, Sale, Simmons, Popelier, J. Comput. Chem., 2017, 38(29), 2538-2552}
-\newcommand{\addonPath}{User Preferences $\rightarrow$ Add-Ons}
+\newcommand{\addonPath}{File $\rightarrow$ User Preferences $\rightarrow$ Add-Ons}
 \newcommand{\operatorPath}{File $\rightarrow$ Import $\rightarrow$ Quantum Chemical Topology (.top)}
 \newcommand{\navLink}{www.blender.org/manual/editors/3dview/navigate/camera\_view.html}
 \newcommand{\blenderSite}{www.blender.org}
 \newcommand{\manualLink}{www.blender.org/manual/}
+\newcommand{\downloadLink}{www.blender.org/download}
 \newcommand{\enterCamera}{keypad $0$}
 \newcommand{\flyMode}{Shift-F}
 \newcommand{\renderKey}{F12}
 \newcommand{\leaveRender}{Esc}
+\newcommand{\contactEmail}{mjohnmills@gmail.com}
+\newcommand{\githubAddress}{github.com/MJLMills/rhorix}
 
 \usepackage{graphicx} % allow embedded images
  \setkeys{Gin}{width=\linewidth,totalheight=\textheight,keepaspectratio}
@@ -47,51 +50,49 @@
 % provide already setup default environment for rendering as a blender settings file
 
 \begin{abstract}
-\programName{} is a program that allows its users to draw (in 3D space) and render (in 2D flatland) a representation of the quantum chemical topology (QCT) of a chemical system with the powerful Blender\sidenote{\blenderSite{}} tool. 
-This 'Quick Start' document is intended for those users currently without interest in how the program works who simply want to use it. The guide provides the quickest path from QCT calculation to rendered image, explaining how to immediately start using \programName{} with Blender to generate a standard-appearance rendered image from a QCT data file.
+\programName{} is an add-on (plugin) program that allows users to draw (in 3D space) and render (in 2D flatland) a representation of the quantum chemical topology (QCT) of a chemical system with the powerful Blender\sidenote{\blenderSite{}} tool. 
+This 'Quick Start' document is intended for those users currently without interest in how the program works who simply want to get started making images. The quickest path from QCT calculation to rendered picture is discussed, explaining how to immediately start using \programName{} with Blender to generate a standard-appearance rendered image from a QCT data file.
 \par{}
-Those users requiring more detail should consult the \programName{} and Blender Manuals\sidenote{\manualLink{}}. All users are urged to look therein for answers not present in this guide.
+Those users requiring more detail should consult the \programName{} paper\sidenote{\programCitation{}} and Blender Manual\sidenote{\manualLink{}}. All users are urged to first look therein for answers not present in this guide before contacting the author\sidenote{\contactEmail{}}.
 
 \end{abstract}
 
-\section{Obtaining the Code}
-\programName{} can be downloaded from the release page on GitHub\sidenote{https://github.com/MJLMills/rhorix}.
-The supplied archive contains the Blender Add-On Python code, an XML file definition, filetype conversion Perl scripts, examples and documentation. The contents should be placed in the appropriate directory according to the installation instructions below.
+\section{Obtaining the Program}
+The source code for \programName{} can be downloaded from the release page on GitHub\sidenote{\githubAddress{}}.
+The supplied archive contains the Blender Add-On Python code, an XML document type definition file, filetype conversion Perl scripts, example projects and documentation.
 
 \section{Installing the Add-On}
-The currently supported version (\blenderVersion{}) of Blender must be installed before proceeding with the \programName{} installation. Users with existing Blender installations and setups can directly install the script following the instructions below. Installing Blender is not covered here; please consult their website for instructions for your OS\sidenote{Windows, Mac OSX, GNU/Linux and FreeBSD are supported.}. 
-Once a working version of Blender in place, the script can be installed within it.
-
+The currently supported version (\blenderVersion{}) of Blender must be installed before proceeding with the \programName{} installation. Installing Blender is not covered here; please consult their website\sidenote{\downloadLink{}} for instructions for your OS\sidenote{Windows, Mac OSX, GNU/Linux and FreeBSD are supported.}. 
+Once a working version of Blender is in place, the script can be installed within it.
 \par{}
-Installation of the script requires the program contents be placed in the Blender addons directory. The location of this directory is OS-dependent.
-AFter copying the files, open Blender, navigate to User Preferences and choose the 'Add-Ons' tab\sidenote{\addonPath{}}.
+Installation of the script requires the program contents be extracted into their own directory within the Blender addons directory, the location of which is OS-dependent.
+After placing the files in the appropriate location, open Blender, navigate to User Preferences in the File menu and choose the Add-Ons tab\sidenote{\addonPath{}}.
 Use the search box to find \programName{}. To activate, tick the checkbox to the left of the entry.
-The Blender configuration can be saved for all future documents, or alternatively the Add-On can be ticked in each document used for QCT drawing.
-The script, when the checkbox is selected, will add an operator named 'Import Topology' to Blender as a menu item.
-Clicking this button will open a file viewer allowing navigation to an existing .top file.
+The Blender configuration can be saved for all future documents\sidenote{Ctrl+U}, or alternatively the Add-On can be re-ticked in each new document used for QCT drawing.
+The script, when the checkbox is selected, will add the ability to read an XML topology file into Blender in various places.
 
 \section{Converting QCT Output Files}
 In order to model and render a topology, the topology must first be known. 
-Therefore a QCT calculation is the first step in producing an image. 
+Therefore, a charge density analysis calculation is the first step in producing an image. 
 Instructions on producing the data necessary to render an image of the topology should be found in the documentation of your particular QCT analysis program.
-\programName{} currently supports MORPHY and AIMAll output files (and by extension supports any \textit{ab initio} code that produces an AIM wavefunction), which must be converted to the .top filetype before they can be read into Blender. 
-Several Perl scripts are provided for this purpose, named for the filetype that they convert from.
+\programName{} currently supports MORPHY (mif) and AIMAll (viz) output files (and by extension supports any \textit{ab initio} code that produces an AIM wavefunction), which must be converted to the .top filetype before they can be read into Blender. Several Perl scripts are provided for this purpose, named for the filetype that they convert from. The Readme file in the appropriate program directory gives detailed information on using these scripts.
 
 \section{Reading Topology Files}
 After successful conversion, the .top file can be read into Blender via \programName{} by clicking the appropriate menu item\sidenote{\operatorPath{}} and navigating to the file's location.
-The appearance of the topology will follow the default template, i.e. standard colors and sphere radii will be used as listed in the Manual.
-Following successful reading of a .top file, a 3D model of the topology will appear. To the right of the 3D model, in the outliner window, a folder structure appears which breaks the topology down into sets of elements for easy navigation and selection.
+The appearance of the topology will follow the default mapping described in the paper, i.e. standard colors and sphere radii will be used.
+Following successful reading of a .top file, a 3D model of the topology will appear in the View window.
 
 \section{Useful GUI Buttons}
-\programName{} provides a set of useful buttons for commonly needed manipulation tasks. These can be used to select and resize various types of gradient path, turn on or off all CPs of a given type and switch to stereoscopic rendering.
+\programName{} provides a set of useful buttons for commonly needed manipulation tasks. These can be used to select and resize various types of gradient path, turn on or off all CPs of a given type and switch to stereoscopic rendering. The buttons can be found in the left-hand pane under Tools.
 
 \section{Placing the Camera \& Rendering an Image}
 The camera must be positioned such that the appropriate part of the topology will be rendered onto the 2D image plane.
-Rendering can be imagined as the process of taking a picture of the topology with the virtual camera, and so all of the camera settings affect the outcome. 
-The user is referred to the appropriate sections of the Blender documentation for descriptions of these settings.
+Rendering can be imagined as the process of taking a picture of the topology with the virtual camera, and so all of the camera settings affect the outcome. \programName{} automatically positions the camera such that it is outside the system and points at the origin. This is intended to provide an adequate starting point only. A simple three-point lighting system is also created.
+
+The user is referred to the appropriate sections of the Blender documentation for descriptions of the camera settings.
 The minimal demand on the user is typically to move the camera to get the desired part of the system in the final 
 render.
-\programName{} automatically positions the camera such that it is outside the system and points at the origin.This is intended to provide an adequate starting point only.
+
 \par{}
 There are 2 important 3D viewports for the quickstart user. The program will show the 3D view window once the 
 system is read in.
@@ -101,7 +102,7 @@ The second viewport is the Camera View. The camera view shows you the orientatio
 Thus you should check that your system appears correctly drawn in the 3D view first, and then enter the camera 
 view mode to set the viewpoint of your final 3D render.
 \par{}
-To move the camera, it is recommended that you enter the camera view mode (\enterCamera{}), and then use the fly mode (\flyMode{}) to position the camera using your mouse.
+To move the camera, it is recommended that you enter the camera view mode\sidenote{\enterCamera{}}, and then use the fly mode\sidenote{\flyMode{}} to position the camera using your mouse.
 The enter key freezes the camera when you find the viewpoint that you want.
 For larger systems, the z-clipping (which hides objects from the view deemed too far from the camera) will 
 eliminate parts of your system.
@@ -111,6 +112,7 @@ Pressing the \renderKey{} key will invoke the Blender Render engine and produce 
 The \leaveRender{} key leaves the render mode if you want to make further changes.
 
 The camera can be moved in other ways once in camera view mode. Please see link\sidenote{\navLink{}} for more details.
+\section{Manipulating Appearance}
 
 \section{Summary}
 The above information constitutes the minimum required to produce a \programName{} image from a QCT calculation output file. For further information on the theoretical background and function of RhoRix, please consult the Manual. For a detailed description of the implementation please consult the paper describing this work\sidenote{\programCitation{}}.
