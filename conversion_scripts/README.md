@@ -21,8 +21,9 @@ They can be treated as a set of gradient paths and individually drawn with a cur
 Rhorix reads basins as sets of gradient paths, and triangulation can be performed internally if requested.
 The former is significantly more computationally expensive than the latter.
 AIMAll does not appear to put triangulation data in viz files, therefore AIMAll's atomic surface data (interatomic surfaces and envelopes) can only be rendered in Rhorix as a set of gradient paths or points.
-Rhorix is able to attempt to traingulate the point data in the AIMAll viz file.
-This is performed in Mapping.py of the Python code.
+Rhorix is able to attempt to triangulate the interatomic surface point data in the AIMAll viz file.
+This is performed in Mapping.py of the Python code and currently only functions partially.
+The resulting triangulation can not be displayed as a filled-in surface, only a wireframe.
 
 ### Morphy/Iris Conversion
 
