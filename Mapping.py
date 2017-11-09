@@ -241,7 +241,6 @@ def drawAtomicSurfaces(atomic_surfaces,critical_points,nuclei,triangulate=True,m
 
                             index += 1
 
-                    #surface_edges = []
                     surface_triangulation = TopologyClasses.Triangulation(surface_points,surface_edges,surface_faces)
                     drawMesh(surface_triangulation,material_name)
 
