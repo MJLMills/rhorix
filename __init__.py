@@ -48,6 +48,7 @@ def register():
     bpy.utils.register_class(ResizeAILs)
     bpy.utils.register_class(ResizeNonbondedInteractions)
     bpy.utils.register_class(ResizeRingLines)
+    bpy.utils.register_class(ResizeAtomicBasins)
     bpy.utils.register_class(ToggleBCPs)
     bpy.utils.register_class(ToggleRCPs)
     bpy.utils.register_class(ToggleCCPs)
@@ -62,6 +63,7 @@ def unregister():
     bpy.utils.unregister_class(ToggleCCPs)
     bpy.utils.unregister_class(ToggleRCPs)
     bpy.utils.unregister_class(ToggleBCPs)
+    bpy.utils.unregister_class(ResizeAtomicBasins)
     bpy.utils.unregister_class(ResizeRingLines)
     bpy.utils.unregister_class(ResizeNonbondedInteractions)
     bpy.utils.unregister_class(ResizeAILs)
@@ -130,6 +132,17 @@ class ResizeAILs(bpy.types.Operator):
         for object in bpy.data.objects:
             object.select = False
         bpy.ops.object.select_pattern(pattern="bond-BevelCircle")
+        return {'FINISHED'}
+
+class ResizeAtomicBasins(bpy.types.Operator):
+
+    bl_idname = "rhorix.resize_atomic_basins"
+    bl_label = "Resize Atomic Basins"
+
+    def invoke(self,context,event):
+        for object in bpy.data.objects:
+            object.select = False
+        bpy.ops.object.select_pattern(pattern="Basin-BevelCircle")
         return {'FINISHED'}
 
 class ResizeNonbondedInteractions(bpy.types.Operator):
