@@ -236,14 +236,15 @@ class RhorixControlPanel(bpy.types.Panel):
 
     def draw(self,context):
         uiColumn = self.layout.column(align=True)
-        uiColumn.operator("rhorix.import_topology",  text="Import Topology")
-        uiColumn.operator("rhorix.render_stereo",    text="Render Stereo")
-        uiColumn.operator("rhorix.resize_ails",      text="Resize AILs")
-        uiColumn.operator("rhorix.resize_nbs",       text="Resize NBs")
-        uiColumn.operator("rhorix.resize_ringlines", text="Resize Ring Lines")
-        uiColumn.operator("rhorix.toggle_bcps",      text="Toggle BCPs") 
-        uiColumn.operator("rhorix.toggle_rcps",      text="Toggle RCPs")
-        uiColumn.operator("rhorix.toggle_ccps",      text="Toggle CCPs")
+        uiColumn.operator("rhorix.import_topology",      text="Import Topology")
+        uiColumn.operator("rhorix.render_stereo",        text="Render Stereo")
+        uiColumn.operator("rhorix.resize_ails",          text="Resize AILs")
+        uiColumn.operator("rhorix.resize_nbs",           text="Resize NBs")
+        uiColumn.operator("rhorix.resize_ringlines",     text="Resize Ring Lines")
+        uiColumn.operator("rhorix.resize_atomic_basins", text="Resize Basin Lines")
+        uiColumn.operator("rhorix.toggle_bcps",          text="Toggle BCPs") 
+        uiColumn.operator("rhorix.toggle_rcps",          text="Toggle RCPs")
+        uiColumn.operator("rhorix.toggle_ccps",          text="Toggle CCPs")
 
 # Add a menu function for the main operator by defining a new draw function
 # and adding it to an existing class (in the register function)
