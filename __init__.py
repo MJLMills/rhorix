@@ -49,6 +49,7 @@ def register():
     bpy.utils.register_class(ResizeNonbondedInteractions)
     bpy.utils.register_class(ResizeRingLines)
     bpy.utils.register_class(ResizeAtomicBasins)
+    bpy.utils.register_class(ResizeIASPaths)
     bpy.utils.register_class(ToggleBCPs)
     bpy.utils.register_class(ToggleRCPs)
     bpy.utils.register_class(ToggleCCPs)
@@ -63,6 +64,7 @@ def unregister():
     bpy.utils.unregister_class(ToggleCCPs)
     bpy.utils.unregister_class(ToggleRCPs)
     bpy.utils.unregister_class(ToggleBCPs)
+    bpy.utils.unregister_class(ResizeIASPaths)
     bpy.utils.unregister_class(ResizeAtomicBasins)
     bpy.utils.unregister_class(ResizeRingLines)
     bpy.utils.unregister_class(ResizeNonbondedInteractions)
@@ -132,6 +134,17 @@ class ResizeAILs(bpy.types.Operator):
         for object in bpy.data.objects:
             object.select = False
         bpy.ops.object.select_pattern(pattern="bond-BevelCircle")
+        return {'FINISHED'}
+
+class ResizeIASPaths(bpy.types.Operator):
+
+    bl_idname = "rhorix.resize_ias_paths"
+    bl_label = "Resize IAS Paths"
+
+    def invoke(self,context,event):
+        for object in bpy.data.objects:
+            object.select = False
+        bpy.ops.object.select_pattern(pattern="IAS-BevelCircle")
         return {'FINISHED'}
 
 class ResizeAtomicBasins(bpy.types.Operator):
@@ -242,6 +255,7 @@ class RhorixControlPanel(bpy.types.Panel):
         uiColumn.operator("rhorix.resize_nbs",           text="Resize NBs")
         uiColumn.operator("rhorix.resize_ringlines",     text="Resize Ring Lines")
         uiColumn.operator("rhorix.resize_atomic_basins", text="Resize Basin Lines")
+        uiColumn.operator("rhorix.resize_ias_paths",     text="Resize IAS Paths")
         uiColumn.operator("rhorix.toggle_bcps",          text="Toggle BCPs") 
         uiColumn.operator("rhorix.toggle_rcps",          text="Toggle RCPs")
         uiColumn.operator("rhorix.toggle_ccps",          text="Toggle CCPs")

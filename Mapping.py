@@ -180,6 +180,11 @@ def drawEnvelopes(envelopes):
 
 def drawAtomicSurfaces(atomic_surfaces,critical_points,nuclei,triangulate=False,max_rho=0.0000):
 
+    ias_path_scale = 0.005
+
+    bevel_name = 'IAS-BevelCircle'
+    createBevelCircle(bevel_name,ias_path_scale)
+
     for atomic_surface in atomic_surfaces:
         for interatomic_surface in atomic_surface.interatomic_surfaces:
             if (interatomic_surface.triangulation is None):
@@ -246,7 +251,7 @@ def drawAtomicSurfaces(atomic_surfaces,critical_points,nuclei,triangulate=False,
                         nacp_index = gradient_path.getNuclearIndex(critical_points)
                         element = nuclei[nacp_index].element.lower()
                         material_name = element+'-interatomic_surface-material'
-                        drawGradientPath(gradient_path,bpy.data.objects['non_bond-BevelCircle'],material_name)
+                        drawGradientPath(gradient_path,bpy.data.objects['IAS-BevelCircle'],material_name)
 
             else:
                 drawMesh(triangulation,'Bond-curve-material')
