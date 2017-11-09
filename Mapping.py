@@ -178,7 +178,7 @@ def drawEnvelopes(envelopes):
         else:
             drawMesh(envelope.triangulation,'Bond-curve-material')
 
-def drawAtomicSurfaces(atomic_surfaces,critical_points,nuclei,triangulate=False,max_rho=0.0000):
+def drawAtomicSurfaces(atomic_surfaces,critical_points,nuclei,triangulate=True,max_rho=0.0000):
 
     ias_path_scale = 0.005
 
@@ -191,8 +191,8 @@ def drawAtomicSurfaces(atomic_surfaces,critical_points,nuclei,triangulate=False,
 
                 if (triangulate == True):
 
-                    surface_edges = []
-                    surface_faces = []
+                    surface_edges  = []
+                    surface_faces  = []
                     surface_points = []
 
                     material_name = 'Bond-curve-material'
@@ -241,7 +241,7 @@ def drawAtomicSurfaces(atomic_surfaces,critical_points,nuclei,triangulate=False,
 
                             index += 1
 
-                    surface_edges = []
+                    #surface_edges = []
                     surface_triangulation = TopologyClasses.Triangulation(surface_points,surface_edges,surface_faces)
                     drawMesh(surface_triangulation,material_name)
 
