@@ -476,8 +476,9 @@ sub parseBasinFromBasviz {
   my @basin_properties;
 
   foreach($line=0; $line<@basvizContents; $line++) {
+
     if ($basvizContents[$line] =~ m/\<Basin\s+Path\>/) {
-      if ($basvizContents[$line+1] =~ m/(\d+)\s+\d+\s+-?\d+\.\d+E[+-]\d+/) {
+      if ($basvizContents[$line+1] =~ m/(\d+)\s+\d+\s+\d+\s+-?\d+\.\d+E[+-]\d+/) {
         $nPoints = $1;
       } else {
         die "Malformed header of Basin Path\: $basvizContents[$line+1]\n\n";
@@ -487,6 +488,8 @@ sub parseBasinFromBasviz {
       ($gp_coords, $gp_properties) = parseGradientPath(\@slice);
       push(@basin_coords,$gp_coords);
       push(@basin_properties,$gp_properties);
+
+      $line = $line + 1 + $nPoints;
 
     }
   }
