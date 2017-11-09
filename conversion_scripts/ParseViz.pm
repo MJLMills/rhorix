@@ -334,7 +334,7 @@ sub parseGradientPath {
   foreach(@{$_[0]}) {
 
     if ($_ =~ m/\s+(-?\d+\.\d+E[+-]\d+)\s+(-?\d+\.\d+E[+-]\d+)\s+(-?\d+\.\d+E[+-]\d+)\s+(-?\d+\.\d+E[+-]\d+)/) {
-      if ($4 >= 0.000) {
+      if (abs($4) >= 0.000) {
         my @coords = ($1,$2,$3);
         push(@points,\@coords);
 
