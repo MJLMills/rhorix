@@ -360,6 +360,7 @@ sub parseRelatedIasvizFiles {
   my @atomic_surface_properties;
   my @atomic_surface_indices;
 
+  print STDERR "Warning\: Parsing isodensity envelope data is disabled\n";
   my @envelope_coords;
   my @envelope_properties;
   my @envelope_indices;
@@ -392,10 +393,10 @@ sub parseRelatedIasvizFiles {
         push(@atomic_surface_indices,$cp_index);
       }
 
-      ($coords, $properties) = parseIntegrationRayIsodensitySurfaceIntersectionsFromIasviz($iasvizContents);
-      push(@envelope_coords,$coords);
-      push(@envelope_properties,$properties);
-      push(@envelope_indices,$cp_index);
+      #($coords, $properties) = parseIntegrationRayIsodensitySurfaceIntersectionsFromIasviz($iasvizContents);
+      #push(@envelope_coords,$coords);
+      #push(@envelope_properties,$properties);
+      #push(@envelope_indices,$cp_index);
 
       ($rs_coords, $rs_properties, $rs_indices) = parseRingSurfacesFromIasviz($iasvizContents);
       push(@ring_surface_coords,$rs_coords);
