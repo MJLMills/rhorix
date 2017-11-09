@@ -138,7 +138,7 @@ def drawAtomicInteractionLine(atomic_interaction_line,bevel,material_name):
     for gradient_path in atomic_interaction_line.gradient_paths:
         drawGradientPath(gradient_path,bevel,material_name) 
 
-def drawAtomicBasins(atomic_basins,critical_points,nuclei,triangulate=True):
+def drawAtomicBasins(atomic_basins,critical_points,nuclei,triangulate=False):
 
     basin_path_scale = 1.00
 
