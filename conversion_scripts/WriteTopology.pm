@@ -16,9 +16,9 @@ our $VERSION = 1.0;
 ### Subroutines ###
 
 # writeTopologyXML - Write a Topology XML file
-# Arguments: $_[0] - String with path to DTD file
-#            $_[1] - Name of the chemical system
-#            $_[2] - Reference to array of source information data
+# Arguments: $_[0] - String with path to DTD file (XML requirement - not part of definition of topology)
+#            $_[1] - String variable - name of the chemical system
+#            $_[2] - Reference to array of SourceInformation data
 #            Nuclei Data
 #            $_[3] - Reference to array of String nuclear elements
 #            $_[4] - Reference to array of Integer nuclear indices
@@ -29,29 +29,38 @@ our $VERSION = 1.0;
 #            $_[8] - 
 #            $_[9] - 
 #            $_[10] - 
-#            GradientVectorFieldData
-#            Molecular Graph Data
-#            $_[11]
-#            $_[12]
-#            $_[13]
-#            AtomicSurfaceData
-#            $_[14]
-#            $_[15]
-#            $_[16]
-#            RingSurfaceData
-#            $_[17] - reference to array of arrays, each being an array of 3-length arrays of cartesians
-#            $_[18] - reference to array of arrays, each being an array of 2 indices
-#            $_[19] - reference to array of arrays, each being an array of dicts
-#            EnvelopeData
-#            $_[20] - reference to an array of arrays, each being an array of 3-length arrays
-#            $_[21] - dicts as above
-#            $_[22] - NACP indices for envelopes
-#            AtomicBasinData - need to generate basviz files
-#            $_[23]
-#            $_[24]
-#            $_[25]
-#            RingData
-#            CageData
+#            Gradient Vector Field Data
+#              Molecular Graph Data
+#              $_[11]
+#              $_[12]
+#              $_[13]
+#              Atomic Surface Data
+#              $_[14]
+#              $_[15]
+#              $_[16]
+#              Atomic Surface Triangulation Data
+#              $_[17] - coords of points in each surface
+#              $_[18] - properties measured at points in each surface
+#              $_[19] - edges connecting points of each surface
+#              $_[20] - faces connecting points of each surface
+#              Ring Surface Data
+#              $_[21] - reference to array of arrays, each being an array of 3-length arrays of cartesians
+#              $_[22] - reference to array of arrays, each being an array of 2 indices
+#              $_[23] - reference to array of arrays, each being an array of dicts
+#              Envelope Data
+#              $_[24] - reference to an array of arrays, each being an array of 3-length arrays (points on the envelope)
+#              $_[25] - dicts as above
+#              $_[26] - NACP indices for envelopes
+#              Envelope Triangulation Data
+#              $_[27] - edges connecting points of each envelope
+#              $_[28] - faces connecting points of each envelope
+#              Atomic Basin Data
+#              $_[29]
+#              $_[30]
+#              $_[31]
+#              RingData - not supported
+#              CageData - not supported
+
 sub writeTopologyXML {
 
   writeXMLHeader("1.0","UTF-8","Topology",$_[0]);
@@ -61,7 +70,7 @@ sub writeTopologyXML {
   writeSourceInformation($_[2]);
   writeNuclei($_[3],$_[4],$_[5]);
   writeCriticalPoints($_[6],$_[7],$_[8],$_[9],$_[10]);
-  writeGradientVectorField($_[11],$_[12],$_[13],$_[14],$_[15],$_[16],$_[17],$_[18],$_[19],$_[20],$_[21],$_[22],$_[23],$_[24],$_[25]);
+  writeGradientVectorField($_[11],$_[12],$_[13],$_[14],$_[15],$_[16],$_[17],$_[18],$_[19],$_[20],$_[21],$_[22],$_[23],$_[24],$_[25],$_[26],$_[27],$_[28],$_[29],$_[30],$_[31]);
 
   closeTag("Topology");
 
@@ -155,19 +164,46 @@ sub writeCP {
 }
 
 # writeGradientVectorField - Write a GradientVectorField XML element
-# Arguments: $_[0] - AILs of the Molecular Graph
-#            $_[1] - Indices of CPs of AILs of the Molecular Graph
-#            $_[2] - Properties of Points of AILs of the Molecular Graph
+# Arguments
+#              Molecular Graph Data
+#              $_[0]
+#              $_[1]
+#              $_[2]
+#              Atomic Surface Data
+#              $_[3]
+#              $_[4]
+#              $_[5]
+#              Atomic Surface Triangulation Data
+#              $_[6] - coords of points in each surface
+#              $_[7] - properties measured at points in each surface
+#              $_[8] - edges connecting points of each surface
+#              $_[9] - faces connecting points of each surface
+#              Ring Surface Data
+#              $_[10] - reference to array of arrays, each being an array of 3-length arrays of cartesians
+#              $_[11] - reference to array of arrays, each being an array of 2 indices
+#              $_[12] - reference to array of arrays, each being an array of dicts
+#              Envelope Data
+#              $_[13] - reference to an array of arrays, each being an array of 3-length arrays (points on the envelope)
+#              $_[14] - dicts as above
+#              $_[15] - NACP indices for envelopes
+#              Envelope Triangulation Data
+#              $_[16] - edges connecting points of each envelope
+#              $_[17] - faces connecting points of each envelope
+#              Atomic Basin Data
+#              $_[18]
+#              $_[19]
+#              $_[20]
+
 sub writeGradientVectorField {
 
   openTag("GradientVectorField");
     writeMolecularGraph($_[0],$_[1],$_[2]);
-    writeAtomicBasins($_[12],$_[13],$_[14]);
-    writeEnvelopes($_[9],$_[10],$_[11]);
-    writeAtomicSurfaces($_[3],$_[4],$_[5]);
-    writeRingSurfaces($_[6],$_[7],$_[8]);
-    #writeRings()
-    #writeCages()
+    writeAtomicBasins($_[18],$_[19],$_[20]);
+    writeEnvelopes($_[13],$_[14],$_[15],$_[16],$_[17]);
+    writeAtomicSurfaces($_[3],$_[4],$_[5],$_[6],$_[7],$_[8],$_[9]);
+    writeRingSurfaces($_[10],$_[11],$_[12]);
+    #writeRings() # not supported
+    #writeCages() # not supported
   closeTag("GradientVectorField");
 
 }
@@ -192,18 +228,26 @@ sub writeMolecularGraph {
 
 sub writeAtomicSurfaces {
 
-  @as_coords     = @{$_[0]}; # for each atomic surface, contains the paths of each IAS
-  @as_properties = @{$_[1]};
-  @as_indices    = @{$_[2]};
+  # For each Atomic Surface,  
+  @as_coords     = @{$_[0]}; # gradient path coordinates of each IAS in that atomic surface
+  @as_properties = @{$_[1]}; # gradient path properties of each IAS in that atomic surface
+  @as_indices    = @{$_[2]}; # index of the nuclear attractor critical point enclosed by that atomic surface 
+  @triang_coords = @{$_[3]}; # coordinates of points included in the triangulation of each IAS in that atomic surface
+  @triang_props  = @{$_[4]}; # properties of points included in the triangulation of each IAS in that atomic surface
+  @triang_edges  = @{$_[5]}; # edges between points included in the triangulation of each IAS in that atomic surface
+  @triang_faces  = @{$_[6]}; # faces between points included in the triangulation of each IAS in that atomic surface
 
-  #print STDERR "\nWriting Atomic Surfaces\n";
-  #$nasCoords     = @as_coords;     print STDERR "Num. AS Coords\:     $nasCoords\n";
-  #$nasProperties = @as_properties; print STDERR "Num. AS Properties\: $nasProperties\n";
-  #$nasIndices    = @as_indices;    print STDERR "Num. AS Indices\:    $nasIndices\n\n";
+  # need to check what data is available and only write what is.
+  # This has to be separated into 4 cases - either nothing is passed, just the GPs, just the triangulation or the GPS AND the triangulation
+  $empty_array = [];
 
-  for ($as=0; $as<@as_coords; $as++) {
-    #printf STDERR "Writing Atomic Surface %04d of %04d\n", $as+1, $nasCoords;
-    writeAtomicSurface($as_coords[$as],$as_properties[$as],$as_indices[$as]);
+  $has_gps = 0;
+  $has_triang = 0;
+  if (scalar @as_coords     > 0) { $has_gps    = 1; }
+  if (scalar @triang_coords > 0) { $has_triang = 1; }
+
+  for ($as=0; $as<@triang_coords; $as++) {
+    writeAtomicSurface($as_coords[$as],$as_properties[$as],$as_indices[$as],$triang_coords[$as],$triang_props[$as],$triang_edges[$as],$triang_faces[$as]);
   }
 
 }
@@ -219,22 +263,18 @@ sub writeAtomicSurface {
   @ias_coords     = @{$_[0]};
   @ias_properties = @{$_[1]};
   $ias_cp_index   = $_[2];
+  $triang_coords  = $_[3];
+  $triang_props   = $_[4];
+  $triang_edges   = $_[5];
+  $triang_faces   = $_[6];
 
   #print STDERR "Critical Point Index\: $ias_cp_index\n";
   #$niasCoords     = @ias_coords;     print STDERR "Num. IASs in Atomic Surface\: $niasCoords\n\n";
   #$niasProperties = @ias_properties; #print STDERR "Num. IASs in Atomic Surface\(props\)\: $niasProperties\n";
 
-#  foreach(@ias_coords) {
-#    $n = @{$_};
-#    print STDERR "COORD ARRAY\: $_ $n\n";
-#  } print STDERR "\n";
-
   openTag("AtomicSurface");
     for ($ias=0; $ias<@ias_coords; $ias++) {
-
-#      printf STDERR "Writing Interatomic Surface %04d of %04d\n", $ias+1, $niasCoords;
-      writeInteratomicSurface($ias_coords[$ias],$ias_properties[$ias],$ias_cp_index);
-
+      writeInteratomicSurface($ias_coords[$ias],$ias_properties[$ias],$ias_cp_index,$triang_coords,$triang_props,$triang_edges,$triang_faces);
     }
   closeTag("AtomicSurface");
 
@@ -251,18 +291,22 @@ sub writeInteratomicSurface {
   @gp_coords     = @{$_[0]};
   @gp_properties = @{$_[1]};
   $gp_cp_index   = $_[2];
+  $triangulation_coords     = $_[3];
+  $triangulation_properties = $_[4];
+  $triangulation_edges      = $_[5];
+  $triangulation_faces      = $_[6];
 
   #$nlfCoords     = @gp_coords;     print STDERR "Num. Paths in IAS \: $nlfCoords\n";
   #$nProperties   = @gp_properties; print STDERR "Num. Paths in IAS \(props\)\: $nProperties\n";
 
   openTag("InteratomicSurface");
+
     for ($gp=0; $gp<@gp_coords; $gp++) {
-      #print STDERR "GP\: $gp\n";
       writeGradientPath($gp_cp_index,0,$gp_coords[$gp],$gp_properties[$gp]);
     }
-    #for ($gp=0; $gp<@coords; $gp++) {
-    #  writeTriangulation($coords[$gp],$properties[$gp]);
-    #}
+    
+    writeTriangulation($triangulation_coords,$triangulation_properties,$triangulation_edges,$triangulation_faces);
+
   closeTag("InteratomicSurface");
 
 }
@@ -274,6 +318,8 @@ sub writeEnvelopes {
   @coords = @{$_[0]};
   @properties = @{$_[1]};
   @indices = @{$_[2]};
+  @triang_edges  = @{$_[3]};
+  @triang_faces  = @{$_[4]};
 
   for ($envelope=0; $envelope<@coords; $envelope++) {
     writeEnvelope(0.001,$indices[$envelope],$coords[$envelope],$properties[$envelope]);
@@ -284,13 +330,16 @@ sub writeEnvelopes {
 # writeEnvelope - Write an Envelope XML element
 # Arguments: $_[0] - electron density isovalue (real,au)
 #            $_[1] - Integer index of corresponding NACP
-#            $_[2] - Reference to array of PositionVectors of points on the surface
+#            $_[2] - Reference to array of PositionVectors of points on the surface (which may be triangulated)
+#            $_[3] - Reference to properties of surface points
+#            $_[4] - Reference to array of edges between surface points
+#            $_[5] - Reference to array of faces between triplets of surface points
 sub writeEnvelope {
 
   openTag("Envelope");
     writePCData("isovalue",$_[0]);
     writePCData("cp_index",$_[1]);
-    writeTriangulation($_[2],$_[3]);
+    writeTriangulation($_[2],$_[3],$_[4],$_[5]);
   closeTag("Envelope");
 
 }
@@ -377,18 +426,20 @@ sub writeCage {
 #            $_[2] - Reference to an array of 2-arrays of Integers (edges)
 sub writeTriangulation {
 
-  my @coords = @{$_[0]};
-  my @properties = @{$_[1]};
+  my @coords     = @{$_[0]}; # vector of 3-vectors of coordinates
+  my @properties = @{$_[1]}; # vector of dicts of scalar properties
+  my @edges      = @{$_[2]}; # vector of 2 indices in each edge
+  my @faces      = @{$_[3]}; # vector of 3 indices in each face
 
   openTag("Triangulation");
     for($point=0; $point<@coords; $point++) {
       writePoint($coords[$point],$properties[$point]);
     }
     foreach(@{$_[2]}) {
-      writeFace($_);
+      writeEdge($_);
     }
     foreach(@{$_[3]}) {
-      writeEdge($_);
+      writeFace($_);
     }
   closeTag("Triangulation");
 
