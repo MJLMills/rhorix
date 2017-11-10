@@ -55,11 +55,17 @@ $ring_surface_coords,       # 15
 $ring_surface_indices,      # 16
 $ring_surface_props,        # 17
 $envelope_coords,           # 18
-$envelope_properties,       # 20
-$envelope_indices,          # 21
-$atomic_basin_coords,       # 22
-$atomic_basin_properties,   # 23
+$envelope_properties,       # 19
+$envelope_indices,          # 20
+$atomic_basin_coords,       # 21
+$atomic_basin_properties,   # 22
 $atomic_basin_indices) = parseMgpviz($mgpvizContents,$systemName);
+
+# not available in viz files
+$triangulation_coords = [];
+$triangulation_props  = [];
+$triangulation_edges  = [];
+$triangulation_faces  = [];
 
 # Write the data to the XML Topology file
 writeTopologyXML($dtdPath,                   #  0
@@ -79,13 +85,17 @@ writeTopologyXML($dtdPath,                   #  0
                  $atomic_surface_coords,     # 14 ATOMIC SURFACES
                  $atomic_surface_properties, # 15
                  $atomic_surface_indices,    # 16
-                 $ring_surface_coords,       # 17 RING SURFACES
-                 $ring_surface_indices,      # 18
-                 $ring_surface_props,        # 19
-                 $envelope_coords,           # 20 ENVELOPES
-                 $envelope_properties,       # 21
-                 $envelope_indices,          # 22
-                 $atomic_basin_coords,       # 23
-                 $atomic_basin_properties,   # 24
-                 $atomic_basin_indices);     # 25
+                 $triangulation_coords,      # 17
+                 $triangulation_props,       # 18
+                 $triangulation_edges,       # 19
+                 $triangulation_faces,       # 20
+                 $ring_surface_coords,       # 21 RING SURFACES
+                 $ring_surface_indices,      # 22
+                 $ring_surface_props,        # 23
+                 $envelope_coords,           # 24 ENVELOPES
+                 $envelope_properties,       # 25
+                 $envelope_indices,          # 26
+                 $atomic_basin_coords,       # 27
+                 $atomic_basin_properties,   # 28
+                 $atomic_basin_indices);     # 29
 
