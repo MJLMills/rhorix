@@ -21,7 +21,7 @@ our $VERSION   = 1.0;
 sub parseMif {
 
   # Input Arguments
-  my $mif_contents      = $_[0];
+  my $mif_contents     = $_[0];
   my $factor           = $_[1];
   my $remove_redundant = $_[2];
   my $print_edges      = $_[3];
@@ -38,12 +38,13 @@ sub parseMif {
 
   ($molecular_graph_ails, 
    $molecular_graph_indices, 
-   $molecular_graph_properties) = parseMolecularGraphFromMif($mif_contents,$factor,$cp_indices,$cp_coordinates);
+   $molecular_graph_properties) = parseMolecularGraphFromMif($mif_contents,$factor,$critical_point_indices,$critical_point_coordinates);
 
+   $num_nacps = countNACPs($critical_point_ranks,$critical_point_signatures);
   ($as_triangulation_coordinates,
    $as_triangulation_properties,
    $as_triangulation_edges, 
-   $as_triangulation_faces) = parseSurfacesFromMif($mif_contents,$factor,$remove_redundant,$print_edges);
+   $as_triangulation_faces) = parseSurfacesFromMif($mif_contents,$num_nacps,$factor,$remove_redundant,$print_edges);
 
   # Read available data from the mif file - ENVELOPES ARE STORED AS IASs
   return $nucleus_elements,
@@ -61,6 +62,18 @@ sub parseMif {
          $as_triangulation_properties,
          $as_triangulation_edges,
          $as_triangulation_faces;
+
+}
+
+sub countNACPs {
+
+  $count = 0;
+  for ($cp=0; $cp<@{$_[0]}; $cp++) {
+    if (@{$_[0]}[$cp] == 3 && @{$_[1]}[$cp] == -3) {
+      $count++;
+    }
+  }
+  return $count;
 
 }
 
@@ -145,9 +158,10 @@ sub parseCPsFromMif {
 sub parseSurfacesFromMif {
 
   @mifContents     = @{$_[0]};
-  $factor          = $_[1];
-  $removeRedundant = $_[2];
-  $printEdges      = $_[3];
+  $num_nacps       = $_[1];
+  $factor          = $_[2];
+  $removeRedundant = $_[3];
+  $printEdges      = $_[4];
 
   # First parse the complete set of IAS/envelope triangulations from the mif
 
@@ -167,7 +181,6 @@ sub parseSurfacesFromMif {
         # please note the integer matched here is NOT a useful BCP index
         die "ERROR - Malformed File \(line $line\)\: Cannot read CP associated with surface $cp_index\n\n";
       }
-      push(@nuclear_indices,$cp_index);
 
       my @surface_coords; # Cartesians of every (possibly redundant) vertex in the mif
       my @surface_edges;  # Edges in the surface (a,b) with redundant vertex indices
@@ -237,6 +250,7 @@ sub parseSurfacesFromMif {
           reformatSurface(\@ailCoords_x, \@ailCoords_y, \@ailCoords_z, \@edgeA, \@edgeB, \@faceA, \@faceB, \@faceC, $printEdges);
         } else {
           # push the data to the appropriate arrays rather than writing out
+          push(@nuclear_indices,$cp_index);
           push(@triangulation_coords,\@surface_coords);
           push(@triangulation_properties,\@surface_properties);
           push(@triangulation_edges,\@surface_edges);
@@ -251,16 +265,21 @@ sub parseSurfacesFromMif {
   }
 
   # at this point we have a full set of triangulations from the file which must be reformatted as atomic surfaces
+  # This can be done inline above if there is time - create the arrays first then push at the appropriate time.
   my @atomic_surface_coords;
   my @atomic_surface_props;
   my @atomic_surface_edges;
   my @atomic_surface_faces;
 
+  for ($nacp=0; $nacp<$num_nacps; $nacp++) {
+    $atomic_surface_coords[$nacp] = [];
+    $atomic_surface_props[$nacp]  = [];
+    $atomic_surface_edges[$nacp]  = [];
+    $atomic_surface_faces[$nacp]  = [];
+  }   
+
   for ($tri=0; $tri<@nuclear_indices; $tri++) {
-    push($atomic_surface_coords[$nuclear_indices[$tri]],$triangulation_coords[$tri]);
-    push($atomic_surface_edges[$nuclear_indices[$tri]], $triangulation_edges[$tri]);
-    push($atomic_surface_faces[$nuclear_indices[$tri]], $triangulation_faces[$tri]);
-    push($atomic_surface_props[$nuclear_indices[$tri]], $triangulation_properties[$tri]);
+    push($atomic_surface_coords[$nuclear_indices[$tri]-1],$triangulation_coords[$tri]);
   }
 
   return \@atomic_surface_coords, \@atomic_surface_props, \@atomic_surface_edges, \@atomic_surface_faces;
