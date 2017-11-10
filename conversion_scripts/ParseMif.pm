@@ -52,7 +52,7 @@ sub parseMif {
          $nucleus_coordinates,
          $critical_point_indices,
          $critical_point_ranks,
-         $critical_pointsignatures,
+         $critical_point_signatures,
          $critical_point_coordinates,
          $critical_point_properties,
          $molecular_graph_ails,
@@ -65,6 +65,7 @@ sub parseMif {
 
 }
 
+# Routine to count the number of nuclear attractor critical points
 sub countNACPs {
 
   $count = 0;
