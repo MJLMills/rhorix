@@ -70,7 +70,13 @@ sub writeTopologyXML {
   writeSourceInformation($_[2]);
   writeNuclei($_[3],$_[4],$_[5]);
   writeCriticalPoints($_[6],$_[7],$_[8],$_[9],$_[10]);
-  writeGradientVectorField($_[11],$_[12],$_[13],$_[14],$_[15],$_[16],$_[17],$_[18],$_[19],$_[20],$_[21],$_[22],$_[23],$_[24],$_[25],$_[26],$_[27],$_[28],$_[29],$_[30],$_[31]);
+  writeGradientVectorField($_[11],$_[12],$_[13],
+                           $_[14],$_[15],$_[16],
+                           $_[17],$_[18],$_[19],$_[20],
+                           $_[21],$_[22],$_[23],
+                           $_[24],$_[25],$_[26],
+                           $_[27],$_[28],
+                           $_[29],$_[30],$_[31]);
 
   closeTag("Topology");
 
@@ -193,7 +199,6 @@ sub writeCP {
 #              $_[18]
 #              $_[19]
 #              $_[20]
-
 sub writeGradientVectorField {
 
   openTag("GradientVectorField");
@@ -226,7 +231,7 @@ sub writeMolecularGraph {
 
 }
 
-sub writeAtomicSurfaces {
+sub writeAtomicSurfaces { # TODO TODO TODO
 
   # For each Atomic Surface,  
   @as_coords     = @{$_[0]}; # gradient path coordinates of each IAS in that atomic surface
@@ -236,6 +241,11 @@ sub writeAtomicSurfaces {
   @triang_props  = @{$_[4]}; # properties of points included in the triangulation of each IAS in that atomic surface
   @triang_edges  = @{$_[5]}; # edges between points included in the triangulation of each IAS in that atomic surface
   @triang_faces  = @{$_[6]}; # faces between points included in the triangulation of each IAS in that atomic surface
+
+  # write the GP representation
+  for ($as=0; $as<@as_coords; $as++) {
+    writeAtomicSurface($as_coords[$as],$as_properties[$as],$as_indices[$as]);
+  }
 
   for ($as=0; $as<@triang_coords; $as++) {
 
@@ -269,18 +279,10 @@ sub writeAtomicSurface {
   @ias_coords     = @{$_[0]};
   @ias_properties = @{$_[1]};
   $ias_cp_index   = $_[2];
-  $triang_coords  = $_[3];
-  $triang_props   = $_[4];
-  $triang_edges   = $_[5];
-  $triang_faces   = $_[6];
-
-  #print STDERR "Critical Point Index\: $ias_cp_index\n";
-  #$niasCoords     = @ias_coords;     print STDERR "Num. IASs in Atomic Surface\: $niasCoords\n\n";
-  #$niasProperties = @ias_properties; #print STDERR "Num. IASs in Atomic Surface\(props\)\: $niasProperties\n";
 
   openTag("AtomicSurface");
     for ($ias=0; $ias<@ias_coords; $ias++) {
-      writeInteratomicSurface($ias_coords[$ias],$ias_properties[$ias],$ias_cp_index,$triang_coords,$triang_props,$triang_edges,$triang_faces);
+      writeInteratomicSurface($ias_coords[$ias],$ias_properties[$ias],$ias_cp_index);
     }
   closeTag("AtomicSurface");
 
@@ -297,21 +299,12 @@ sub writeInteratomicSurface {
   @gp_coords     = @{$_[0]};
   @gp_properties = @{$_[1]};
   $gp_cp_index   = $_[2];
-  $triangulation_coords     = $_[3];
-  $triangulation_properties = $_[4];
-  $triangulation_edges      = $_[5];
-  $triangulation_faces      = $_[6];
-
-  #$nlfCoords     = @gp_coords;     print STDERR "Num. Paths in IAS \: $nlfCoords\n";
-  #$nProperties   = @gp_properties; print STDERR "Num. Paths in IAS \(props\)\: $nProperties\n";
 
   openTag("InteratomicSurface");
 
     for ($gp=0; $gp<@gp_coords; $gp++) {
       writeGradientPath($gp_cp_index,0,$gp_coords[$gp],$gp_properties[$gp]);
     }
-    
-    writeTriangulation($triangulation_coords,$triangulation_properties,$triangulation_edges,$triangulation_faces);
 
   closeTag("InteratomicSurface");
 
