@@ -441,11 +441,11 @@ sub writeTriangulation {
     for($point=0; $point<@coords; $point++) {
       writePoint($coords[$point],$properties[$point]);
     }
-    foreach(@{$_[2]}) {
-      writeEdge($_);
-    }
     foreach(@{$_[3]}) {
       writeFace($_);
+    }
+    foreach(@{$_[2]}) {
+      writeEdge($_);
     }
   closeTag("Triangulation");
 
