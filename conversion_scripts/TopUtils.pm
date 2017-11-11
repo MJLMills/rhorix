@@ -9,7 +9,7 @@ require Exporter;
 
 our @ISA       = qw(Exporter);
 our @EXPORT    = ();
-our @EXPORT_OK = qw(getRank getSignature getMassesFromElements computeCOM);
+our @EXPORT_OK = qw(getRank getSignature getMassesFromElements computeCOM countNACPs);
 our $VERSION   = 1.0;
 
 ### Subroutines ###
@@ -115,6 +115,19 @@ sub computeCOM {
   }
 
   return \@com;
+
+}
+
+# Routine to count the number of nuclear attractor critical points
+sub countNACPs {
+
+  $count = 0;
+  for ($cp=0; $cp<@{$_[0]}; $cp++) {
+    if (@{$_[0]}[$cp] == 3 && @{$_[1]}[$cp] == -3) {
+      $count++;
+    }
+  }
+  return $count;
 
 }
 

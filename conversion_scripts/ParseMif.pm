@@ -6,7 +6,7 @@ use File::Basename;
 use lib dirname(__FILE__); # find modules in script directory - adds the path to @LIB
 package ParseMif;
 require Exporter;
-use TopUtils qw(getRank getSignature);
+use TopUtils qw(getRank getSignature countNACPs);
 
 ### Module Settings ###
 
@@ -62,19 +62,6 @@ sub parseMif {
          $as_triangulation_properties,
          $as_triangulation_edges,
          $as_triangulation_faces;
-
-}
-
-# Routine to count the number of nuclear attractor critical points
-sub countNACPs {
-
-  $count = 0;
-  for ($cp=0; $cp<@{$_[0]}; $cp++) {
-    if (@{$_[0]}[$cp] == 3 && @{$_[1]}[$cp] == -3) {
-      $count++;
-    }
-  }
-  return $count;
 
 }
 
