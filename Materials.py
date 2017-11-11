@@ -1,5 +1,5 @@
 # Materials Python 3 Module
-# Dr. Matthew J L Mills - Rhorix 1.0 - June 2017
+# Rhorix: An interface between quantum chemical topology and the 3D graphics program Blender
 
 # Materials are usually assigned to points by using the properties of a critical point
 # associated with that point. This necessitates the definition of a library of materials

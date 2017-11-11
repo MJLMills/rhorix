@@ -1,5 +1,5 @@
 # ParseTopology Python 3 Module
-# Dr. Matthew J L Mills - Rhorix 1.0 - June 2017
+# Rhorix: An interface between quantum chemical topology and the 3D graphics program Blender
 
 def defineRadii():
     #Initial values taken from the old Java GUI - if not present, radius = 2.0

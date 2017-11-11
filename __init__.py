@@ -1,3 +1,6 @@
+# __init__ Python Package Head
+# Rhorix: An interface between quantum chemical topology and the 3D graphics program Blender
+
 # This file causes Python to treat the directory as containing a package
 # The user interface and add-on info are placed here.
 

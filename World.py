@@ -1,3 +1,6 @@
+# World Python 3 Module
+# Rhorix: An interface between quantum chemical topology and the 3D graphics program Blender
+
 import bpy
 import mathutils
 import math

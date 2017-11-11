@@ -1,5 +1,5 @@
 # Mapping Python 3 Module
-# Dr. Matthew J L Mills - Rhorix 1.0 - June 2017
+# Rhorix: An interface between quantum chemical topology and the 3D graphics program Blender
 
 # Really there are only 3 objects being drawn - spheres for points, curves for gradient paths
 # and meshes for surfaces. The remaining functions ultimately call one of these

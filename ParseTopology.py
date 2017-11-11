@@ -1,5 +1,5 @@
 # ParseTopology Python 3 Module
-# Dr. Matthew J L Mills - Rhorix 1.0
+# Rhorix: An interface between quantum chemical topology and the 3D graphics program Blender
 
 # Rhorix uses the ElementTree API, a simple and lightweight XML parser included in Python 3.
 # Please be aware of XML vulnerabilities! https://docs.python.org/3/library/xml.html#xml-vulnerabilities

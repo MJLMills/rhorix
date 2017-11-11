@@ -1,5 +1,5 @@
 # TopologyClasses Python 3 Module
-# Dr. Matthew J L Mills - Rhorix 1.0 - June 2017
+# Rhorix: An interface between quantum chemical topology and the 3D graphics program Blender
 
 # This is a Python implementation of the class hierarchy needed to parse XML files
 # adhering to the document model defined in Topology.dtd.
