@@ -178,7 +178,7 @@ def drawEnvelopes(envelopes):
         else:
             drawMesh(envelope.triangulation,'Bond-curve-material')
 
-def drawAtomicSurfaces(atomic_surfaces,critical_points,nuclei,triangulate=True,max_rho=0.0000):
+def drawAtomicSurfaces(atomic_surfaces,critical_points,nuclei,triangulate=False,max_rho=0.0000):
 
     ias_path_scale = 0.005
 
@@ -253,7 +253,7 @@ def drawAtomicSurfaces(atomic_surfaces,critical_points,nuclei,triangulate=True,m
                         drawGradientPath(gradient_path,bpy.data.objects['IAS-BevelCircle'],material_name)
 
             else:
-                drawMesh(triangulation,'Bond-curve-material')
+                drawMesh(interatomic_surface.triangulation,'Bond-curve-material')
 
 def drawRingSurfaces(ring_surfaces):
 
