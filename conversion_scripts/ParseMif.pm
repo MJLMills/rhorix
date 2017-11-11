@@ -164,13 +164,19 @@ sub parseSurfacesFromMif {
   $removeRedundant = $_[3];
   $printEdges      = $_[4];
 
-  # First parse the complete set of IAS/envelope triangulations from the mif
+  my @atomic_surface_coords;
+  my @atomic_surface_props;
+  my @atomic_surface_edges;
+  my @atomic_surface_faces;
+
+  for ($nacp=0; $nacp<$num_nacps; $nacp++) {
+    $atomic_surface_coords[$nacp] = [];
+    $atomic_surface_props[$nacp]  = [];
+    $atomic_surface_edges[$nacp]  = [];
+    $atomic_surface_faces[$nacp]  = [];
+  }   
 
   my @nuclear_indices;
-  my @triangulation_coords;
-  my @triangulation_properties;
-  my @triangulation_edges;
-  my @triangulation_faces;
 
   for ($line=0; $line<@mifContents; $line++) {
 
@@ -189,6 +195,7 @@ sub parseSurfacesFromMif {
 
       $vertex  = 1; # This is the vertex ID (1,2,3) - used to build correct connectivity
       $pointID = 0; # pointID is a unique (array) index for each (possibly redundant) vertex
+
       SURF_LOOP: for ($surfLine=$line+2; $surfLine<@mifContents; $surfLine++) {
 
         if ($mifContents[$surfLine] =~ m/(\S+)\s+(\S+)\s+(\S+)/) {
@@ -206,17 +213,18 @@ sub parseSurfacesFromMif {
           }
 
           # we can also just read edge data from the mif as well as faces
+          my @edge;
           if ($vertex == 1) {      #connect A to B
-            my @edge = ($pointID,$pointID+1);
+            @edge = ($pointID,$pointID+1);
             $pointID++;
           } elsif ($vertex == 2) { # connect B to C
-            my @edge = ($pointID,$pointID+1);
+            @edge = ($pointID,$pointID+1);
             $pointID++; 
           } elsif ($vertex == 3) { # connect C to A
-            my @edge = ($pointID,$pointID-2);
+            @edge = ($pointID,$pointID-2);
             $pointID++;
           }
-          push (@surface_edges,\@edge);
+          push(@surface_edges,\@edge);
 
           #cycle the vertex ID of the triangle (1,2,3)
           if ($vertex == 3) { $vertex = 1; } else { $vertex++; }
@@ -232,55 +240,34 @@ sub parseSurfacesFromMif {
               printf STDERR "Warning\: Non-integral number of triangles in surface\. %10d\n", $n/3;
             }
 
+            if ($removeRedundant == 1) {
+              # this should return the reformatted data instead of writing it out in-routine
+              reformatSurface(\@ailCoords_x, \@ailCoords_y, \@ailCoords_z, \@edgeA, \@edgeB, \@faceA, \@faceB, \@faceC, $printEdges);
+            } else {
+              # push the data to the appropriate arrays rather than writing out
+              push(@nuclear_indices,$cp_index);
+              push($atomic_surface_coords[$cp_index-1],\@surface_coords);
+              push($atomic_surface_props[$cp_index-1],\@surface_props);
+              push($atomic_surface_edges[$cp_index-1],\@surface_edges);
+              push($atomic_surface_faces[$cp_index-1],\@surface_faces);
+
+            }
+
             # $line is still currently set to the previously found surf line - set it to the line after this surface
             $line = $surfLine - 1;
             last SURF_LOOP;
 
           } else {
             #in this case an empty surface was found - jump $line past the two entries surf and cp
+            print STDERR "Warning\: Empty surface found for CP $cp_index\n";
             $line = $surfLine - 1;
             last SURF_LOOP;
           }
         }
       } # END SURF_LOOP - reads a single surface from the code
 
-      $n = scalar @surface_coords;
-      if ($n > 0) {
-        if ($removeRedundant == 1) {
-          # this should return the reformatted data instead of writing it out in-routine
-          reformatSurface(\@ailCoords_x, \@ailCoords_y, \@ailCoords_z, \@edgeA, \@edgeB, \@faceA, \@faceB, \@faceC, $printEdges);
-        } else {
-          # push the data to the appropriate arrays rather than writing out
-          push(@nuclear_indices,$cp_index);
-          push(@triangulation_coords,\@surface_coords);
-          push(@triangulation_properties,\@surface_properties);
-          push(@triangulation_edges,\@surface_edges);
-          push(@triangulation_faces,\@surface_faces);
-        }
-      } else {
-        print STDERR "Warning\: Empty surface found for CP $cp_index\n";
-      }
-
     }
 
-  }
-
-  # at this point we have a full set of triangulations from the file which must be reformatted as atomic surfaces
-  # This can be done inline above if there is time - create the arrays first then push at the appropriate time.
-  my @atomic_surface_coords;
-  my @atomic_surface_props;
-  my @atomic_surface_edges;
-  my @atomic_surface_faces;
-
-  for ($nacp=0; $nacp<$num_nacps; $nacp++) {
-    $atomic_surface_coords[$nacp] = [];
-    $atomic_surface_props[$nacp]  = [];
-    $atomic_surface_edges[$nacp]  = [];
-    $atomic_surface_faces[$nacp]  = [];
-  }   
-
-  for ($tri=0; $tri<@nuclear_indices; $tri++) {
-    push($atomic_surface_coords[$nuclear_indices[$tri]-1],$triangulation_coords[$tri]);
   }
 
   return \@atomic_surface_coords, \@atomic_surface_props, \@atomic_surface_edges, \@atomic_surface_faces;
