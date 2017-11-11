@@ -6,7 +6,7 @@ use File::Basename;
 use lib dirname(__FILE__); # find modules in script directory - adds the path to @LIB
 package ParseMif;
 require Exporter;
-use TopUtils qw(getRank getSignature countNACPs);
+use TopUtils qw(getRank getSignature countNACPs findClosestCPToPoint);
 
 ### Module Settings ###
 
@@ -277,26 +277,6 @@ sub parseAILFromMif {
     }
 
     return \@ail_coords;
-
-}
-
-sub findClosestCPToPoint {
-
-  $point      = $_[0];
-  @cp_coords  = @{$_[1]};
-  @cp_indices = @{$_[2]};
-
-  $closest_index = -1;
-  $closest_distance = 100000.0;
-
-  for ($cp=0; $cp<@cp_coords; $cp++) {
-    $r = distance($point,$cp_coords[$cp]);
-    if ($r < $closest_distance) {
-      $closest_distance = $r;
-      $closest_index = $cp_indices[$cp];
-    }
-  }
-  return $closest_index;
 
 }
 
