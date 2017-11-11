@@ -32,7 +32,7 @@ $mgpviz_contents = readFile($mgpviz_file);
 checkMgpvizFile($mgpviz_contents);
 
 # Name for the system is taken from the filename
-$system_name = stripExt($mgpvizFile,"mgpviz");
+$system_name = stripExt($mgpviz_file,"mgpviz");
 
 # Attempt to read all data from the mgpviz file
 # This subroutine also checks for and parses the corresponding iasviz files
@@ -40,7 +40,7 @@ $system_name = stripExt($mgpvizFile,"mgpviz");
 ($source_information,        # 0
 $nucleus_elements,           # 1 
 $nucleus_indices,            # 2
-$nucleus_coordinates,        # 3
+$nucleus_positions  ,        # 3
 $critical_point_indices,     # 4
 $critical_point_ranks,       # 5
 $critical_point_signatures,  # 6
@@ -56,11 +56,11 @@ $ring_surface_coords,        # 15
 $ring_surface_indices,       # 16
 $ring_surface_props,         # 17
 $envelope_coords,            # 18
-$envelope_props,             # 19
+$envelope_properties,        # 19
 $envelope_cp_indices,        # 20
 $atomic_basin_coords,        # 21
 $atomic_basin_properties,    # 22
-$atomic_basin_indices) = parseMgpviz($mgpvizContents,$systemName);
+$atomic_basin_indices) = parseMgpviz($mgpviz_contents,$system_name);
 
 # Triangulation data is not available in viz files - set empty
 $as_triangulation_coords = [];
