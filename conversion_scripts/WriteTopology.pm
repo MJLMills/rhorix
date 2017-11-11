@@ -199,7 +199,7 @@ sub writeGradientVectorField {
   openTag("GradientVectorField");
     writeMolecularGraph($_[0],$_[1],$_[2]);
     writeAtomicBasins($_[18],$_[19],$_[20]);
-    writeEnvelopes($_[13],$_[14],$_[15],$_[16],$_[17]);
+#    writeEnvelopes($_[13],$_[14],$_[15],$_[16],$_[17]);
     writeAtomicSurfaces($_[3],$_[4],$_[5],$_[6],$_[7],$_[8],$_[9]);
     writeRingSurfaces($_[10],$_[11],$_[12]);
     #writeRings() # not supported
@@ -237,17 +237,23 @@ sub writeAtomicSurfaces {
   @triang_edges  = @{$_[5]}; # edges between points included in the triangulation of each IAS in that atomic surface
   @triang_faces  = @{$_[6]}; # faces between points included in the triangulation of each IAS in that atomic surface
 
-  # need to check what data is available and only write what is.
-  # This has to be separated into 4 cases - either nothing is passed, just the GPs, just the triangulation or the GPS AND the triangulation
-  $empty_array = [];
-
-  $has_gps = 0;
-  $has_triang = 0;
-  if (scalar @as_coords     > 0) { $has_gps    = 1; }
-  if (scalar @triang_coords > 0) { $has_triang = 1; }
-
   for ($as=0; $as<@triang_coords; $as++) {
-    writeAtomicSurface($as_coords[$as],$as_properties[$as],$as_indices[$as],$triang_coords[$as],$triang_props[$as],$triang_edges[$as],$triang_faces[$as]);
+
+    openTag("AtomicSurface");
+
+    @ias_coords = @{$triang_coords[$as]};
+    @ias_props  = @{$triang_props[$as]};
+    @ias_edges  = @{$triang_edges[$as]};
+    @ias_faces  = @{$triang_faces[$as]};
+
+    for($ias=0; $ias<@ias_coords; $ias++) {
+      openTag("InteratomicSurface");
+      writeTriangulation($ias_coords[$ias],$ias_props[$ias],$ias_edges[$ias],$ias_faces[$ias]);
+      closeTag("InteratomicSurface");
+    }
+
+    closeTag("AtomicSurface");
+
   }
 
 }
@@ -454,7 +460,7 @@ sub writeEdge {
   openTag("Edge");
     writePCData("edge_a",$indices[0]);
     writePCData("edge_b",$indices[1]);
-  cloeTag("Edge");
+  closeTag("Edge");
 
 }
 
