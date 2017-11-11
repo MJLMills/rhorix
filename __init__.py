@@ -15,15 +15,14 @@ if "bpy" in locals():
     imp.reload(Resources)
     imp.reload(World)
 else:
-    from . import TopologyClasses, Mapping, ParseTopology, World, Resources, Materials
+    from . import ParseTopology, TopologyClasses, Mapping, Materials, Resources, World 
 
 import bpy
 import time
 import fnmatch
 
 # The following dict and 2 functions satisfy the requirements for contributed scripts
-# Be sure to also follow the PEP 8 Python conventions
-# See https://www.python.org/dev/peps/pep-0008/
+# Be sure to also follow the PEP 8 Python conventions - see https://www.python.org/dev/peps/pep-0008/
 
 # Script Meta-info: this Python dictionary is required by all Addon files
 # All possible keys are present in this dict - fill in wiki/tracker URLs later if needed
@@ -60,7 +59,7 @@ def register():
     bpy.types.INFO_MT_file_import.append(menu_function)
 
 # Function runs only when disabling the addon
-# Must undo actions taken by register function in reverse order
+# Must undo actions taken by register function (in reverse order)
 def unregister():
     bpy.types.INFO_MT_file_import.remove(menu_function)
     bpy.utils.unregister_class(RhorixControlPanel)
