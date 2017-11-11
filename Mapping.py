@@ -306,15 +306,17 @@ def drawGradientPath(gradient_path,bevel,material_name):
 def drawRings(rings):
     print("drawRings: To be implemented")
     #for ring in rings:
+         #drawRing(ring)
 
 def drawRing(ring):
-    for atomic_interaction_line in ring.atomic_interaction_lines:
-        drawAtomicInteractionLine(atomic_interaction_line)
+    #for atomic_interaction_line in ring.atomic_interaction_lines:
+        #drawAtomicInteractionLine(atomic_interaction_line)
 
 def drawCages(cages):
     print("drawCages: To be implemented")
     #for cage in cages:
+        #drawCage(cage)
 
 def drawCage(cage):
-    for ring in cage.rings:
-        drawRing(ring)
+    #for ring in cage.rings:
+        #drawRing(ring)
