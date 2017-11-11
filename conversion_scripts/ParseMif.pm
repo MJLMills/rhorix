@@ -169,14 +169,13 @@ sub parseSurfacesFromMif {
   my @atomic_surface_edges;
   my @atomic_surface_faces;
 
+  # this might have to consider nnacps too
   for ($nacp=0; $nacp<$num_nacps; $nacp++) {
     $atomic_surface_coords[$nacp] = [];
     $atomic_surface_props[$nacp]  = [];
     $atomic_surface_edges[$nacp]  = [];
     $atomic_surface_faces[$nacp]  = [];
   }   
-
-  my @nuclear_indices;
 
   for ($line=0; $line<@mifContents; $line++) {
 
@@ -229,7 +228,8 @@ sub parseSurfacesFromMif {
           #cycle the vertex ID of the triangle (1,2,3)
           if ($vertex == 3) { $vertex = 1; } else { $vertex++; }
 
-        } else { # the end of this surface's entries has been reached
+        }
+        if ($mifContents[$surfLine] !~ m/(\S+)\s+(\S+)\s+(\S+)/ || ($surfLine == @mifContents-1)) { # the end of this surface's entries has been reached
 
           $n = scalar @surface_coords;
           if ($n > 0) {
@@ -245,7 +245,6 @@ sub parseSurfacesFromMif {
               reformatSurface(\@ailCoords_x, \@ailCoords_y, \@ailCoords_z, \@edgeA, \@edgeB, \@faceA, \@faceB, \@faceC, $printEdges);
             } else {
               # push the data to the appropriate arrays rather than writing out
-              push(@nuclear_indices,$cp_index);
               push($atomic_surface_coords[$cp_index-1],\@surface_coords);
               push($atomic_surface_props[$cp_index-1],\@surface_props);
               push($atomic_surface_edges[$cp_index-1],\@surface_edges);
