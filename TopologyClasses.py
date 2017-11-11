@@ -170,10 +170,18 @@ class InteratomicSurface():
                     return cp
 
 class Triangulation():
-    def __init__(self,points,edges,faces):
+    def __init__(self,points,edge_objects,face_objects):
         self.points = points
-        self.edges  = edges
-        self.faces  = faces
+        self.edge_objects  = edge_objects
+        self.face_objects  = face_objects
+        self.edge_arrays = []
+        self.face_arrays = []
+        for edge in edge_objects:
+            edge_array = [edge.a,edge.b]
+            self.edge_arrays.append(edge_array)
+        for face in face_objects:
+            face_array = [face.a,face.b,face.c]
+            self.face_arrays.append(face_array)
 
 class Edge():
     def __init__(self,a,b):
