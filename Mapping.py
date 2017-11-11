@@ -253,6 +253,7 @@ def drawAtomicSurfaces(atomic_surfaces,critical_points,nuclei,triangulate=False,
                         drawGradientPath(gradient_path,bpy.data.objects['IAS-BevelCircle'],material_name)
 
             else:
+                # the code is made that triangulations are not just arrays
                 drawMesh(interatomic_surface.triangulation,'Bond-curve-material')
 
 def drawRingSurfaces(ring_surfaces):
@@ -272,10 +273,11 @@ def drawMesh(triangulation,material_name):
         vec = mathutils.Vector(point.position_vector)
         coords.append(vec)
 
-    if (not triangulation.faces):
-        newMesh.from_pydata(coords,triangulation.edges,[])
+    if (not triangulation.face_objects):
+        newMesh.from_pydata(coords,triangulation.edge_arrays,[])
     else:
-        newMesh.from_pydata(coords,[],triangulation.faces)
+        # cannot just use faces here, must convert to lists
+        newMesh.from_pydata(coords,[],triangulation.face_arrays)
 
     newMesh.update()
     newObj = bpy.data.objects.new('SURFACE',newMesh)
