@@ -55,6 +55,7 @@ def register():
     bpy.utils.register_class(ToggleBCPs)
     bpy.utils.register_class(ToggleRCPs)
     bpy.utils.register_class(ToggleCCPs)
+    bpy.utils.register_class(ToggleNACPs)
     bpy.utils.register_class(RhorixControlPanel)
     bpy.types.INFO_MT_file_import.append(menu_function)
 
@@ -63,6 +64,7 @@ def register():
 def unregister():
     bpy.types.INFO_MT_file_import.remove(menu_function)
     bpy.utils.unregister_class(RhorixControlPanel)
+    bpy.utils.unregister_class(ToggleNACPs)
     bpy.utils.unregister_class(ToggleCCPs)
     bpy.utils.unregister_class(ToggleRCPs)
     bpy.utils.unregister_class(ToggleBCPs)
@@ -239,6 +241,25 @@ class ToggleCCPs(bpy.types.Operator):
 
         return {'FINISHED'}
 
+class ToggleNACPs(bpy.types.Operator):
+
+    bl_idname = "rhorix.toggle_nacps"
+    bl_label = "Toggle NACPs"
+
+    def invoke(self,context,event):
+        for object in bpy.data.objects:
+            object.select = False
+        ccps = [obj for obj in bpy.context.scene.objects if fnmatch.fnmatchcase(obj.name, "*nacp*")]
+        for ccp in ccps:
+            if (ccp.hide == True):
+                ccp.hide = False
+                ccp.hide_render = False
+            else:
+                ccp.hide = True
+                ccp.hide_render = True
+
+        return {'FINISHED'}
+
 # Classes subclassing the Superclass bpy.types.Panel
 
 class RhorixControlPanel(bpy.types.Panel):
@@ -261,6 +282,8 @@ class RhorixControlPanel(bpy.types.Panel):
         uiColumn.operator("rhorix.toggle_bcps",          text="Toggle BCPs") 
         uiColumn.operator("rhorix.toggle_rcps",          text="Toggle RCPs")
         uiColumn.operator("rhorix.toggle_ccps",          text="Toggle CCPs")
+        uiColumn.operator("rhorix.toggle_nacps",         text="Toggle NACPs")
+
 
 # Add a menu function for the main operator by defining a new draw function
 # and adding it to an existing class (in the register function)
