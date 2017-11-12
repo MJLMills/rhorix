@@ -20,7 +20,6 @@ def createCamera(center,radius):
 
     cam = bpy.data.cameras.new("Cam")
     cam.clip_end = 1000.0
-    #center[2] += (4.0 * radius)
     cam_ob = bpy.data.objects.new("Cam", cam)
     cam_ob.location=(center[0],center[1],(4.0 * radius))
     bpy.context.scene.objects.link(cam_ob)
