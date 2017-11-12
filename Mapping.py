@@ -13,15 +13,15 @@ from . import Resources, Materials, TopologyClasses
 
 def drawTopology(topology,drawNACP=False,color_bonds=True,color_nonbonds=False):
 
-    nucleus_segments
-    nucleus_ring_count
-    nucleus_subsurf_render_levels
-    cp_segments
-    cp_ring_count
-    cp_subsurf_render_levels
-    triangulate_basins
-    triangulate_surfaces
-    max_rho
+    nucleus_segments = 32
+    nucleus_ring_count = 16
+    nucleus_subsurf_render_levels = 4
+    cp_segments = 32
+    cp_ring_count = 16
+    cp_subsurf_render_levels = 4
+    triangulate_basins = False
+    triangulate_surfaces = False
+    max_rho = 0.0
 
     elementRadii     = Resources.defineRadii()
     cpMaterials      = Materials.createAllMaterials('critical_point','SURFACE')
