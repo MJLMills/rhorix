@@ -13,6 +13,16 @@ from . import Resources, Materials, TopologyClasses
 
 def drawTopology(topology,drawNACP=False,color_bonds=True,color_nonbonds=False):
 
+    nucleus_segments
+    nucleus_ring_count
+    nucleus_subsurf_render_levels
+    cp_segments
+    cp_ring_count
+    cp_subsurf_render_levels
+    triangulate_basins
+    triangulate_surfaces
+    max_rho
+
     elementRadii     = Resources.defineRadii()
     cpMaterials      = Materials.createAllMaterials('critical_point','SURFACE')
     surfaceMaterials = Materials.createAllMaterials('interatomic_surface','WIRE')
@@ -20,28 +30,28 @@ def drawTopology(topology,drawNACP=False,color_bonds=True,color_nonbonds=False):
     Materials.createGenericMaterials()
 
     start = time.time()
-    drawNuclei(topology.nuclei,elementRadii)
+    drawNuclei(topology.nuclei,elementRadii,nucleus_segments=nucleus_segments,nucleus_ring_count=nucleus_ring_count,nucleus_subsurf_render_levels=nucleus_subsurf_render_levels)
     print('Nuclei Time ', time.time() - start)
 
     start = time.time()
-    drawCriticalPoints(topology.critical_points,elementRadii,drawNACP)
+    drawCriticalPoints(topology.critical_points,elementRadii,drawNACP,cp_segments=cp_segments,cp_ring_count=cp_ring_count,cp_subsurf_render_levels=cp_subsurf_render_levels)
     print('CP Time ', time.time() - start)
 
     start = time.time()
-    drawGradientVectorField(topology.gradient_vector_field,topology.critical_points,topology.nuclei,color_bonds,color_nonbonds)
+    drawGradientVectorField(topology.gradient_vector_field,topology.critical_points,topology.nuclei,color_bonds,color_nonbonds,triangulate_basins,triangulate_surfaces,max_rho)
     print('GVF Time ', time.time() - start)
 
-def drawGradientVectorField(gradient_vector_field,critical_points,nuclei,color_bonds,color_nonbonds):
+def drawGradientVectorField(gradient_vector_field,critical_points,nuclei,color_bonds,color_nonbonds,triangulate_basins=False,triangulate_surfaces=False,max_rho=0.0):
 
-    drawMolecularGraph(gradient_vector_field.molecular_graph,critical_points,nuclei,color_bonds=color_bonds,color_nonbonds=color_nonbonds)
-    drawAtomicBasins(gradient_vector_field.atomic_basins,critical_points,nuclei,triangulate=False)
+    drawMolecularGraph(gradient_vector_field.molecular_graph,critical_points,nuclei,color_bonds=color_bonds,color_nonbonds=color_nonbonds,weak_limit=0.025)
+    drawAtomicBasins(gradient_vector_field.atomic_basins,critical_points,nuclei,triangulate=triangulate_basins)
     drawEnvelopes(gradient_vector_field.envelopes)
-    drawAtomicSurfaces(gradient_vector_field.atomic_surfaces,critical_points,nuclei,triangulate=False,max_rho=0.0)
+    drawAtomicSurfaces(gradient_vector_field.atomic_surfaces,critical_points,nuclei,triangulate=triangulate_surfaces,max_rho=max_rho)
     drawRingSurfaces(gradient_vector_field.ring_surfaces)
     drawRings(gradient_vector_field.rings)
     drawCages(gradient_vector_field.cages)
 
-def drawCriticalPoints(critical_points,radii,drawNACP=False):
+def drawCriticalPoints(critical_points,radii,drawNACP=False,cp_segments=32,cp_ring_count=16,cp_subsurf_render_levels=4):
 
     critical_point_radius_coeff = 0.25
 
@@ -52,9 +62,9 @@ def drawCriticalPoints(critical_points,radii,drawNACP=False):
             location = mathutils.Vector(cp.position_vector)
             radius = critical_point_radius_coeff * radii[kind]
             material_name = kind+'-critical_point-material'
-            drawSphere(kind,location,radius,material_name)
+            drawSphere(kind,location,radius,material_name,segments=cp_segments,ring_count=cp_ring_count,subsurf_render_levels=cp_subsurf_render_levels)
 
-def drawNuclei(nuclei,radii):
+def drawNuclei(nuclei,radii,nucleus_segments=32,nucleus_ring_count=16,nucleus_subsurf_render_levels=4):
 
     nuclear_radius_coeff = 0.25
 
@@ -64,18 +74,12 @@ def drawNuclei(nuclei,radii):
         location = mathutils.Vector(nucleus.position_vector)
         radius = nuclear_radius_coeff * radii[element]
         material_name = element+'-critical_point-material'
-        drawSphere(element,location,radius,material_name)
+        drawSphere(element,location,radius,material_name,segments=nucleus_segments,ring_count=nucleus_ring_count,subsurf_render_levels=nucleus_subsurf_render_levels)
 
-def drawSphere(name,location,size,material_name):
+def drawSphere(name,location,size,material_name,segments=32,ring_count=16,subsurf_render_levels=4):
     """ Draw a sphere """
 
-    print("Sphere Material Name:", material_name)
-
-    sphere_segments = 32
-    sphere_ring_count = 16
-    subsurf_render_levels = 4
-
-    cpSphere = bpy.ops.mesh.primitive_uv_sphere_add(segments=sphere_segments,ring_count=sphere_ring_count,size=size,location=location)
+    cpSphere = bpy.ops.mesh.primitive_uv_sphere_add(segments=segments,ring_count=ring_count,size=size,location=location)
     bpy.context.object.name = name
 
     bpy.context.scene.objects.active = bpy.context.object
@@ -87,15 +91,6 @@ def drawSphere(name,location,size,material_name):
         bpy.context.object.modifiers['subd'].levels=1
         bpy.context.object.modifiers['subd'].render_levels=subsurf_render_levels
         bpy.ops.object.modifier_apply(apply_as='DATA', modifier='subd')
-
-
-def createBevelCircle(name,scale):
-
-    bpy.ops.curve.primitive_bezier_circle_add()
-    bpy.context.scene.objects.active = bpy.data.objects['BezierCircle']
-    bpy.context.object.name = name
-    bpy.context.object.hide_render = True
-    bpy.ops.transform.resize(value=(scale,scale,scale))
 
 def drawMolecularGraph(molecular_graph,critical_points,nuclei,color_bonds=True,color_nonbonds=True,weak_limit=0.025):
 
@@ -253,10 +248,9 @@ def drawAtomicSurfaces(atomic_surfaces,critical_points,nuclei,triangulate=False,
                         drawGradientPath(gradient_path,bpy.data.objects['IAS-BevelCircle'],material_name)
 
             else:
-                # the code is made that triangulations are not just arrays
                 drawMesh(interatomic_surface.triangulation,'Bond-curve-material')
 
-def drawRingSurfaces(ring_surfaces):
+def drawRingSurfaces(ring_surfaces,material_name='Ring-Path-curve-material'):
 
     ring_path_scale = 0.1
 
@@ -264,7 +258,7 @@ def drawRingSurfaces(ring_surfaces):
 
     for ring_surface in ring_surfaces:
         for gradient_path in ring_surface.gradient_paths:
-            drawGradientPath(gradient_path,bpy.data.objects['RingSurfaces-BevelCircle'],'Ring-Path-curve-material')
+            drawGradientPath(gradient_path,bpy.data.objects['RingSurfaces-BevelCircle'],material_name)
 
 def drawMesh(triangulation,material_name):
 
@@ -320,3 +314,11 @@ def drawCages(cages):
 def drawCage(cage):
     #for ring in cage.rings:
         #drawRing(ring)
+
+def createBevelCircle(name,scale):
+
+    bpy.ops.curve.primitive_bezier_circle_add()
+    bpy.context.scene.objects.active = bpy.data.objects['BezierCircle']
+    bpy.context.object.name = name
+    bpy.context.object.hide_render = True
+    bpy.ops.transform.resize(value=(scale,scale,scale))
