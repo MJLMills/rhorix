@@ -37,7 +37,7 @@ def createMaterials(critical_points):
         #and if it has NOT then make it
         if duplicate == False:
             #create a new material
-            createMaterial(elementColors[element],'WIRE',   1.0,element,'critical_point')
+            createMaterial(elementColors[element],'WIRE',1.0,element,'critical_point')
             createMaterial(elementColors[element],'WIRE',0.5,element,'surface')
             createdList.append(type)
 
