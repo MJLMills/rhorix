@@ -11,7 +11,7 @@ import mathutils
 import time
 from . import Resources, Materials, TopologyClasses
 
-def drawTopology(topology,drawNACP=False,color_bonds=True,color_nonbonds=False):
+def drawTopology(topology,drawNACP=True,color_bonds=True,color_nonbonds=False):
 
     nucleus_segments = 32
     nucleus_ring_count = 16
@@ -30,18 +30,44 @@ def drawTopology(topology,drawNACP=False,color_bonds=True,color_nonbonds=False):
     Materials.createGenericMaterials()
 
     start = time.time()
-    drawNuclei(topology.nuclei,elementRadii,nucleus_segments=nucleus_segments,nucleus_ring_count=nucleus_ring_count,nucleus_subsurf_render_levels=nucleus_subsurf_render_levels)
+    drawNuclei(topology.nuclei,
+               elementRadii,
+               nucleus_segments=nucleus_segments,
+               nucleus_ring_count=nucleus_ring_count,
+               nucleus_subsurf_render_levels=nucleus_subsurf_render_levels)
+
     print('Nuclei Time ', time.time() - start)
 
     start = time.time()
-    drawCriticalPoints(topology.critical_points,elementRadii,drawNACP,cp_segments=cp_segments,cp_ring_count=cp_ring_count,cp_subsurf_render_levels=cp_subsurf_render_levels)
+    drawCriticalPoints(topology.critical_points,
+                       elementRadii,
+                       drawNACP=drawNACP,
+                       cp_segments=cp_segments,
+                       cp_ring_count=cp_ring_count,
+                       cp_subsurf_render_levels=cp_subsurf_render_levels)
+
     print('CP Time ', time.time() - start)
 
     start = time.time()
-    drawGradientVectorField(topology.gradient_vector_field,topology.critical_points,topology.nuclei,color_bonds,color_nonbonds,triangulate_basins,triangulate_surfaces,max_rho)
+    drawGradientVectorField(topology.gradient_vector_field,
+                            topology.critical_points,
+                            topology.nuclei,
+                            color_bonds=color_bonds,
+                            color_nonbonds=color_nonbonds,
+                            triangulate_basins=triangulate_basins,
+                            triangulate_surfaces=triangulate_surfaces,
+                            max_rho=max_rho)
+
     print('GVF Time ', time.time() - start)
 
-def drawGradientVectorField(gradient_vector_field,critical_points,nuclei,color_bonds,color_nonbonds,triangulate_basins=False,triangulate_surfaces=False,max_rho=0.0):
+def drawGradientVectorField(gradient_vector_field,
+                            critical_points,
+                            nuclei,
+                            color_bonds=True,
+                            color_nonbonds=False,
+                            triangulate_basins=False,
+                            triangulate_surfaces=False,
+                            max_rho=0.0):
 
     drawMolecularGraph(gradient_vector_field.molecular_graph,critical_points,nuclei,color_bonds=color_bonds,color_nonbonds=color_nonbonds,weak_limit=0.025)
     drawAtomicBasins(gradient_vector_field.atomic_basins,critical_points,nuclei,triangulate=triangulate_basins)
@@ -51,7 +77,12 @@ def drawGradientVectorField(gradient_vector_field,critical_points,nuclei,color_b
     drawRings(gradient_vector_field.rings)
     drawCages(gradient_vector_field.cages)
 
-def drawCriticalPoints(critical_points,radii,drawNACP=False,cp_segments=32,cp_ring_count=16,cp_subsurf_render_levels=4):
+def drawCriticalPoints(critical_points,
+                       radii,
+                       drawNACP=True,
+                       cp_segments=32,
+                       cp_ring_count=16,
+                       cp_subsurf_render_levels=4):
 
     critical_point_radius_coeff = 0.25
 
@@ -297,24 +328,6 @@ def drawGradientPath(gradient_path,bevel,material_name):
         x,y,z = cList[num].position_vector
         polyLine.points[num].co = (x,y,z,weight)
 
-def drawRings(rings):
-    print("drawRings: To be implemented")
-    #for ring in rings:
-         #drawRing(ring)
-
-def drawRing(ring):
-    #for atomic_interaction_line in ring.atomic_interaction_lines:
-        #drawAtomicInteractionLine(atomic_interaction_line)
-
-def drawCages(cages):
-    print("drawCages: To be implemented")
-    #for cage in cages:
-        #drawCage(cage)
-
-def drawCage(cage):
-    #for ring in cage.rings:
-        #drawRing(ring)
-
 def createBevelCircle(name,scale):
 
     bpy.ops.curve.primitive_bezier_circle_add()
@@ -322,3 +335,18 @@ def createBevelCircle(name,scale):
     bpy.context.object.name = name
     bpy.context.object.hide_render = True
     bpy.ops.transform.resize(value=(scale,scale,scale))
+
+def drawRings(rings):
+    print("drawRings: To be implemented")
+
+def drawRing(ring):
+    for atomic_interaction_line in ring.atomic_interaction_lines:
+        drawAtomicInteractionLine(atomic_interaction_line)
+
+def drawCages(cages):
+    print("drawCages: To be implemented")
+
+def drawCage(cage):
+    for ring in cage.rings:
+        drawRing(ring)
+
