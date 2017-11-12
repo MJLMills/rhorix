@@ -11,17 +11,19 @@ import mathutils
 import time
 from . import Resources, Materials, TopologyClasses
 
-def drawTopology(topology,drawNACP=True,color_bonds=True,color_nonbonds=False):
-
-    nucleus_segments = 32
-    nucleus_ring_count = 16
-    nucleus_subsurf_render_levels = 4
-    cp_segments = 32
-    cp_ring_count = 16
-    cp_subsurf_render_levels = 4
-    triangulate_basins = False
-    triangulate_surfaces = False
-    max_rho = 0.0
+def drawTopology(topology,
+                 drawNACP=True,
+                 color_bonds=True,
+                 color_nonbonds=False,
+                 nucleus_segments=32,
+                 nucleus_ring_count=16,
+                 nucleus_subsurf_render_levels=4,
+                 cp_segments=32,
+                 cp_ring_count=16,
+                 cp_subsurf_render_levels=4,
+                 triangulate_basins=False,
+                 triangulate_surfaces=False,
+                 max_rho=0.0):
 
     elementRadii     = Resources.defineRadii()
     cpMaterials      = Materials.createAllMaterials('critical_point','SURFACE')
@@ -69,13 +71,31 @@ def drawGradientVectorField(gradient_vector_field,
                             triangulate_surfaces=False,
                             max_rho=0.0):
 
-    drawMolecularGraph(gradient_vector_field.molecular_graph,critical_points,nuclei,color_bonds=color_bonds,color_nonbonds=color_nonbonds,weak_limit=0.025)
-    drawAtomicBasins(gradient_vector_field.atomic_basins,critical_points,nuclei,triangulate=triangulate_basins)
+    drawMolecularGraph(gradient_vector_field.molecular_graph,
+                       critical_points,
+                       nuclei,
+                       color_bonds=color_bonds,
+                       color_nonbonds=color_nonbonds,
+                       weak_limit=0.025)
+
+    drawAtomicBasins(gradient_vector_field.atomic_basins,
+                     critical_points,
+                     nuclei,
+                     triangulate=triangulate_basins)
+    
     drawEnvelopes(gradient_vector_field.envelopes)
-    drawAtomicSurfaces(gradient_vector_field.atomic_surfaces,critical_points,nuclei,triangulate=triangulate_surfaces,max_rho=max_rho)
+    
+    drawAtomicSurfaces(gradient_vector_field.atomic_surfaces,
+                       critical_points,
+                       nuclei,
+                       triangulate=triangulate_surfaces,
+                       max_rho=max_rho)
+    
     drawRingSurfaces(gradient_vector_field.ring_surfaces)
-    drawRings(gradient_vector_field.rings)
-    drawCages(gradient_vector_field.cages)
+    
+    drawRings(gradient_vector_field.rings) # note: no implementation
+    
+    drawCages(gradient_vector_field.cages) # note: no implementation
 
 def drawCriticalPoints(critical_points,
                        radii,
@@ -95,7 +115,11 @@ def drawCriticalPoints(critical_points,
             material_name = kind+'-critical_point-material'
             drawSphere(kind,location,radius,material_name,segments=cp_segments,ring_count=cp_ring_count,subsurf_render_levels=cp_subsurf_render_levels)
 
-def drawNuclei(nuclei,radii,nucleus_segments=32,nucleus_ring_count=16,nucleus_subsurf_render_levels=4):
+def drawNuclei(nuclei,
+               radii,
+               nucleus_segments=32,
+               nucleus_ring_count=16,
+               nucleus_subsurf_render_levels=4):
 
     nuclear_radius_coeff = 0.25
 
@@ -107,7 +131,14 @@ def drawNuclei(nuclei,radii,nucleus_segments=32,nucleus_ring_count=16,nucleus_su
         material_name = element+'-critical_point-material'
         drawSphere(element,location,radius,material_name,segments=nucleus_segments,ring_count=nucleus_ring_count,subsurf_render_levels=nucleus_subsurf_render_levels)
 
-def drawSphere(name,location,size,material_name,segments=32,ring_count=16,subsurf_render_levels=4):
+def drawSphere(name,
+               location,
+               size,
+               material_name,
+               segments=32,
+               ring_count=16,
+               subsurf_render_levels=4):
+
     """ Draw a sphere """
 
     cpSphere = bpy.ops.mesh.primitive_uv_sphere_add(segments=segments,ring_count=ring_count,size=size,location=location)
@@ -123,9 +154,14 @@ def drawSphere(name,location,size,material_name,segments=32,ring_count=16,subsur
         bpy.context.object.modifiers['subd'].render_levels=subsurf_render_levels
         bpy.ops.object.modifier_apply(apply_as='DATA', modifier='subd')
 
-def drawMolecularGraph(molecular_graph,critical_points,nuclei,color_bonds=True,color_nonbonds=True,weak_limit=0.025):
+def drawMolecularGraph(molecular_graph,
+                       critical_points,
+                       nuclei,
+                       color_bonds=True,
+                       color_nonbonds=True,
+                       weak_limit=0.025):
 
-    bond_scale = 0.200
+    bond_scale    = 0.200
     nonbond_scale = 0.050
 
     createBevelCircle('non_bond-BevelCircle',nonbond_scale)
