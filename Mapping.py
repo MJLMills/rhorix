@@ -1,9 +1,10 @@
 # Mapping Python 3 Module
 # Rhorix: An interface between quantum chemical topology and the 3D graphics program Blender
 
-# Really there are only 3 objects being drawn - spheres for points, curves for gradient paths
-# and meshes for surfaces. The remaining functions ultimately call one of these
-# 3 functions. All settings should therefore be arguments to the draw routines.
+# These functions perform the mapping between topological objects and their 3D counterparts.
+# There are ultimately only 3 objects being drawn - spheres for points, curves for gradient paths
+# and meshes for surfaces. The remaining functions eventually call one or more of the
+# 3 functions that create these objects.
 
 import bpy
 import mathutils
@@ -12,10 +13,10 @@ from . import Resources, Materials, TopologyClasses
 
 def drawTopology(topology,drawNACP=False,color_bonds=True,color_nonbonds=False):
 
-    elementRadii = Resources.defineRadii()
-    cpMaterials = Materials.createAllMaterials('critical_point','SURFACE')
+    elementRadii     = Resources.defineRadii()
+    cpMaterials      = Materials.createAllMaterials('critical_point','SURFACE')
     surfaceMaterials = Materials.createAllMaterials('interatomic_surface','WIRE')
-    basinMaterials = Materials.createAllMaterials('atomic_basin','WIRE')
+    basinMaterials   = Materials.createAllMaterials('atomic_basin','WIRE')
     Materials.createGenericMaterials()
 
     start = time.time()
@@ -33,9 +34,9 @@ def drawTopology(topology,drawNACP=False,color_bonds=True,color_nonbonds=False):
 def drawGradientVectorField(gradient_vector_field,critical_points,nuclei,color_bonds,color_nonbonds):
 
     drawMolecularGraph(gradient_vector_field.molecular_graph,critical_points,nuclei,color_bonds=color_bonds,color_nonbonds=color_nonbonds)
-    drawAtomicBasins(gradient_vector_field.atomic_basins,critical_points,nuclei) # this must be passed true/false for triangulating the basins
-    #drawEnvelopes(gradient_vector_field.envelopes)
-    drawAtomicSurfaces(gradient_vector_field.atomic_surfaces,critical_points,nuclei)
+    drawAtomicBasins(gradient_vector_field.atomic_basins,critical_points,nuclei,triangulate=False)
+    drawEnvelopes(gradient_vector_field.envelopes)
+    drawAtomicSurfaces(gradient_vector_field.atomic_surfaces,critical_points,nuclei,triangulate=False,max_rho=0.0)
     drawRingSurfaces(gradient_vector_field.ring_surfaces)
     drawRings(gradient_vector_field.rings)
     drawCages(gradient_vector_field.cages)
@@ -96,9 +97,8 @@ def createBevelCircle(name,scale):
     bpy.context.object.hide_render = True
     bpy.ops.transform.resize(value=(scale,scale,scale))
 
-def drawMolecularGraph(molecular_graph,critical_points,nuclei,color_bonds=True,color_nonbonds=True):
+def drawMolecularGraph(molecular_graph,critical_points,nuclei,color_bonds=True,color_nonbonds=True,weak_limit=0.025):
 
-    weak_limit = 0.025
     bond_scale = 0.200
     nonbond_scale = 0.050
 
@@ -174,7 +174,7 @@ def drawAtomicBasins(atomic_basins,critical_points,nuclei,triangulate=False):
 def drawEnvelopes(envelopes):
     for envelope in envelopes:
         if (not envelope.triangulation):
-            print("drawEnvelopes: To be implemented")
+            print("drawEnvelopes: Auto-triangulation be implemented")
         else:
             drawMesh(envelope.triangulation,'Bond-curve-material')
 
@@ -259,6 +259,7 @@ def drawAtomicSurfaces(atomic_surfaces,critical_points,nuclei,triangulate=False,
 def drawRingSurfaces(ring_surfaces):
 
     ring_path_scale = 0.1
+
     createBevelCircle('RingSurfaces-BevelCircle',ring_path_scale)
 
     for ring_surface in ring_surfaces:
@@ -276,7 +277,6 @@ def drawMesh(triangulation,material_name):
     if (not triangulation.face_objects):
         newMesh.from_pydata(coords,triangulation.edge_arrays,[])
     else:
-        # cannot just use faces here, must convert to lists
         newMesh.from_pydata(coords,[],triangulation.face_arrays)
 
     newMesh.update()
