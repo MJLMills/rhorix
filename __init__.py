@@ -89,7 +89,7 @@ class ImportTopology(bpy.types.Operator):
         top = ParseTopology.parseTopology(self.filepath)
         print('Parse Time ', time.time() - start)
         start = time.time()
-        Mapping.drawTopology(top)
+        Mapping.drawTopology(top) # settings go here as arguments
         print('Mapping Time', time.time() - start)
 
         center = top.computeCenter()
