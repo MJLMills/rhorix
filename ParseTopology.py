@@ -102,9 +102,10 @@ def parseEnvelope(EnvelopeElement):
 
 def parseAtomicSurface(AtomicSurfaceElement):
     interatomic_surfaces = []
+    nacp_index = AtomicSurfaceElement.find('nacp_index'):
     for interatomic_surface in AtomicSurfaceElement.findall('InteratomicSurface'):
         interatomic_surfaces.append(parseInteratomicSurface(interatomic_surface))
-    return TopologyClasses.AtomicSurface(interatomic_surfaces)
+    return TopologyClasses.AtomicSurface(interatomic_surfaces,nacp_index=nacp_index)
     
 def parseRingSurface(RingSurfaceElement):
     gradient_paths = []
