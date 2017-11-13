@@ -223,7 +223,7 @@ sub parseSurfacesFromMif {
           if ($n > 0) {
 
             if (($n % 3) == 0) {
-              printf STDERR "%10d POINTS READ \(%10d TRIANGLES\)\n", $n, $n/3;
+              #printf STDERR "%10d POINTS READ \(%10d TRIANGLES\)\n", $n, $n/3;
             } else {
               printf STDERR "Warning\: Non-integral number of triangles in surface\. %10.3f\n", $n/3;
             }
