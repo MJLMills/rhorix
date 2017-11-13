@@ -123,8 +123,9 @@ class Envelope():
 
 # An atomic surface is a set of interatomic surfaces sharing a common BCP
 class AtomicSurface():
-    def __init__(self,interatomic_surfaces):
+    def __init__(self,interatomic_surfaces,nacp_index=0):
         self.interatomic_surfaces = interatomic_surfaces
+        self.nacp_index = nacp_index
 
 # A ring surface is a set of gradient paths sharing a single RCP
 # There are a set of ring paths - GPs from the RCP to BCPs
