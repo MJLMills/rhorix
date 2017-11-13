@@ -309,7 +309,7 @@ def drawAtomicSurfaces(atomic_surfaces,critical_points,nuclei,triangulate=False,
                         drawGradientPath(gradient_path,bpy.data.objects['IAS-BevelCircle'],material_name)
 
             else:
-                element = nuclei[nacp_index].element.lower()
+                element = nuclei[atomic_surface.nacp_index].element.lower()
                 material_name = element+'-interatomic_surface-material'
                 drawMesh(interatomic_surface.triangulation,material_name)
 
