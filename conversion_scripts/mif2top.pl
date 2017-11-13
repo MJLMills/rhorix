@@ -1,5 +1,6 @@
 #!/usr/bin/perl -w
-# Dr. Matthew J L Mills - RhoRix
+# Rhorix: An interface between quantum chemical topology and the 3D graphics program Blender
+
 # Convert morphy mif files to the top format
 
 use File::Basename;
