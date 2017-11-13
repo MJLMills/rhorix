@@ -28,4 +28,6 @@ PSMa3-helix - 10 - TeraChem/AIMAll
 
 LigM - 11 - TeraChem/AIMAll
 
+A blend file for this system was too large to upload. Please install the add-on and parse the included .top file instead.
+
 PSMa3-dihelix - Journal Cover - TeraChem/AIMAll
