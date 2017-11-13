@@ -22,7 +22,7 @@ def drawTopology(topology,
                  cp_ring_count=16,
                  cp_subsurf_render_levels=4,
                  triangulate_basins=True,
-                 triangulate_surfaces=False,
+                 triangulate_surfaces=True,
                  max_rho=0.0):
 
     elementRadii     = Resources.defineRadii()
@@ -175,7 +175,6 @@ def drawMolecularGraph(molecular_graph,
             if bcp.scalar_properties.get('rho') < weak_limit:
                 is_weak = True
 
-        # this should just test if interaction is weak
         if (is_weak == True):
             if (color_nonbonds == True):
                 for gradient_path in ail.gradient_paths:
@@ -213,8 +212,9 @@ def drawAtomicBasins(atomic_basins,critical_points,nuclei,triangulate=False):
         material_name = element+'-atomic_basin-material'
 
         if (triangulate == True):
-            surface_edges = []
-            surface_faces = []
+
+            surface_edges  = []
+            surface_faces  = []
             surface_points = []
 
             index = 0
@@ -274,31 +274,36 @@ def drawAtomicSurfaces(atomic_surfaces,critical_points,nuclei,triangulate=False,
 
                         if (j < num_paths-1):
                             n_points_on_next_path = len(interatomic_surface.gradient_paths[j+1].points)
-                            new_edge = [index+num_points_on_path-1,index+num_points_on_path+n_points_on_next_path-1]
-                            surface_edges.append(new_edge)
+                            #new_edge = [index+num_points_on_path-1,index+num_points_on_path+n_points_on_next_path-1]
+                            #surface_edges.append(new_edge)
+                            surface_edges.append(TopologyClasses.Edge(index+num_points_on_path-1,index+num_points_on_path+n_points_on_next_path-1))
                         else:
                             n_points_on_next_path = len(interatomic_surface.gradient_paths[0].points)
-                            new_edge = [index+num_points_on_path-1,n_points_on_next_path-1]
-                            surface_edges.append(new_edge)
+                            #new_edge = [index+num_points_on_path-1,n_points_on_next_path-1]
+                            #surface_edges.append(new_edge)
+                            surface_edges.append(TopologyClasses.Edge(index+num_points_on_path-1,n_points_on_next_path-1))
 
                         # walk along the path point by point
                         for i, point in enumerate(gradient_path.points): # [:-1]
 
                             # make all connections along each gradient path
                             if (i < num_points_on_path-1): # ignore last point
-                                new_edge = [index,index+1]
-                                surface_edges.append(new_edge)
+                                #new_edge = [index,index+1]
+                                #surface_edges.append(new_edge)
+                                surface_edges.append(TopologyClasses.Edge(index,index+1))
 
                             # make connections between neighbouring gradient paths
                             if (i > 0 and j < num_paths-1):
                                 if (i < n_points_on_next_path-1):
-                                    new_cross = [index,index+num_points_on_path]
-                                    surface_edges.append(new_cross)                                   
+                                    #new_cross = [index,index+num_points_on_path]
+                                    #surface_edges.append(new_cross)
+                                    surface_edges.append(TopologyClasses.Edge(index,index+num_points_on_path))                             
                                 
                             elif (i > 0 and j == num_paths-1):
                                 if (i < num_points_on_path-1):
-                                    new_cross = [index,i]
-                                    surface_edges.append(new_cross)
+                                    #new_cross = [index,i]
+                                    #surface_edges.append(new_cross)
+                                    surface_edges.append(TopologyClasses.Edge(index,i))
 
                             index += 1
 
