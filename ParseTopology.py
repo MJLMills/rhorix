@@ -102,7 +102,8 @@ def parseEnvelope(EnvelopeElement):
 
 def parseAtomicSurface(AtomicSurfaceElement):
     interatomic_surfaces = []
-    nacp_index = int(AtomicSurfaceElement.find('nacp_index').text)
+    if AtomicSurfaceElement.find('nacp_index') != None:
+        nacp_index = int(AtomicSurfaceElement.find('nacp_index').text)
     for interatomic_surface in AtomicSurfaceElement.findall('InteratomicSurface'):
         interatomic_surfaces.append(parseInteratomicSurface(interatomic_surface))
     return TopologyClasses.AtomicSurface(interatomic_surfaces,nacp_index=nacp_index)
