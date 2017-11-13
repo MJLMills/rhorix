@@ -1,6 +1,8 @@
 # Dr. Matthew J L Mills - Rhorix v1.0 - June 2017
 # Script to check validity of supplied XML file against its DTD
 
+use File::Basename;
+use lib dirname(__FILE__); # find modules in script directory - adds the path to @LIB
 use Utilities     qw(checkArgs getExt readFile stripExt);
 use XmlRoutines   qw(checkValidity);
 
