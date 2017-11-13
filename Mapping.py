@@ -113,7 +113,13 @@ def drawCriticalPoints(critical_points,
             location = mathutils.Vector(cp.position_vector)
             radius = critical_point_radius_coeff * radii[kind]
             material_name = kind+'-critical_point-material'
-            drawSphere(kind,location,radius,material_name,segments=cp_segments,ring_count=cp_ring_count,subsurf_render_levels=cp_subsurf_render_levels)
+            drawSphere(kind,
+                       location,
+                       radius,
+                       material_name,
+                       segments=cp_segments,
+                       ring_count=cp_ring_count,
+                       subsurf_render_levels=cp_subsurf_render_levels)
 
 def drawNuclei(nuclei,
                radii,
@@ -129,7 +135,13 @@ def drawNuclei(nuclei,
         location = mathutils.Vector(nucleus.position_vector)
         radius = nuclear_radius_coeff * radii[element]
         material_name = element+'-critical_point-material'
-        drawSphere(element,location,radius,material_name,segments=nucleus_segments,ring_count=nucleus_ring_count,subsurf_render_levels=nucleus_subsurf_render_levels)
+        drawSphere(element,
+                   location,
+                   radius,
+                   material_name,
+                   segments=nucleus_segments,
+                   ring_count=nucleus_ring_count,
+                   subsurf_render_levels=nucleus_subsurf_render_levels)
 
 def drawSphere(name,
                location,
@@ -161,7 +173,7 @@ def drawMolecularGraph(molecular_graph,
                        color_nonbonds=True,
                        weak_limit=0.025):
 
-    bond_scale    = 0.200
+    bond_scale    = 0.120
     nonbond_scale = 0.050
 
     createBevelCircle('non_bond-BevelCircle',nonbond_scale)
