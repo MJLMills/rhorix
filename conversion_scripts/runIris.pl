@@ -46,6 +46,8 @@ foreach(@wfnFiles) {
 close MST;
 system("chmod \+x master-script\.sh");
 
+exit 0;
+
 # SUBROUTINES - Being specific to this script's task, these subroutines are kept here.
 
 sub printScript {

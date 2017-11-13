@@ -50,6 +50,10 @@ foreach(@mifList) {
 printOutput(\@outputAils,\@outputSurfaces,$fileName);
 print "Total Triangulation Time\: $totalTime s\n";
 
+exit 0;
+
+### SUBROUTINES
+
 sub parseTime {
 
   foreach(@{$_[0]}) {

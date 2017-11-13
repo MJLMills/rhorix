@@ -17,3 +17,5 @@ if ($result == 1) {
 } else {
   print "$topFile is not valid against DTD\n";
 }
+
+exit 0;
