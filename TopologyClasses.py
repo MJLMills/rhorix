@@ -3,7 +3,6 @@
 
 # This is a Python implementation of the class hierarchy needed to parse XML files
 # adhering to the document model defined in Topology.dtd.
-# Should be loaded into Rhorix.py as needed through 'from TopologyClasses import *'
 
 import mathutils
 import math
