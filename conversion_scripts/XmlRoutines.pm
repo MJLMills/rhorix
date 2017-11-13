@@ -1,6 +1,6 @@
+#!/usr/bin/perl -w
 # Utilities Perl Module
-# Dr. Matthew J L Mills - Rhorix v1.0 - June 2017
-# Subroutines for tasks related to XML files in general.
+# Rhorix: An interface between quantum chemical topology and the 3D graphics program Blender
 
 use File::Basename;
 use lib dirname(__FILE__); # find modules in script directory - adds the path to @LIB
