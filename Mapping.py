@@ -21,7 +21,7 @@ def drawTopology(topology,
                  cp_segments=32,
                  cp_ring_count=16,
                  cp_subsurf_render_levels=4,
-                 triangulate_basins=False,
+                 triangulate_basins=True,
                  triangulate_surfaces=False,
                  max_rho=0.0):
 
@@ -222,8 +222,7 @@ def drawAtomicBasins(atomic_basins,critical_points,nuclei,triangulate=False):
                 for i, point in enumerate(gradient_path.points):
                     surface_points.append(point)
                     if (i < len(gradient_path.points)-1): # ignore last point
-                        new_edge = [index,index+1]
-                        surface_edges.append(new_edge)
+                        surface_edges.append(TopologyClasses.Edge(index,index+1))
                     index += 1
 
             surface_triangulation = TopologyClasses.Triangulation(surface_points,surface_edges,surface_faces)
