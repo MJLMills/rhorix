@@ -2,6 +2,8 @@
 # Dr. Matthew J L Mills - Rhorix v1.0 - June 2017
 # Subroutines for tasks related to XML files in general.
 
+use File::Basename;
+use lib dirname(__FILE__); # find modules in script directory - adds the path to @LIB
 use XML::LibXML;
 
 package XmlRoutines;

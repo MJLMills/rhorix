@@ -2,6 +2,8 @@
 # Dr. Matthew J L Mills - Rhorix v1.0 - June 2017
 # Subroutines for tasks related to writing XML files adherent to the Topology.dtd document model
 
+use File::Basename;
+use lib dirname(__FILE__); # find modules in script directory - adds the path to @LIB
 package WriteTopology;
 require Exporter;
 use XmlRoutines qw(writePCData openTag closeTag writeXMLHeader);

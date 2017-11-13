@@ -1,6 +1,8 @@
 # ParseViz Perl Module
 # Dr. Matthew J L Mills - Rhorix v1.0 - June 2017
 
+use File::Basename;
+use lib dirname(__FILE__); # find modules in script directory - adds the path to @LIB
 package ParseViz;
 require Exporter;
 use Utilities qw(readFile);
