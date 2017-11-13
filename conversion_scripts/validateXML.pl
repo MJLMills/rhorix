@@ -1,4 +1,6 @@
-# Dr. Matthew J L Mills - Rhorix v1.0 - June 2017
+#!/usr/bin/perl -w
+# Rhorix: An interface between quantum chemical topology and the 3D graphics program Blender
+
 # Script to check validity of supplied XML file against its DTD
 
 use File::Basename;

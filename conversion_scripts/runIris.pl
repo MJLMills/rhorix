@@ -1,5 +1,5 @@
 #!/usr/bin/perl -w
-# Matthew J L Mills
+# Rhorix: An interface between quantum chemical topology and the 3D graphics program Blender
 
 # Note: most likely doesn't work under Windows since the output is a BASH script.
 # Relies on the user having the IRIS executables of the Popelier group.

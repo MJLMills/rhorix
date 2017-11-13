@@ -1,5 +1,5 @@
 #!/usr/bin/perl -w
-# Matthew J L Mills
+# Rhorix: An interface between quantum chemical topology and the 3D graphics program Blender
 
 use File::Basename;
 use lib dirname(__FILE__); # find modules in script directory - adds the path to @LIB

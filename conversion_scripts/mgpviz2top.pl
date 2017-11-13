@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
-# Dr. Matthew J L Mills
+# Rhorix: An interface between quantum chemical topology and the 3D graphics program Blender
+
 # Script to convert plaintext mgpviz output files from AIMAll to XML files conformant to the document model in Topology.dtd.
-# Rhorix v1.0
 # In scripts, use full name of topological objects unless compound objects are being stored.
 
 use File::Basename;
