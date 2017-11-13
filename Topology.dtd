@@ -84,6 +84,7 @@
 
     <!-- The atomic surface of an atom is the boundary of its basin; a union of interatomic surfaces -->
     <!ELEMENT AtomicSurface (nacp_index?,InteratomicSurface*)>
+      <!ELEMENT nacp_index (#PCDATA)>
 
       <!-- Interatomic Surfaces are objects separating neighbouring basins -->
       <!-- They are composed of gradient paths originating at a single BCP -->
