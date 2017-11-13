@@ -91,7 +91,7 @@ class ImportTopology(bpy.types.Operator):
         top = ParseTopology.parseTopology(self.filepath)
         print('Parse Time ', time.time() - start)
         start = time.time()
-        Mapping.drawTopology(top) # settings go here as arguments
+        Mapping.drawTopology(top) # settings will go here as arguments
         print('Mapping Time', time.time() - start)
 
         center = top.computeCenter()
@@ -115,7 +115,7 @@ class RenderStereo(bpy.types.Operator):
         # These two lines set the values in the Render layers tab
         bpy.context.scene.render.use_multiview = True
         bpy.context.scene.render.views_format = 'STEREO_3D'
-        for object in bpy.data.objects: # doesn't work! must set camera only selected and active object
+        for object in bpy.data.objects:
             object.select = False
         bpy.ops.object.select_pattern(pattern="Cam")
         # These 3 lines set the values in the camera's object data tab
@@ -124,7 +124,7 @@ class RenderStereo(bpy.types.Operator):
         bpy.context.object.data.stereo.interocular_distance = 0.06
         # These 3 lines set the values in the render tab
         bpy.context.scene.render.image_settings.views_format = 'STEREO_3D'
-        bpy.context.scene.render.image_settings.stereo_3d_format.display_mode = 'SIDEBYSIDE' #Chip Gardner
+        bpy.context.scene.render.image_settings.stereo_3d_format.display_mode = 'SIDEBYSIDE'
         bpy.context.scene.render.image_settings.stereo_3d_format.use_sidebyside_crosseyed = True
 
         return {'FINISHED'}
