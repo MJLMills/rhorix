@@ -334,7 +334,7 @@ sub parseGradientPath {
   foreach(@{$_[0]}) {
 
     if ($_ =~ m/\s+(-?\d+\.\d+E[+-]\d+)\s+(-?\d+\.\d+E[+-]\d+)\s+(-?\d+\.\d+E[+-]\d+)\s+(-?\d+\.\d+E[+-]\d+)/) {
-      if (abs($4) >= 0.0000) {
+      if (abs($4) >= 0.000) {
         my @coords = ($1,$2,$3);
         push(@points,\@coords);
 
@@ -490,16 +490,9 @@ sub parseBasinFromBasviz {
       @slice = @basvizContents[$line+2..$line+1+$nPoints];
       ($gp_coords, $gp_properties) = parseGradientPath(\@slice);
 
-      $n_c_read = scalar @{$gp_coords};
-      $n_p_read = scalar @{$gp_properties};
-
-      if ($n_c_read == $n_p_read && $n_p_read == $nPoints) {
-        push(@basin_coords,$gp_coords);
-        push(@basin_properties,$gp_properties);
-        $line = $line + $nPoints + 2; # skip the just-read basin path
-      } else {
-        die "Error\: Contents of basin path not parsed correctly\. Target\:\t$nPoints Actual\: $n_c_read coords\, $n_p_read properties\n";
-      }
+      push(@basin_coords,$gp_coords);
+      push(@basin_properties,$gp_properties);
+      $line = $line + $nPoints + 2; # skip the just-read basin path
 
     }
   }
