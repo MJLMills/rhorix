@@ -7,7 +7,7 @@
 # the point itself - is it a CP, or on a gradient path, or on a triangulated surface? Might want to make
 # surface transparent, e.g. while not altering the CP spheres
 # For this latter reason, we must create separate sphere, surface dicts
-# NACPS  - material assigned according to element of practically coincident nucleus
+# NACPS  - all black
 # NNACPs - all one material
 # BCPs   - all one material
 # RCPs   - all one material
