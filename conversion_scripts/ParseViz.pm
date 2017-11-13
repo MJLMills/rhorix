@@ -481,6 +481,8 @@ sub parseBasinFromBasviz {
     if ($basvizContents[$line] =~ m/\<Basin\s+Path\>/) {
       if ($basvizContents[$line+1] =~ m/(\d+)\s+\d+\s+\d+\s+-?\d+\.\d+E[+-]\d+\s+-?\d+\.\d+E[+-]\d+\s+-?\d+\.\d+E[+-]\d+/) {
         $nPoints = $1;
+      } elsif ($basvizContents[$line+1] =~ m/(\d+)\s+\d+\s+-?\d+\.\d+E[+-]\d+/) {
+        $nPoints = $1;
       } else {
         die "Malformed header of Basin Path\: $basvizContents[$line+1]\n\n";
       }
