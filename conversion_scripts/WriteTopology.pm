@@ -256,6 +256,8 @@ sub writeAtomicSurfaces { # TODO TODO TODO
     @ias_edges  = @{$triang_edges[$as]};
     @ias_faces  = @{$triang_faces[$as]};
 
+    writePCData("nacp_index",$as);
+
     for($ias=0; $ias<@ias_coords; $ias++) {
       openTag("InteratomicSurface");
       writeTriangulation($ias_coords[$ias],$ias_props[$ias],$ias_edges[$ias],$ias_faces[$ias]);
