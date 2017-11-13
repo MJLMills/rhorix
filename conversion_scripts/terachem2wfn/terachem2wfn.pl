@@ -1,5 +1,6 @@
 #!/usr/bin/perl -w
-# Dr. Matthew J L Mills - Rhorix 1.0.0
+# Rhorix: An interface between quantum chemical topology and the 3D graphics program Blender
+
 # terachem2wfn.pl - Convert TeraChem 1.9 output files to the PROAIM .wfn format.
 # See README.md for further details.
 
