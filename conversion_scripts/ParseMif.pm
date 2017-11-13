@@ -6,7 +6,7 @@ use File::Basename;
 use lib dirname(__FILE__); # find modules in script directory - adds the path to @LIB
 package ParseMif;
 require Exporter;
-use TopUtils qw(getRank getSignature countNACPs findClosestCPToPoint);
+use TopUtils qw(getRank getSignature countNACPs findClosestCPToPoint distance);
 
 ### Module Settings ###
 
@@ -186,7 +186,8 @@ sub parseSurfacesFromMif {
 
         if ($mifContents[$surfLine] =~ m/(\S+)\s+(\S+)\s+(\S+)/) {
 
-          my @vertex_coords = ($1/$factor, $2/$factor, $3/$factor);
+#          my @vertex_coords = ($1/$factor, $2/$factor, $3/$factor);
+          my @vertex_coords = ($1, $2, $3);
           push(@surface_coords,\@vertex_coords);
           $vertex_properties = {};
           push(@surface_properties,$vertex_properties);
@@ -221,10 +222,10 @@ sub parseSurfacesFromMif {
           $n = scalar @surface_coords;
           if ($n > 0) {
 
-            if (($n/3) % 2 == 0) {
+            if (($n % 3) == 0) {
               printf STDERR "%10d POINTS READ \(%10d TRIANGLES\)\n", $n, $n/3;
             } else {
-              printf STDERR "Warning\: Non-integral number of triangles in surface\. %10d\n", $n/3;
+              printf STDERR "Warning\: Non-integral number of triangles in surface\. %10.3f\n", $n/3;
             }
 
             if ($removeRedundant == 1) {
@@ -353,21 +354,6 @@ sub parseMolecularGraphFromMif {
   }
 
   return \@ails, \@indices, \@props;
-
-}
-
-sub distance {
-
-  @vector_a = @{$_[0]};
-  @vector_b = @{$_[1]};
-
-  $sum = 0.0;
-  for ($i=0; $i<3; $i++) {
-    $diff = $vector_a[$i] - $vector_b[$i];
-    $sum += $diff * $diff;
-  }
-
-  return sqrt($sum);
 
 }
 
