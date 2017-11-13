@@ -1,5 +1,4 @@
-! Joint BioEnergy Institute
-! Dr. Matthew J L Mills - Rhorix 1.0.0
+! Rhorix: An interface between quantum chemical topology and the 3D graphics program Blender
 !
 ! Program FormatMO exists to format the unformatted MO coefficients written by TeraChem to its output files;
 ! c0 (for restricted wavefunctions) or cA and cB (for unrestricted wavefunctions)
