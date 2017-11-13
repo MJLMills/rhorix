@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE Topology PUBLIC "ID" "../Topology.dtd">
+<!DOCTYPE Topology PUBLIC "ID" "../../Topology.dtd">
 <Topology>
 <SystemName>benzene</SystemName>
 <SourceInformation>
