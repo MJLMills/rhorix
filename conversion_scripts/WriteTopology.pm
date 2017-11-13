@@ -206,7 +206,7 @@ sub writeGradientVectorField {
   openTag("GradientVectorField");
     writeMolecularGraph($_[0],$_[1],$_[2]);
     writeAtomicBasins($_[18],$_[19],$_[20]);
-#    writeEnvelopes($_[13],$_[14],$_[15],$_[16],$_[17]);
+    writeEnvelopes($_[13],$_[14],$_[15],$_[16],$_[17]);
     writeAtomicSurfaces($_[3],$_[4],$_[5],$_[6],$_[7],$_[8],$_[9]);
     writeRingSurfaces($_[10],$_[11],$_[12]);
     #writeRings() # not supported

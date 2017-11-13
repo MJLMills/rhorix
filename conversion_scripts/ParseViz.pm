@@ -293,38 +293,6 @@ sub parseMolecularGraphFromViz {
 
   }
 
-# print out everything
-#  for ($ail=0; $ail<@ails; $ail++) {
-#    print "AIL $ail\n";
-#    print "$ails[$ail]\t$props[$ail]\t$cps[$ail]\n";
-#    print "Critical Point Indices\n";
-#    foreach($cps[$ail]) {
-#      foreach(@{$_}) {
-#        print "@{$_}\n";
-#      }
-#    }
-#    print "Cartesian Coordinates\n";
-#    foreach($ails[$ail]) { # 24 of these
-#      foreach(@{$_}) {     # iterate over both gradient paths
-#        foreach(@{$_}) {
-#          print "@{$_}\n";
-#        } print "\n";
-#      }
-#    }
-#    print "Property Hashmaps\n";
-#    foreach($props[$ail]) { # each is an array ref
-#      foreach (@{$_}) { # 2 array references
-#        foreach(@{$_}) {
-#          print "$_\n"; # hash reference
-#          for $property (keys %{$_}) {
-#            print "$property ${$_}{$property}\n";
-#          }
-#
-#        } print "\n";
-#      }
-#    }
-#  }
-
   return \@ails, \@cps, \@props;
 
 }
@@ -579,21 +547,6 @@ sub parseAtomicSurfaceFromIasviz {
   my @keep_properties = @ias_properties;
   push(@as_coords,\@keep_coords);
   push(@as_properties,\@keep_properties);
-
-#  $ref = \@as_coords;
-#  print STDERR "Atomic Surface Array\: $ref\n";
-#  foreach(@as_coords) {
-#    print STDERR "Interatomic Surface Array\: $_\t";
-#    $n = scalar(@{$_}); print STDERR "N = $n\n";
-#    foreach(@{$_}) {
-      #print STDERR "IAS Path Array\: $_\t";
-      #$n = scalar(@{$_}); print STDERR "N = $n\n";
-#      foreach(@{$_}) {
-        #print STDERR "Position Vector Array\: $_ @{$_}\n";
-#      }
-#    }
-#  }
-#  print STDERR "\n";
 
   return \@as_coords, \@as_properties;
 

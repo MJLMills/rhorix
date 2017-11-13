@@ -186,7 +186,7 @@ sub parseSurfacesFromMif {
 
         if ($mifContents[$surfLine] =~ m/(\S+)\s+(\S+)\s+(\S+)/) {
 
-#          my @vertex_coords = ($1/$factor, $2/$factor, $3/$factor);
+          #my @vertex_coords = ($1/$factor, $2/$factor, $3/$factor);
           my @vertex_coords = ($1, $2, $3);
           push(@surface_coords,\@vertex_coords);
           $vertex_properties = {};
@@ -230,15 +230,14 @@ sub parseSurfacesFromMif {
 
             if ($removeRedundant == 1) {
               # this should return the reformatted data instead of writing it out in-routine
-              reformatSurface(\@ailCoords_x, \@ailCoords_y, \@ailCoords_z, \@edgeA, \@edgeB, \@faceA, \@faceB, \@faceC, $printEdges);
-            } else {
-              # push the data to the appropriate arrays rather than writing out
-              push($atomic_surface_coords[$cp_index-1],\@surface_coords);
-              push($atomic_surface_props[$cp_index-1],\@surface_props);
-              push($atomic_surface_edges[$cp_index-1],\@surface_edges);
-              push($atomic_surface_faces[$cp_index-1],\@surface_faces);
-
-            }
+              #reformatSurface(\@ailCoords_x, \@ailCoords_y, \@ailCoords_z, \@edgeA, \@edgeB, \@faceA, \@faceB, \@faceC, $printEdges);
+              print "Warning\: Removal of redundant data requested but not supported";
+            } 
+            # push the data to the appropriate arrays rather than writing out
+            push($atomic_surface_coords[$cp_index-1],\@surface_coords);
+            push($atomic_surface_props[$cp_index-1],\@surface_props);
+            push($atomic_surface_edges[$cp_index-1],\@surface_edges);
+            push($atomic_surface_faces[$cp_index-1],\@surface_faces);
 
             # $line is still currently set to the previously found surf line - set it to the line after this surface
             $line = $surfLine - 1;
@@ -357,6 +356,7 @@ sub parseMolecularGraphFromMif {
 
 }
 
+# Note: This is not active in v1.0.0 (initial release)
 sub reformatSurface {
 
   my ($xPoints,$yPoints,$zPoints,$edgeA,$edgeB,$faceA,$faceB,$faceC,$printEdges) = @_;

@@ -23,7 +23,7 @@ sub getRank {
 
   local $type = "$_[0]";
 
-  if ($type eq "bcp" or $type eq "rcp" or $type eq "ccp") {
+  if ($type eq "bcp" or $type eq "rcp" or $type eq "ccp" or $type eq "nacp") {
     return 3;
   } else {
     return 3;
