@@ -21,8 +21,8 @@ def drawTopology(topology,
                  cp_segments=32,
                  cp_ring_count=16,
                  cp_subsurf_render_levels=4,
-                 triangulate_basins=True,
-                 triangulate_surfaces=True,
+                 triangulate_basins=False,
+                 triangulate_surfaces=False,
                  max_rho=0.0):
 
     elementRadii     = Resources.defineRadii()
