@@ -9,7 +9,7 @@ require Exporter;
 
 our @ISA       = qw(Exporter);
 our @EXPORT    = ();
-our @EXPORT_OK = qw(getRank getSignature getMassesFromElements computeCOM countNACPs findClosestCPToPoint);
+our @EXPORT_OK = qw(getRank getSignature getMassesFromElements computeCOM countNACPs findClosestCPToPoint distance);
 our $VERSION   = 1.0;
 
 ### Subroutines ###
@@ -150,3 +150,20 @@ sub findClosestCPToPoint {
   return $closest_index;
 
 }
+
+
+sub distance {
+
+  @vector_a = @{$_[0]};
+  @vector_b = @{$_[1]};
+
+  $sum = 0.0;
+  for ($i=0; $i<3; $i++) {
+    $diff = $vector_a[$i] - $vector_b[$i];
+    $sum += $diff * $diff;
+  }
+
+  return sqrt($sum);
+
+}
+
