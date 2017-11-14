@@ -24,7 +24,7 @@ Decaborane - 9b - g09/AIMAll
 
 Hexamethylenetetramine - 9c - g09/AIMAll
 
-PSMa3-helix - 10 - TeraChem/AIMAll CENTER THIS
+PSMa3-helix - 10 - TeraChem/AIMAll
 
 Blend files for these systems were too large to upload. Please install the add-on and parse the included .top file instead.
 
