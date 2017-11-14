@@ -49,7 +49,7 @@ Please note this script relies on x,y and z tags not being broken over multiple 
 validateXML.pl
 
 This is a simple script that verifies that a given XML file conforms to its listed document type definition.
-It should be used to check any .top file that proves difficult to read into Blender.
+It should be used to check any .top file produced by these conversion scripts.
 
 ## General Use Modules
 
@@ -153,6 +153,12 @@ writePair - Write a single pair element.
 *getMassesFromElements* - Convert a list of element labels to their corresponding masses.
 
 getMassFromElement - Convert a single element label to the corresponding mass.
+
+countNACPs - Given a list of CPs, count the NACPs.
+
+findClosestCPToPoint - Find the closest of a set of CPs to a given test point.
+
+distance - Compute the distance (Euclidean norm).
 
 ## Topology Program Specific Modules
 
