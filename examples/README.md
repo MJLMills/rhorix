@@ -26,7 +26,7 @@ Hexamethylenetetramine - 9c - g09/AIMAll
 
 PSMa3-helix - 10 - TeraChem/AIMAll
 
-Blend files for these systems were too large to upload. Please install the add-on and parse the included .top file instead.
+Blend files for the following systems were too large to upload. Please install the add-on and parse the included .top file instead if you wish to used these structures.
 
 LigM - 11 - TeraChem/AIMAll
 
