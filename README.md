@@ -33,7 +33,7 @@ M. J. L. Mills, K. L. Sale, B. A. Simmons & P. L. A. Popelier, J. Comput. Chem.,
 
 and
 
-Rhorix 1.0.0, M. J. L. Mills, 2017, github.com/MJLMills/rhorix
+Rhorix 1.0.0, M. J. L. Mills, 2017, DOI: 10.5281/zenodo.1048422
 
 #### Contributing, Feature Requests and Bugs
 
