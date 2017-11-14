@@ -13,6 +13,8 @@ This facilitates the future addition of converters for other QCT analysis progra
 
 mgpviz2top.pl - Script for converting AIMAll output to XML .top format.
 
+mgpviz2top.pl filename.mgpviz > filename.top
+
 The input file must be an .mgpviz file, but the script will also check for the presence of other types of .viz file.
 Files containing interatomic surface data (iasviz) are produced by running AIMAll with the -iaswrite=true flag. 
 Files with basin visualization data (basviz) can be generated from within the AIMStudio GUI; to the best of our knowledge this cannot currently be done at the command line.
@@ -35,6 +37,8 @@ These files also do not clearly differentiate between envelopes and interatomic 
 Iris is currently the only program that produces triangulated surfaces for Rhorix.
 
 mif2top.pl - Script for converting MORPHY/IRIS output to top format.
+
+mif2top.pl filename.mif > filename.top
 
 runIris.pl - Run the various executables that comprise IRIS on a set of wavefunctions.
 
